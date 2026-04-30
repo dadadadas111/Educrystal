@@ -31,10 +31,10 @@ export function BottomNav({ mode }: BottomNavProps) {
   if (mode === "desktop") {
     return (
       <nav className="hidden lg:block" aria-label="Điều hướng chính">
-        <div className="rounded-[2rem] border border-white/10 bg-surface/60 p-3 shadow-soft backdrop-blur-xl">
-          <div className="rounded-[1.6rem] border border-white/10 bg-white/5 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent/80">Điều hướng</p>
-            <p className="mt-2 text-sm leading-6 text-text/72">Chọn một màn để tiếp tục nuôi mầm, ghi lại hoặc nhìn thành quả sáng lên.</p>
+        <div className="panel-soft p-3">
+          <div className="rounded-[1.6rem] border-2 border-outline bg-white p-4">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-coral">Điều hướng nhanh</p>
+            <p className="mt-2 text-sm leading-6 text-muted">Chạm vào nơi con muốn khám phá tiếp theo.</p>
           </div>
 
           <ul className="mt-3 space-y-2">
@@ -47,26 +47,26 @@ export function BottomNav({ mode }: BottomNavProps) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "flex items-start gap-3 rounded-[1.6rem] border px-4 py-4 transition-all duration-200",
+                      "flex items-start gap-3 rounded-[1.6rem] border-2 px-4 py-4 transition-all duration-200",
                       isActive
-                        ? "border-accent/25 bg-white/10 text-white shadow-soft"
-                        : "border-white/10 bg-transparent text-text/72 hover:border-white/20 hover:bg-white/5 hover:text-text",
+                        ? "border-accent bg-accent-soft/55 text-text shadow-soft"
+                        : "border-outline bg-white/70 text-muted hover:border-gold hover:bg-gold/10 hover:text-text",
                     )}
                   >
                     <div
                       className={cn(
                         "icon-shell mt-0.5 h-11 w-11 rounded-2xl p-2.5 transition-colors duration-200",
-                        isActive ? "bg-accent-soft/75 text-white" : "bg-surface-strong/80 text-accent",
+                        isActive ? "bg-accent text-white" : "bg-white text-coral",
                       )}
                     >
                       <Icon className="h-4 w-4" strokeWidth={2.2} />
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-semibold">{item.label}</p>
-                        {isActive ? <span className="h-2 w-2 rounded-full bg-accent" /> : null}
+                        <p className="text-sm font-bold">{item.label}</p>
+                        {isActive ? <span className="h-2.5 w-2.5 rounded-full bg-coral" /> : null}
                       </div>
-                      <p className="mt-1 text-sm leading-6 text-text/60">{navDescriptions[item.href]}</p>
+                      <p className="mt-1 text-sm leading-6 text-muted">{navDescriptions[item.href]}</p>
                     </div>
                   </Link>
                 </li>
@@ -80,10 +80,10 @@ export function BottomNav({ mode }: BottomNavProps) {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md border-t border-white/10 bg-surface-strong/90 px-4 pb-6 pt-3 backdrop-blur-xl lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md px-4 pb-5 pt-3 lg:hidden"
       aria-label="Điều hướng chính"
     >
-      <ul className="grid grid-cols-4 gap-2">
+      <ul className="grid grid-cols-4 gap-2 rounded-[2rem] border-2 border-outline bg-white/95 p-2 shadow-soft">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
           const Icon = iconMap[item.href];
@@ -93,13 +93,13 @@ export function BottomNav({ mode }: BottomNavProps) {
               <Link
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-2 rounded-2xl px-2 py-3 text-[11px] font-semibold transition-all duration-200",
+                  "flex flex-col items-center justify-center gap-2 rounded-[1.4rem] px-2 py-3 text-[11px] font-bold transition-all duration-200",
                   isActive
-                    ? "bg-white/10 text-accent shadow-soft"
-                    : "text-text/65 hover:bg-white/5 hover:text-text",
+                    ? "bg-accent-soft text-text shadow-soft"
+                    : "text-muted hover:bg-gold/10 hover:text-text",
                 )}
               >
-                <div className={cn("icon-shell h-9 w-9 rounded-2xl", isActive ? "bg-accent-soft/70 text-white" : "text-accent") }>
+                <div className={cn("icon-shell h-9 w-9 rounded-2xl", isActive ? "bg-accent text-white" : "bg-white text-coral") }>
                   <Icon className="h-4 w-4" strokeWidth={2.2} />
                 </div>
                 <span>{item.label}</span>
