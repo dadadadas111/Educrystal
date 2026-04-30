@@ -2,7 +2,7 @@ export const locale = "vi" as const;
 
 export const navItems = [
   { href: "/journey", label: "Hành trình" },
-  { href: "/catalog", label: "Program" },
+  { href: "/catalog", label: "Chương trình" },
   { href: "/diary", label: "Nhật ký" },
   { href: "/showcase", label: "Chia sẻ" },
 ] as const;
@@ -15,33 +15,46 @@ export const appCopy = {
   },
   home: {
     eyebrow: "Ứng dụng học tập cá nhân hóa về tinh thể",
-    title: "Mỗi tinh thể lớn lên theo một hành trình rõ ràng và an toàn.",
+    title: "Nuôi một tinh thể nhỏ thành hành trình lấp lánh của riêng mình.",
     description:
-      "Educrystal giúp người mới bắt đầu chọn đúng program, chuẩn bị vật liệu, đi qua từng bước và nhìn thấy tiến độ của mình một cách ấm áp, dễ hiểu.",
+      "Chọn program, xem vật liệu, đi từng bước và giữ lại mọi thay đổi đẹp nhất trong một nhịp học ngắn, rõ và dịu mắt.",
     primaryCta: "Khám phá program",
     secondaryCta: "Xem cách hoạt động",
-    featuredTitle: "3 program mở đầu cho hành trình đầu tiên",
-    featuredDescription:
-      "Mỗi program là một mini-course nhỏ với độ khó, thời lượng, milestone và lưu ý an toàn riêng.",
+    featuredTitle: "Chọn mầm đầu tiên",
+    featuredDescription: "Ba program mở màn với độ khó, thời lượng và cảm giác rất khác nhau.",
+    heroBadges: ["Chọn program", "Nuôi mầm", "Lưu nhật ký"],
+    processSteps: [
+      {
+        title: "Chọn một mầm hợp sức",
+        body: "Mỗi program có nhịp học, độ khó và mục tiêu riêng để bắt đầu không bị rối.",
+      },
+      {
+        title: "Đi theo cụm bước ngắn",
+        body: "Vật liệu, thao tác và lưu ý an toàn nằm trong cùng một luồng sáng rõ.",
+      },
+      {
+        title: "Nhìn tinh thể lớn dần",
+        body: "Milestone và nhật ký riêng giúp mỗi thay đổi nhỏ trở nên rất thật.",
+      },
+    ],
     pillars: [
       {
-        title: "Bắt đầu có định hướng",
-        body: "Hiểu ngay nên chọn program nào thay vì tự đoán và làm rời rạc.",
+        title: "Khởi đầu dễ chọn",
+        body: "Thấy ngay program nào hợp nhịp học của mình.",
       },
       {
-        title: "Theo dõi tiến độ thật",
-        body: "Mỗi bước và milestone đều được viết ngắn gọn để người học thấy mình đang đi tới đâu.",
+        title: "Tiến độ biết phát sáng",
+        body: "Mỗi bước, mỗi mốc đều hiện rõ thay vì trôi qua mơ hồ.",
       },
       {
-        title: "Nhật ký riêng tư trước",
-        body: "Khi đã sẵn sàng, thành quả mới có thể được đưa sang khu showcase đã kiểm duyệt.",
+        title: "Ghi chép riêng tư trước",
+        body: "Giữ lại quan sát của mình trước khi nghĩ đến chia sẻ.",
       },
     ],
   },
   catalog: {
     title: "Danh mục program",
-    description:
-      "Chọn một hành trình phù hợp với thời gian, độ khó và phong cách khám phá của bạn.",
+    description: "Mỗi program là một kiểu nuôi tinh thể khác nhau: nhanh, sáng tạo hoặc bền bỉ hơn.",
   },
   detail: {
     materials: "Vật liệu cần chuẩn bị",
@@ -56,7 +69,7 @@ export const appCopy = {
     eyebrow: "Program đang theo",
     title: "Hành trình tinh thể của mình đang tiến lên từng bước.",
     description:
-      "Từ bước đang làm tới milestone tiếp theo, mọi thứ được gom về một bảng điều khiển nhỏ, sáng rõ và dễ quay lại mỗi ngày.",
+      "Bước hiện tại, milestone kế tiếp và nhịp quan sát mỗi ngày đều gom vào một góc nhìn ngắn, sáng và dễ quay lại.",
     progressLabel: "Tiến độ hiện tại",
     stepCountLabel: "bước đã vững",
     streakLabel: "Nhịp theo dõi",
@@ -89,9 +102,9 @@ export const appCopy = {
   },
   diary: {
     eyebrow: "Nhật ký riêng",
-    title: "Những ghi chép nhỏ giúp hành trình trở nên rất thật.",
+    title: "Những ghi chép nhỏ làm tinh thể của mình trở nên rất thật.",
     description:
-      "Mọi quan sát và cảm xúc đầu tiên nên được giữ ở góc riêng của mình trước khi nghĩ tới chia sẻ.",
+      "Lưu nhanh điều vừa thấy, điều vừa nghĩ và điều muốn nhớ cho lần nhìn tiếp theo.",
     privacyBadge: "Chỉ mình bạn thấy",
     privacyTitle: "Nhật ký này đang ở chế độ riêng tư trước.",
     privacyBody: "Chưa có đăng công khai, chưa cần hoàn hảo. Bạn chỉ cần ghi lại điều mình nhìn thấy để lần sau quay lại sẽ thấy hành trình đã lớn lên ra sao.",
@@ -99,7 +112,7 @@ export const appCopy = {
     entryCountLabel: "mục ghi",
     newEntryTitle: "Ghi nhanh hôm nay",
     newEntryDescription:
-      "Chỉ cần vài dòng về điều mình nhìn thấy, điều mình cảm thấy hoặc điều mình muốn nhớ cho lần xem tiếp theo.",
+      "Vài dòng là đủ để giữ lại khoảnh khắc tinh thể vừa đổi khác.",
     titleFieldLabel: "Tiêu đề ngắn",
     titlePlaceholder: "Ví dụ: Mầm hôm nay đã sắc cạnh hơn",
     bodyFieldLabel: "Điều mình muốn lưu lại",
@@ -109,7 +122,7 @@ export const appCopy = {
     saveCta: "Lưu vào góc riêng",
     savedNote: "Đã lưu vào nhật ký riêng của bạn.",
     timelineTitle: "Dòng thời gian riêng",
-    timelineDescription: "Mỗi mục được giữ theo thứ tự gần nhất để bạn dễ nhìn lại tiến trình của chính mình.",
+    timelineDescription: "Mỗi mục nằm theo thứ tự gần nhất để nhìn lại hành trình chỉ trong một lượt cuộn.",
     fallbackEntryTitle: "Ghi nhanh hôm nay",
   },
   futureSections: {
@@ -122,8 +135,8 @@ export const appCopy = {
       body: "Nhật ký riêng sẽ lưu ảnh, quan sát và cảm xúc theo từng mốc mà không biến thành một feed xã hội.",
     },
     showcase: {
-      title: "Khu chia sẻ là nơi lưu lại những thành quả đã được chọn lọc",
-      body: "Bài công khai chỉ xuất hiện sau kiểm duyệt để giữ cảm giác tham khảo học tập thay vì mạng xã hội mở.",
+      title: "Khu chia sẻ là nơi những thành quả đã được chọn lọc bắt đầu phát sáng",
+      body: "Bài công khai chỉ xuất hiện sau kiểm duyệt để giữ cảm giác triển lãm học tập, không phải feed mở.",
     },
   },
 } as const;

@@ -27,6 +27,7 @@ export type Program = {
     from: string;
     to: string;
     accent: string;
+    tone: "aqua" | "rose" | "gold";
   };
 };
 
@@ -110,6 +111,7 @@ export const programs: Program[] = [
       from: "from-accent/25",
       to: "to-rose/20",
       accent: "bg-accent-soft/70",
+      tone: "aqua",
     },
   },
   {
@@ -196,6 +198,7 @@ export const programs: Program[] = [
       from: "from-rose/30",
       to: "to-accent/20",
       accent: "bg-rose/15",
+      tone: "rose",
     },
   },
   {
@@ -282,6 +285,7 @@ export const programs: Program[] = [
       from: "from-gold/25",
       to: "to-accent/15",
       accent: "bg-gold/20",
+      tone: "gold",
     },
   },
 ];
