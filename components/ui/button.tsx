@@ -23,15 +23,15 @@ type ButtonProps = LinkButtonProps | NativeButtonProps;
 
 const variantClasses: Record<NonNullable<ButtonProps["variant"]>, string> = {
   primary:
-    "bg-gradient-to-r from-accent via-accent to-gold text-slate-950 shadow-crystal transition-transform duration-200 hover:-translate-y-0.5 hover:brightness-105",
+    "border-2 border-white/80 bg-gradient-to-b from-gold/95 via-accent-soft to-accent text-text shadow-crystal transition-all duration-200 hover:-translate-y-1 hover:brightness-105 active:translate-y-0",
   secondary:
-    "border border-outline/80 bg-surface/80 text-text shadow-soft transition-colors duration-200 hover:border-accent/40 hover:bg-surface-strong/90",
-  ghost: "text-text/90 transition-colors duration-200 hover:text-accent",
+    "border-2 border-outline bg-white text-text shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:border-gold/70 hover:bg-gold/10",
+  ghost: "text-text transition-colors duration-200 hover:text-coral",
 };
 
 export function Button({ className, variant = "primary", children, ...props }: ButtonProps) {
   const buttonClassName = cn(
-    "inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold tracking-wide",
+    "inline-flex items-center justify-center rounded-full px-5 py-3.5 text-sm font-bold tracking-[0.01em]",
     variantClasses[variant],
     className,
   );
