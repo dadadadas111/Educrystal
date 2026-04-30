@@ -23,7 +23,7 @@ type ButtonProps = LinkButtonProps | NativeButtonProps;
 
 const variantClasses: Record<NonNullable<ButtonProps["variant"]>, string> = {
   primary:
-    "bg-accent text-slate-950 shadow-crystal transition-transform duration-200 hover:-translate-y-0.5 hover:bg-accent/90",
+    "bg-gradient-to-r from-accent via-accent to-gold text-slate-950 shadow-crystal transition-transform duration-200 hover:-translate-y-0.5 hover:brightness-105",
   secondary:
     "border border-outline/80 bg-surface/80 text-text shadow-soft transition-colors duration-200 hover:border-accent/40 hover:bg-surface-strong/90",
   ghost: "text-text/90 transition-colors duration-200 hover:text-accent",

@@ -28,7 +28,46 @@ html {
 body {
   min-height: 100vh;
   background: rgb(var(--color-background));
+  background-image:
+    radial-gradient(circle at top, rgb(var(--color-accent-soft) / 0.28), transparent 26%),
+    radial-gradient(circle at 85% 18%, rgb(var(--color-rose) / 0.12), transparent 22%),
+    linear-gradient(180deg, rgb(var(--color-surface-strong) / 0.12), transparent 30%);
   color: rgb(var(--color-text));
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes float-sway {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(8px, -6px, 0) rotate(6deg);
+  }
+}
+
+@keyframes crystal-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
 }
 
 @layer base {
@@ -45,7 +84,9 @@ body {
   .panel-soft {
     border: 1px solid rgb(255 255 255 / 0.1);
     border-radius: 1.75rem;
-    background-color: rgb(var(--color-surface) / 0.72);
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.08), transparent 36%),
+      rgb(var(--color-surface) / 0.72);
     padding: 1.25rem;
     box-shadow: var(--shadow-soft);
     backdrop-filter: blur(14px);
@@ -54,8 +95,92 @@ body {
   .list-card {
     border: 1px solid rgb(255 255 255 / 0.1);
     border-radius: 1.5rem;
-    background-color: rgb(255 255 255 / 0.05);
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.08), transparent 45%),
+      rgb(255 255 255 / 0.05);
     padding: 1rem;
+  }
+
+  .crystal-card {
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 1.6rem;
+    background:
+      linear-gradient(145deg, rgb(255 255 255 / 0.08), transparent 54%),
+      rgb(var(--color-surface-strong) / 0.56);
+    padding: 1rem;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+    backdrop-filter: blur(14px);
+  }
+
+  .glass-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 0.08);
+    padding: 0.55rem 0.9rem;
+  }
+
+  .icon-shell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 1.1rem;
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.12), transparent 65%),
+      rgb(var(--color-surface-strong) / 0.72);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05);
+  }
+
+  .metric-tile {
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 1.5rem;
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.08), transparent 45%),
+      rgb(var(--color-surface) / 0.68);
+    padding: 1rem;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  }
+
+  .section-glow {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-glow::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: -12% auto auto -8%;
+    height: 10rem;
+    width: 10rem;
+    border-radius: 9999px;
+    background: rgb(var(--color-accent) / 0.12);
+    filter: blur(48px);
+  }
+
+  .progress-orb {
+    position: relative;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 9999px;
+    background:
+      radial-gradient(circle at top, rgb(255 255 255 / 0.18), transparent 42%),
+      rgb(var(--color-surface-strong) / 0.88);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  }
+
+  .animate-float-slow {
+    animation: float-slow 6.5s ease-in-out infinite;
+  }
+
+  .animate-float-sway {
+    animation: float-sway 7.5s ease-in-out infinite;
+  }
+
+  .animate-crystal-pulse {
+    animation: crystal-pulse 4.2s ease-in-out infinite;
   }
 
   .field-shell {
