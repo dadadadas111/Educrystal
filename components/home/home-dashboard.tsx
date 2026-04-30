@@ -4,14 +4,18 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import type { Course } from "@/data/courses";
-import { addDiaryEntry, getCourseProgress, loadAppState, saveAppState } from "@/lib/progress";
+import { createEmptyAppState, getCourseProgress, loadAppState, saveAppState } from "@/lib/progress";
 
 type HomeDashboardProps = {
   courses: Course[];
 };
 
 export function HomeDashboard({ courses }: HomeDashboardProps) {
-  const [state, setState] = useState(loadAppState());
+  const [state, setState] = useState(createEmptyAppState());
+
+  useEffect(() => {
+    setState(loadAppState());
+  }, []);
 
   useEffect(() => {
     saveAppState(state);
@@ -40,44 +44,44 @@ export function HomeDashboard({ courses }: HomeDashboardProps) {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[2rem] bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
+      <section className="panel-soft section-glow">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Home</p>
-        <h1 className="mt-2 text-3xl font-black text-slate-900">Hôm nay mình làm gì?</h1>
+        <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Hôm nay mình làm gì?</h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Xem nhanh khóa đang làm dở, nhật ký, và việc tiếp theo chỉ với một chạm.</p>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[2rem] bg-slate-900 p-5 text-white shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
+        <div className="playful-stage text-slate-900">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Tiếp tục ngay</p>
           {nextUp ? (
             <div className="mt-3 space-y-3">
-              <h2 className="text-2xl font-black">{nextUp.course.title}</h2>
-              <p className="text-sm leading-6 text-slate-300">Bước {nextUp.completed + 1}: {nextUp.currentStep?.title}</p>
-              <div className="h-3 rounded-full bg-white/10">
-                <div className="h-3 rounded-full bg-amber-300" style={{ width: `${nextUp.percent}%` }} />
+              <h2 className="font-display text-[2.15rem] leading-[0.95]">{nextUp.course.title}</h2>
+              <p className="text-sm leading-6 text-slate-600">Bước {nextUp.completed + 1}: {nextUp.currentStep?.title}</p>
+              <div className="h-3 overflow-hidden rounded-full bg-white/70">
+                <div className="h-3 rounded-full bg-gradient-to-r from-gold via-accent to-sky" style={{ width: `${nextUp.percent}%` }} />
               </div>
-              <p className="text-sm text-slate-300">{nextUp.completed}/{nextUp.total} bước · {nextUp.percent}%</p>
-              <Link href={`/catalog/${nextUp.course.slug}/step/${Math.min(nextUp.progress.activeStepIndex, nextUp.total - 1)}`} className="inline-flex rounded-full bg-white px-4 py-3 text-sm font-bold text-slate-900">
+              <p className="text-sm text-slate-600">{nextUp.completed}/{nextUp.total} bước · {nextUp.percent}%</p>
+              <Link href={`/catalog/${nextUp.course.slug}/step/${Math.min(nextUp.progress.activeStepIndex, nextUp.total - 1)}`} className="inline-flex rounded-full border-2 border-outline bg-white px-4 py-3 text-sm font-bold text-slate-900 shadow-soft">
                 Tiếp tục
               </Link>
             </div>
           ) : (
-            <p className="mt-3 text-sm text-slate-300">Chưa có khóa nào đang làm.</p>
+            <p className="mt-3 text-sm text-slate-600">Chưa có khóa nào đang làm.</p>
           )}
         </div>
 
         <div className="grid gap-4">
-          <div className="rounded-[2rem] bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
+          <div className="panel-soft section-glow">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Nhật ký</p>
-            <p className="mt-2 text-2xl font-black text-slate-900">{recentDiary ? "Đã ghi" : "Chưa ghi"}</p>
+            <p className="mt-2 font-display text-3xl text-slate-900">{recentDiary ? "Đã ghi" : "Chưa ghi"}</p>
             <p className="mt-1 text-sm text-slate-600">{recentDiary ? recentDiary.title : "Ghi một dòng ngắn để lưu hôm nay."}</p>
             <div className="mt-4 flex gap-3">
-              <Link href="/diary" className="inline-flex flex-1 items-center justify-center rounded-full bg-sky-100 px-4 py-3 text-sm font-bold text-sky-900">Mở nhật ký</Link>
-              <Link href="/diary" className="inline-flex flex-1 items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-bold text-white">Ghi mới</Link>
+              <Link href="/diary" className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-sky-100 px-4 py-3 text-sm font-bold text-sky-900 shadow-soft">Mở nhật ký</Link>
+              <Link href="/diary" className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft">Ghi mới</Link>
             </div>
           </div>
 
-          <div className="rounded-[2rem] bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
+          <div className="panel-soft section-glow">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Tổng quan</p>
             <div className="mt-3 flex items-center justify-between text-sm text-slate-600">
               <span>Đang làm</span>
@@ -87,7 +91,7 @@ export function HomeDashboard({ courses }: HomeDashboardProps) {
               <span>Hoàn thành</span>
               <span className="font-bold text-slate-900">{finishedCourses.length}</span>
             </div>
-            <Link href="/catalog" className="mt-4 inline-flex rounded-full bg-amber-100 px-4 py-3 text-sm font-bold text-amber-900">
+            <Link href="/catalog" className="mt-4 inline-flex rounded-full border-2 border-outline bg-amber-100 px-4 py-3 text-sm font-bold text-amber-900 shadow-soft">
               Đi đến khóa học
             </Link>
           </div>
@@ -96,12 +100,12 @@ export function HomeDashboard({ courses }: HomeDashboardProps) {
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-black text-slate-900">Khóa đang làm</h2>
+          <h2 className="font-display text-2xl text-slate-900">Khóa đang làm</h2>
           <Link href="/catalog" className="text-sm font-semibold text-slate-500">Xem tất cả</Link>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {activeCourses.map((item) => (
-            <Link key={item.course.slug} href={`/catalog/${item.course.slug}`} className="rounded-[2rem] bg-white p-4 shadow-[0_14px_32px_rgba(15,23,42,0.08)]">
+            <Link key={item.course.slug} href={`/catalog/${item.course.slug}`} className="list-card transition-transform hover:-translate-y-0.5">
               <div className="overflow-hidden rounded-[1.5rem] bg-slate-50">
                 <img src={item.course.coverImage} alt={item.course.whatYouMake} className="aspect-[4/3] w-full object-cover" />
               </div>
@@ -119,10 +123,10 @@ export function HomeDashboard({ courses }: HomeDashboardProps) {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-xl font-black text-slate-900">Khóa đã xong</h2>
+        <h2 className="font-display text-2xl text-slate-900">Khóa đã xong</h2>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {finishedCourses.map((item) => (
-            <Link key={item.course.slug} href={`/catalog/${item.course.slug}`} className="rounded-[2rem] bg-white p-4 shadow-[0_14px_32px_rgba(15,23,42,0.08)]">
+            <Link key={item.course.slug} href={`/catalog/${item.course.slug}`} className="list-card transition-transform hover:-translate-y-0.5">
               <img src={item.course.coverImage} alt={item.course.whatYouMake} className="aspect-[4/3] w-full rounded-[1.5rem] object-cover" />
               <div className="mt-3">
                 <h3 className="text-lg font-black text-slate-900">{item.course.title}</h3>

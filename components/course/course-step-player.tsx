@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import type { Course } from "@/data/courses";
-import { addReminder, getCourseProgress, loadAppState, saveAppState, upsertCourseProgress } from "@/lib/progress";
+import { addReminder, createEmptyAppState, getCourseProgress, loadAppState, saveAppState, upsertCourseProgress } from "@/lib/progress";
 
 type CourseStepPlayerProps = {
   course: Course;
@@ -17,8 +18,12 @@ function addDays(base: Date, days: number) {
 
 export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
   const router = useRouter();
-  const [state, setState] = useState(loadAppState());
+  const [state, setState] = useState(createEmptyAppState());
   const [showConfirm, setShowConfirm] = useState(false);
+
+  useEffect(() => {
+    setState(loadAppState());
+  }, []);
 
   const progress = getCourseProgress(state, course.slug);
   const step = course.steps[stepIndex] ?? course.steps[0];
@@ -105,14 +110,14 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
 
   return (
     <div className="space-y-5">
-      <section className="rounded-[2rem] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
+      <section className="panel-soft section-glow">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Bước {step.order}</p>
-        <h1 className="mt-2 text-3xl font-black text-slate-900">{step.title}</h1>
+        <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">{step.title}</h1>
         <p className="mt-2 text-sm text-slate-600">{percent}% của khóa đã xong</p>
       </section>
 
-      <section className="space-y-4 rounded-[2rem] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
-        <div className="overflow-hidden rounded-[1.75rem] bg-slate-50">
+      <section className="playful-stage space-y-4">
+        <div className="overflow-hidden rounded-[1.75rem] border-2 border-outline bg-slate-50 shadow-soft">
           <img src={step.media?.src ?? course.coverImage} alt={step.media?.alt ?? course.whatYouMake} className="aspect-[4/3] w-full object-cover" />
         </div>
 
@@ -122,7 +127,7 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
         </div>
 
         {requiresWait ? (
-          <div className="rounded-[1.5rem] bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+          <div className="quest-card text-sm leading-6 text-amber-900">
             <p className="font-black">Bước này cần chờ thêm vài ngày.</p>
             <p className="mt-1">{step.waitHint ?? "Theo dõi chậm thôi rồi quay lại khi tinh thể lớn thêm."}</p>
           </div>
@@ -132,14 +137,14 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
           <button
             type="button"
             onClick={() => (canGoBack ? goToStep(stepIndex - 1) : router.push(`/catalog/${course.slug}`))}
-            className="inline-flex flex-1 items-center justify-center rounded-full bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700"
+            className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 shadow-soft"
           >
             Quay lại
           </button>
           <button
             type="button"
             onClick={handleComplete}
-            className="inline-flex flex-1 items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-bold text-white"
+            className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft"
           >
             {requiresWait ? "Xong giai đoạn" : "Xong bước"}
           </button>
@@ -148,26 +153,26 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
 
       {showConfirm ? (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/35 p-4 sm:items-center">
-          <div className="w-full max-w-lg rounded-[2rem] bg-white p-5 shadow-[0_24px_60px_rgba(15,23,42,0.2)]">
+          <div className="w-full max-w-lg panel-soft section-glow">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Xác nhận</p>
-            <h2 className="mt-2 text-2xl font-black text-slate-900">Bước này còn cần chờ</h2>
+            <h2 className="mt-2 font-display text-3xl text-slate-900">Bước này còn cần chờ</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">Nếu đã hoàn thành phần cần làm hôm nay, hãy chuyển sang bước tiếp theo hoặc đặt nhắc cho ngày sau.</p>
 
-            <div className="mt-4 space-y-2 rounded-[1.5rem] bg-slate-50 p-4 text-sm text-slate-700">
+            <div className="mt-4 space-y-2 quest-card text-sm text-slate-700">
               <p className="font-semibold">{step.waitHint ?? "Nhớ để yên và theo dõi hằng ngày."}</p>
               {reminderAt ? <p>Nhắc lại dự kiến: {new Date(reminderAt).toLocaleDateString("vi-VN")}</p> : null}
             </div>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <button type="button" onClick={handleConfirmComplete} className="rounded-full bg-slate-900 px-4 py-3 text-sm font-bold text-white">
+              <button type="button" onClick={handleConfirmComplete} className="rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft">
                 Mình đã làm xong
               </button>
-              <button type="button" onClick={handleReminder} className="rounded-full bg-amber-100 px-4 py-3 text-sm font-bold text-amber-900">
+              <button type="button" onClick={handleReminder} className="rounded-full border-2 border-outline bg-amber-100 px-4 py-3 text-sm font-bold text-amber-900 shadow-soft">
                 Nhắc lại khi tới ngày
               </button>
             </div>
 
-            <button type="button" onClick={() => setShowConfirm(false)} className="mt-3 w-full rounded-full bg-slate-100 px-4 py-3 text-sm font-bold text-slate-600">
+            <button type="button" onClick={() => setShowConfirm(false)} className="mt-3 w-full rounded-full border-2 border-outline bg-slate-100 px-4 py-3 text-sm font-bold text-slate-600 shadow-soft">
               Đóng
             </button>
           </div>

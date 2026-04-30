@@ -35,25 +35,25 @@ const emptyState: AppState = {
   reminders: [],
 };
 
-function getFallbackState(): AppState {
+export function createEmptyAppState(): AppState {
   return structuredClone(emptyState);
 }
 
 export function loadAppState(): AppState {
   if (typeof window === "undefined") {
-    return getFallbackState();
+    return createEmptyAppState();
   }
 
   const raw = window.localStorage.getItem(STORAGE_KEY);
 
   if (!raw) {
-    return getFallbackState();
+    return createEmptyAppState();
   }
 
   try {
     return JSON.parse(raw) as AppState;
   } catch {
-    return getFallbackState();
+    return createEmptyAppState();
   }
 }
 

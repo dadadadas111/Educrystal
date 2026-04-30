@@ -1,8 +1,21 @@
 import type { Metadata } from "next";
+import { Baloo_2, Be_Vietnam_Pro } from "next/font/google";
 
 import { SiteShell } from "@/components/site-shell";
 
 import "./globals.css";
+
+const bodyFont = Be_Vietnam_Pro({
+  subsets: ["latin", "latin-ext", "vietnamese"],
+  variable: "--font-body",
+  weight: ["400", "500", "600", "700"],
+});
+
+const displayFont = Baloo_2({
+  subsets: ["latin", "latin-ext", "vietnamese"],
+  variable: "--font-display",
+  weight: ["600", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Educrystal",
@@ -12,7 +25,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="vi">
-      <body>
+      <body className={`${bodyFont.variable} ${displayFont.variable} font-body antialiased`}>
         <SiteShell>{children}</SiteShell>
       </body>
     </html>

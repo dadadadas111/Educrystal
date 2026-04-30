@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { Course } from "@/data/courses";
-import { getCourseProgress, loadAppState } from "@/lib/progress";
+import { createEmptyAppState, getCourseProgress, loadAppState } from "@/lib/progress";
 
 type CatalogBrowserProps = {
   courses: Course[];
@@ -18,7 +18,11 @@ const tabs = [
 
 export function CatalogBrowser({ courses }: CatalogBrowserProps) {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]["id"]>("active");
-  const [state] = useState(loadAppState());
+  const [state, setState] = useState(createEmptyAppState());
+
+  useEffect(() => {
+    setState(loadAppState());
+  }, []);
 
   const grouped = useMemo(() => {
     const items = courses.map((course) => {
@@ -45,9 +49,9 @@ export function CatalogBrowser({ courses }: CatalogBrowserProps) {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[2rem] bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
+      <section className="panel-soft section-glow">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Khóa học</p>
-        <h1 className="mt-2 text-3xl font-black text-slate-900">Chọn khóa bằng ảnh bìa</h1>
+        <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Chọn khóa bằng ảnh bìa</h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Chia rõ đang làm, khám phá, và đã hoàn thành. Trẻ chỉ cần nhìn ảnh để chọn.</p>
       </section>
 
@@ -57,7 +61,7 @@ export function CatalogBrowser({ courses }: CatalogBrowserProps) {
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
-            className={activeTab === tab.id ? "rounded-full bg-slate-900 px-4 py-2 text-sm font-bold text-white" : "rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-[0_10px_24px_rgba(15,23,42,0.08)]"}
+            className={activeTab === tab.id ? "rounded-full border-2 border-outline bg-slate-900 px-4 py-2 text-sm font-bold text-white shadow-soft" : "rounded-full border-2 border-outline bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-soft"}
           >
             {tab.label}
           </button>
@@ -66,7 +70,7 @@ export function CatalogBrowser({ courses }: CatalogBrowserProps) {
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {visible.map((item) => (
-          <Link key={item.course.slug} href={`/catalog/${item.course.slug}`} className="rounded-[2rem] bg-white p-3 shadow-[0_14px_32px_rgba(15,23,42,0.08)]">
+          <Link key={item.course.slug} href={`/catalog/${item.course.slug}`} className="list-card transition-transform hover:-translate-y-0.5">
             <div className="overflow-hidden rounded-[1.75rem] bg-slate-50">
               <img src={item.course.coverImage} alt={item.course.whatYouMake} className="aspect-[4/3] w-full object-cover" />
             </div>

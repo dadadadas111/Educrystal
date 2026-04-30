@@ -22,27 +22,45 @@ export function SiteShell({ children }: SiteShellProps) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#fffdf7_0%,#fff6e4_100%)] text-slate-900">
-      <header className="sticky top-0 z-40 border-b border-black/5 bg-white/85 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-300 text-xl font-black text-slate-900 shadow-[0_8px_0_rgba(251,191,36,0.25)]">
-              ✦
+    <div className="relative min-h-screen overflow-hidden text-slate-900">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(196,244,146,0.38),transparent_16%),radial-gradient(circle_at_86%_10%,rgba(115,205,255,0.26),transparent_18%),radial-gradient(circle_at_82%_78%,rgba(255,147,186,0.2),transparent_18%),linear-gradient(180deg,rgba(255,255,255,0.66),rgba(255,249,235,0.1)_25%,rgba(255,244,220,0.92)_100%)]" />
+        <div className="absolute left-4 top-8 h-16 w-24 rounded-full bg-white/75 blur-[0.5px]" />
+        <div className="absolute left-12 top-10 h-16 w-16 rounded-full bg-white/75 blur-[0.5px]" />
+        <div className="absolute right-8 top-14 h-14 w-20 rounded-full bg-white/70 blur-[0.5px]" />
+        <div className="absolute right-16 top-10 h-14 w-14 rounded-full bg-white/70 blur-[0.5px]" />
+      </div>
+
+      <div className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col px-4 pb-28 pt-4 sm:px-6 lg:px-8 lg:pb-8 lg:pt-6">
+        <header className="sticky top-3 z-40 rounded-[2rem] border-2 border-outline bg-white/92 px-4 py-4 shadow-soft backdrop-blur">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-center justify-between gap-4">
+              <Link href="/" className="flex min-w-0 items-center gap-3 rounded-[1.5rem] transition-colors duration-200 hover:text-coral">
+                <div className="flex h-14 w-14 items-center justify-center rounded-[1.6rem] border-2 border-outline bg-gradient-to-br from-accent-soft via-sky/60 to-rose/55 text-xl font-black text-slate-900 shadow-[0_18px_0_rgba(255,199,84,0.18)]">
+                  ✦
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate font-display text-[2rem] leading-none text-slate-900 lg:text-[2.3rem]">Educrystal</p>
+                  <p className="mt-1 truncate text-xs text-slate-500 lg:text-sm">Nuôi tinh thể cho trẻ</p>
+                </div>
+              </Link>
+
+              <span className="hidden rounded-full border-2 border-outline bg-accent-soft px-3 py-1 text-[11px] font-bold text-slate-900 shadow-soft sm:inline-flex">
+                Beta
+              </span>
             </div>
-            <div>
-              <p className="text-sm font-extrabold leading-tight">Educrystal</p>
-              <p className="text-xs text-slate-500">Nuôi tinh thể cho trẻ</p>
+
+            <div className="hidden items-center gap-2 lg:flex">
+              <span className="glass-pill text-xs font-bold text-slate-700">{pathname.startsWith("/catalog") ? "Đang xem khóa" : "Hôm nay"}</span>
             </div>
-          </Link>
+          </div>
+        </header>
 
-          <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-800">Beta</span>
-        </div>
-      </header>
+        <main className="mx-auto w-full max-w-6xl px-0 pb-28 pt-5 sm:pb-8 lg:pt-8">{children}</main>
+      </div>
 
-      <main className="mx-auto w-full max-w-5xl px-4 pb-28 pt-5 sm:px-6 sm:pb-8 lg:pt-8">{children}</main>
-
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-black/5 bg-white/95 backdrop-blur lg:hidden">
-        <div className="mx-auto grid w-full max-w-5xl grid-cols-4 px-3 py-2">
+      <nav className="fixed inset-x-0 bottom-0 z-40 px-4 pb-4 lg:hidden">
+        <div className="mx-auto grid w-full max-w-6xl grid-cols-4 rounded-[2rem] border-2 border-outline bg-white/95 px-3 py-2 shadow-soft backdrop-blur">
           {navItems.map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             const Icon = item.icon;
@@ -53,7 +71,7 @@ export function SiteShell({ children }: SiteShellProps) {
                 href={item.href}
                 className={cn(
                   "flex flex-col items-center gap-1 rounded-2xl px-3 py-2 text-[11px] font-semibold transition-colors",
-                  active ? "bg-amber-100 text-slate-900" : "text-slate-500",
+                  active ? "bg-accent-soft text-slate-900" : "text-slate-500",
                 )}
               >
                 <Icon className="h-5 w-5" />
