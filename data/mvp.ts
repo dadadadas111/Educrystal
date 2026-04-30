@@ -29,9 +29,9 @@ export const activeJourneySeed: ActiveJourneySeed = {
   startedAt: "2026-04-27T19:15:00+07:00",
   nextCheckInAt: "2026-04-30T19:30:00+07:00",
   streakDays: 3,
-  rhythmLabel: "Mỗi tối sau giờ học, chỉ cần nhìn lại 5 phút là đủ giữ nhịp.",
-  latestObservation: "Dung dịch đã trong hơn hôm qua và mầm nhỏ nhất bắt đầu có cạnh rõ để chọn làm mầm chính.",
-  focusNote: "Ưu tiên chọn một mầm cân đối rồi treo thật đứng giữa ly để các cạnh lớn lên đều hơn.",
+  rhythmLabel: "Mỗi tối sau giờ học, nhìn lại 5 phút là đủ giữ nhịp rồi.",
+  latestObservation: "Dung dịch đã trong hơn hôm qua và mầm nhỏ bắt đầu có cạnh rõ hơn để chọn làm mầm chính.",
+  focusNote: "Ưu tiên chọn một mầm cân đối rồi treo đứng giữa ly để các cạnh lớn lên đều hơn.",
   milestonePlan: [
     {
       targetStep: 3,
