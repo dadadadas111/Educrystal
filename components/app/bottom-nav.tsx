@@ -68,16 +68,14 @@ export function BottomNav({ mode }: BottomNavProps) {
               <Link
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-2 rounded-[1.4rem] px-2 py-3 text-[11px] font-bold transition-all duration-200",
-                  isActive
-                    ? "bg-accent-soft text-text shadow-soft"
-                    : "text-muted hover:bg-gold/10 hover:text-text",
+                  "flex items-center justify-center gap-2 rounded-[1.4rem] p-3 transition-all duration-200",
+                  isActive ? "bg-accent-soft text-text shadow-soft" : "text-muted hover:bg-gold/10 hover:text-text",
                 )}
               >
                 <div className={cn("icon-shell h-9 w-9 rounded-2xl", isActive ? "bg-accent text-white" : "bg-white text-coral") }>
                   <Icon className="h-4 w-4" strokeWidth={2.2} />
                 </div>
-                <span>{item.label}</span>
+                <span className="sr-only">{item.label}</span>
               </Link>
             </li>
           );

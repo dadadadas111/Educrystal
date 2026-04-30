@@ -43,69 +43,47 @@ export default function DiaryPage() {
 
   return (
     <div className="space-y-6 pb-6 lg:space-y-8 lg:pb-0">
-      <SectionHeading eyebrow={appCopy.diary.eyebrow} title={appCopy.diary.title} description={appCopy.diary.description} />
+      <SectionHeading eyebrow={appCopy.diary.eyebrow} title={appCopy.diary.title} />
 
       <ScreenTabs items={diaryTabs} currentHref="/diary" />
 
       <section className="grid gap-5 xl:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)] xl:items-start">
         <ProgramCover program={program} size="compact" />
 
-        <div className="panel-soft section-glow space-y-5 p-5 lg:p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="panel-soft section-glow space-y-4 p-5 lg:p-6">
+          <div className="flex items-center justify-between">
             <Badge className="bg-accent-soft text-text">{appCopy.diary.privacyBadge}</Badge>
-            <span className="glass-pill text-xs font-bold text-text">
-              {timeline.length} {appCopy.diary.entryCountLabel}
-            </span>
+            <span className="text-sm text-muted">{timeline.length} {appCopy.diary.entryCountLabel}</span>
           </div>
 
-          <div className="space-y-3">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-coral">{appCopy.diary.timelineTitle}</p>
-            <h2 className="font-display text-[2.1rem] leading-[0.96] text-text">{program.title}</h2>
-            <p className="text-sm leading-6 text-muted">{appCopy.diary.timelineDescription}</p>
+          <div>
+            <h2 className="font-display text-xl">{program.title}</h2>
+            <p className="text-sm text-muted">{appCopy.diary.timelineDescription}</p>
           </div>
 
-          <div className="speech-cloud text-sm leading-6 text-text">
-            <div className="flex items-start gap-3">
-              <div className="icon-shell h-11 w-11 shrink-0 rounded-[1.1rem] bg-sky/35 text-coral">
-                <Lock className="h-4 w-4" />
-              </div>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-coral">{appCopy.diary.privacyTitle}</p>
-                <p className="mt-2">{appCopy.diary.privacyBody}</p>
-              </div>
-            </div>
-          </div>
-
-          <Button href="/diary/new" className="w-full justify-center sm:w-auto">
+          <Button href="/diary/new" className="w-full justify-center">
             {appCopy.diary.newPageCta}
           </Button>
         </div>
       </section>
 
       <section className="panel-soft section-glow space-y-4">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="font-display text-[2rem] text-text">{appCopy.diary.timelineTitle}</h2>
-          <Button href="/diary/new" variant="secondary" className="justify-center">
-            {appCopy.diary.newPageCta}
-          </Button>
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-lg">{appCopy.diary.timelineTitle}</h2>
+          <Button href="/diary/new" variant="secondary">{appCopy.diary.newPageCta}</Button>
         </div>
 
-        <div className="grid gap-3 2xl:grid-cols-2">
-          {timeline.map((entry, index) => (
-            <article key={entry.id} className={`crystal-card paper-grid p-4 ${index === 0 ? "2xl:col-span-2" : ""}`}>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge className={`${moodToneMap[entry.mood as keyof typeof moodToneMap]} border-outline tracking-[0.12em]`}>
-                  {moodEmojiMap[entry.mood as keyof typeof moodEmojiMap]} {entry.mood}
-                </Badge>
-                <span className="text-xs text-muted">{dateFormatter.format(new Date(entry.createdAt))}</span>
-              </div>
-              <div className="mt-4 flex items-start justify-between gap-3">
-                <h3 className="text-base font-bold text-text">{entry.title}</h3>
-                <div className="icon-shell h-9 w-9 rounded-[1rem] bg-sky/30 text-coral">
-                  <Sparkles className="h-4 w-4" />
+        <div className="grid gap-3">
+          {timeline.map((entry) => (
+            <article key={entry.id} className="crystal-card p-3 flex items-center gap-3">
+              <div className="h-12 w-12 rounded-md bg-surface-soft flex items-center justify-center text-xl">{moodEmojiMap[entry.mood as keyof typeof moodEmojiMap]}</div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-sm">{entry.title}</h3>
+                  <span className="text-xs text-muted">{dateFormatter.format(new Date(entry.createdAt))}</span>
                 </div>
+                <p className="text-sm text-muted truncate">{entry.body}</p>
               </div>
-              <p className="mt-3 text-sm leading-6 text-muted">{entry.body}</p>
             </article>
           ))}
         </div>

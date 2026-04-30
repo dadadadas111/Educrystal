@@ -60,119 +60,56 @@ export default function JourneyPage() {
 
   return (
     <div className="space-y-6 pb-6 lg:space-y-8 lg:pb-0">
-      <SectionHeading eyebrow={appCopy.journey.eyebrow} title={appCopy.journey.title} description={appCopy.journey.description} />
+      <SectionHeading eyebrow={appCopy.journey.eyebrow} title={appCopy.journey.title} />
 
       <ScreenTabs items={journeyTabs} currentHref="/journey" />
 
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1.08fr)_minmax(17rem,0.92fr)] xl:items-start">
-        <div className="panel-soft section-glow space-y-5 p-5 lg:p-6">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="panel-soft section-glow space-y-4 p-5 lg:p-6">
+          <div className="flex items-center gap-2">
             <Badge>{program.difficulty}</Badge>
             <Badge className="bg-surface-soft tracking-[0.12em]">{program.duration}</Badge>
-            <Badge className={isComplete ? "bg-accent-soft text-text" : "bg-gold/35 text-text"}>
-              {isComplete ? appCopy.journey.doneStateLabel : appCopy.journey.activeStateLabel}
-            </Badge>
           </div>
 
-          <div className="space-y-3">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-coral">{appCopy.journey.focusTitle}</p>
-            <h1 className="font-display text-[2.2rem] leading-[0.95] text-text md:text-[2.8rem]">{program.title}</h1>
+          <div className="space-y-2">
+            <h1 className="font-display text-2xl">{program.title}</h1>
+            {isComplete ? (
+              <p className="text-sm text-muted">{appCopy.journey.finishedBody}</p>
+            ) : (
+              <>
+                <p className="text-lg font-bold">{`Bước ${completedStepsCount + 1}: ${currentStep?.title}`}</p>
+                <p className="text-sm text-muted">{currentStep?.body}</p>
+              </>
+            )}
           </div>
 
-          {isComplete ? (
-            <div className="reward-strip space-y-4 p-5">
-              <div className="flex items-start gap-3">
-                <CheckCheck className="mt-1 h-5 w-5 text-success" />
-                <div>
-                  <h2 className="font-display text-[1.9rem] leading-[0.96] text-text">{appCopy.journey.finishedTitle}</h2>
-                  <p className="mt-2 text-sm leading-6 text-muted">{appCopy.journey.finishedBody}</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button href="/diary" className="w-full justify-center gap-2 sm:w-auto">
-                  <NotebookPen className="h-4 w-4" />
-                  {appCopy.journey.openDiaryCta}
-                </Button>
-                <Button href="/catalog" variant="secondary" className="w-full justify-center sm:w-auto">
-                  {appCopy.journey.nextProgramCta}
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="quest-card space-y-4">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-coral">Bước {completedStepsCount + 1}</p>
-                  <h2 className="mt-2 font-display text-[2rem] leading-[0.96] text-text">{currentStep?.title}</h2>
-                </div>
-                <div className={`icon-shell h-12 w-12 rounded-[1.2rem] ${program.palette.accent} text-white`}>
-                  <Compass className="h-5 w-5" strokeWidth={2.2} />
-                </div>
-              </div>
-
-              <p className="text-sm leading-6 text-muted">{currentStep?.body}</p>
-
-              <div className="speech-cloud text-sm leading-6 text-text">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-coral">Mẹo nhỏ</p>
-                <p className="mt-2">{currentStep?.tip}</p>
-              </div>
-
-              <div className="rounded-[1.25rem] border-2 border-outline bg-accent-soft/45 px-4 py-3 text-sm leading-6 text-text">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-coral">{appCopy.journey.focusNoteTitle}</p>
-                <p className="mt-2">{activeJourneySeed.focusNote}</p>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button onClick={completeStep} className="w-full justify-center gap-2 sm:w-auto">
-                  <CheckCircle2 className="h-4 w-4" />
-                  {appCopy.journey.primaryCta}
-                </Button>
-                <Button href="/diary/new" variant="secondary" className="w-full justify-center gap-2 sm:w-auto">
-                  <NotebookPen className="h-4 w-4" />
-                  {appCopy.journey.openDiaryCta}
-                </Button>
-              </div>
-            </div>
-          )}
+          <div className="flex gap-3">
+            {!isComplete ? (
+              <Button onClick={completeStep} className="flex-1 text-lg">
+                {appCopy.journey.primaryCta}
+              </Button>
+            ) : (
+              <Button href="/catalog" className="flex-1">
+                {appCopy.journey.nextProgramCta}
+              </Button>
+            )}
+            <Button href="/diary/new" variant="secondary" className="flex-1">
+              {appCopy.journey.openDiaryCta}
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-4">
           <ProgramCover program={program} size="compact" />
 
-          <div className="crystal-card p-4">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-coral">{appCopy.journey.progressLabel}</p>
-            <p className="mt-2 font-display text-4xl text-text">{completedStepsCount}/{totalSteps}</p>
-            <p className="mt-2 text-sm text-muted">{appCopy.journey.stepCountLabel}</p>
+          <div className="crystal-card p-4 text-center">
+            <p className="font-display text-3xl">{completedStepsCount}/{totalSteps}</p>
+            <p className="text-sm text-muted">{appCopy.journey.progressLabel}</p>
           </div>
 
-          <div className="crystal-card p-4">
-            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-coral">
-              <Stars className="h-3.5 w-3.5" />
-              {appCopy.journey.milestoneTitle}
-            </div>
-            <p className="mt-2 text-sm font-bold text-text">{currentMilestone.title}</p>
-            <p className="mt-2 text-sm leading-6 text-muted">{currentMilestone.detail}</p>
+          <div className="crystal-card p-4 text-center">
+            <p className="font-bold">{currentMilestone.title}</p>
           </div>
-
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-            <div className="crystal-card p-4">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-coral">Bắt đầu</p>
-              <p className="mt-2 font-display text-2xl text-text">{startedLabel}</p>
-            </div>
-            <div className="crystal-card p-4">
-              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-coral">
-                <Sparkles className="h-3.5 w-3.5" />
-                {appCopy.journey.nextCheckInLabel}
-              </div>
-              <p className="mt-2 text-sm font-bold text-text">{nextCheckInLabel}</p>
-              <p className="mt-2 text-sm leading-6 text-muted">{activeJourneySeed.latestObservation}</p>
-            </div>
-          </div>
-
-          <Button href="/journey/progress" variant="secondary" className="w-full justify-center">
-            {appCopy.journey.openProgressCta}
-          </Button>
         </div>
       </section>
     </div>

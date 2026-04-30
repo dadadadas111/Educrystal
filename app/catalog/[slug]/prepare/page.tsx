@@ -71,8 +71,8 @@ export default async function ProgramPreparePage({ params }: ProgramPreparePageP
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Button href={`/catalog/${program.slug}/plan`} className="w-full justify-center sm:w-auto">
-              {appCopy.detail.openPlan}
+            <Button href={`/catalog/${program.slug}/plan/step/0`} className="w-full justify-center sm:w-auto">
+              Bắt đầu
             </Button>
             <Button href={`/catalog/${program.slug}`} variant="secondary" className="w-full justify-center sm:w-auto">
               {appCopy.detail.openOverview}

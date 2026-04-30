@@ -25,29 +25,24 @@ export function ProgramCard({ program, className }: ProgramCardProps) {
         <ProgramCover program={program} size="card" />
 
         <div className="panel-soft section-glow flex flex-1 flex-col p-5">
-          <div className="space-y-3">
-            <div className="flex flex-wrap gap-2">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
               <Badge>{program.difficulty}</Badge>
-              <Badge className="bg-surface-soft tracking-[0.12em]">{program.steps.length} bước</Badge>
+              <Badge className="bg-surface-soft tracking-[0.12em]">{program.duration}</Badge>
             </div>
 
             <div>
-              <h2 className="font-display text-[2rem] leading-[0.96] text-text">{program.title}</h2>
-              <p className="mt-2 text-sm font-semibold leading-6 text-text">{program.tagline}</p>
+              <h3 className="font-display text-lg leading-tight text-text truncate">{program.title}</h3>
+              <p className="mt-1 text-sm text-muted truncate">{program.tagline}</p>
             </div>
-
-            <p className="text-sm leading-6 text-muted">{program.coverHint}</p>
           </div>
 
-          <div className="mt-auto flex items-center justify-between pt-4 text-sm font-bold text-text">
-            <div className="flex flex-wrap gap-2">
-              <span className="rounded-full border-2 border-outline bg-white px-3 py-2 text-xs uppercase tracking-[0.14em] text-coral shadow-soft">
-                {program.duration}
-              </span>
-            </div>
-            <div className="inline-flex items-center gap-2 rounded-[1.2rem] border-2 border-outline bg-white px-4 py-3 shadow-soft">
-              <span>Mở program</span>
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          <div className="mt-auto pt-3">
+            <div className="flex items-center justify-end">
+              <div className="inline-flex items-center gap-2 rounded-[1.2rem] border-2 border-outline bg-white px-4 py-2 shadow-soft">
+                <span>Bắt đầu</span>
+                <ArrowUpRight className="h-4 w-4" />
+              </div>
             </div>
           </div>
         </div>

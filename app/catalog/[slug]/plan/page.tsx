@@ -96,14 +96,11 @@ export default async function ProgramPlanPage({ params }: ProgramPlanPageProps) 
                     </div>
                     <h3 className="font-bold text-text">{step.title}</h3>
                   </div>
-                  <span className="rounded-full border-2 border-outline bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-muted">
-                    Bước {index + 1}
-                  </span>
+                  <Link href={`/catalog/${program.slug}/plan/step/${index}`} className="rounded-[1rem] bg-white/90 px-3 py-2 text-sm font-bold">
+                    Làm
+                  </Link>
                 </div>
                 <p className="text-sm leading-6 text-muted">{step.body}</p>
-                <p className="mt-3 rounded-[1.2rem] border-2 border-outline bg-surface-soft px-3 py-3 text-sm leading-6 text-text">
-                  {step.tip}
-                </p>
               </div>
             ))}
           </div>

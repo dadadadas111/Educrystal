@@ -16,40 +16,21 @@ export default function HomePage() {
     <div className="space-y-8 pb-6 lg:space-y-10 lg:pb-0">
       <section className="panel-soft section-glow overflow-hidden p-4 sm:p-5 lg:p-6">
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] lg:items-center">
-          <div className="space-y-5">
-            <SectionHeading
-              eyebrow={appCopy.home.eyebrow}
-              title={appCopy.home.title}
-              description={appCopy.home.description}
-            />
+          <div className="space-y-4">
+            <SectionHeading eyebrow={appCopy.home.eyebrow} title={appCopy.home.title} />
 
-            <div className="flex flex-wrap gap-2">
-              {appCopy.home.heroBadges.map((badge) => (
-                <Badge key={badge}>{badge}</Badge>
-              ))}
-            </div>
+            <div className="reward-strip space-y-3 p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <h2 className="font-display text-2xl">{starterProgram.title}</h2>
+                  <p className="mt-1 text-sm text-muted truncate">{starterProgram.goal}</p>
+                </div>
 
-            <div className="reward-strip space-y-4 p-5">
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge className="bg-white/85 tracking-[0.12em]">{starterProgram.coverLabel}</Badge>
-                <Badge className="bg-gold/25 tracking-[0.12em]">{starterProgram.duration}</Badge>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-coral">Mở nhanh nhất hôm nay</p>
-                <h2 className="font-display text-[2.05rem] leading-[0.96] text-text md:text-[2.45rem]">
-                  {starterProgram.title}
-                </h2>
-                <p className="max-w-2xl text-sm leading-6 text-muted">{starterProgram.goal}</p>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button href="/catalog" className="w-full justify-center sm:w-auto sm:px-7">
-                  {appCopy.home.primaryCta}
-                </Button>
-                <Button href="/journey" variant="secondary" className="w-full justify-center sm:w-auto">
-                  {appCopy.home.secondaryCta}
-                </Button>
+                <div className="w-36">
+                  <Button href={`/catalog/${starterProgram.slug}`} className="w-full">
+                    Bắt đầu
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -59,23 +40,17 @@ export default function HomePage() {
       </section>
 
       <section className="space-y-4">
-        <SectionHeading title={appCopy.home.processTitle} description={appCopy.home.processDescription} />
-        <div className="grid gap-4 lg:grid-cols-3">
+        <SectionHeading title={appCopy.home.processTitle} />
+        <div className="grid gap-3 grid-cols-3">
           {appCopy.home.processSteps.map((step, index) => {
             const Icon = processIcons[index];
 
             return (
-              <div key={step.title} className="crystal-card section-glow h-full p-5">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="icon-shell h-12 w-12 rounded-[1.2rem] bg-sky/30 text-coral">
-                    <Icon className="h-5 w-5" strokeWidth={2.2} />
-                  </div>
-                  <span className="rounded-full border-2 border-outline bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-coral">
-                    0{index + 1}
-                  </span>
+              <div key={step.title} className="crystal-card section-glow p-4 text-center">
+                <div className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-sky/30 text-coral">
+                  <Icon className="h-5 w-5" strokeWidth={2.2} />
                 </div>
-                <h3 className="mt-4 font-display text-2xl text-text">{step.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted">{step.body}</p>
+                <div className="font-bold">{step.title}</div>
               </div>
             );
           })}
