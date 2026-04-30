@@ -9,42 +9,42 @@ type CrystalClusterProps = {
 const sizeMap = {
   sm: {
     shell: "h-24 w-24",
-    core: "h-12 w-12 rounded-[1rem]",
-    shard: "h-10 w-10 rounded-[0.9rem]",
-    pebble: "h-6 w-6 rounded-xl",
+    core: "h-14 w-14 rounded-[1.2rem]",
+    shard: "h-8 w-8 rounded-[0.9rem]",
+    pebble: "h-4 w-4 rounded-full",
   },
   md: {
     shell: "h-32 w-32",
-    core: "h-16 w-16 rounded-[1.25rem]",
-    shard: "h-12 w-12 rounded-[1rem]",
-    pebble: "h-7 w-7 rounded-[0.85rem]",
+    core: "h-20 w-20 rounded-[1.45rem]",
+    shard: "h-10 w-10 rounded-[1rem]",
+    pebble: "h-5 w-5 rounded-full",
   },
   lg: {
     shell: "h-44 w-44",
-    core: "h-24 w-24 rounded-[1.55rem]",
-    shard: "h-16 w-16 rounded-[1.15rem]",
-    pebble: "h-9 w-9 rounded-[1rem]",
+    core: "h-28 w-28 rounded-[1.8rem]",
+    shard: "h-14 w-14 rounded-[1.2rem]",
+    pebble: "h-6 w-6 rounded-full",
   },
 } as const;
 
 const toneMap = {
   aqua: {
-    glow: "bg-accent/30",
-    core: "from-accent/75 via-white/24 to-accent-soft/40",
-    shard: "from-white/24 to-accent-soft/42",
-    pebble: "from-white/22 to-accent/38",
+    shell: "from-sky/35 to-accent-soft/45",
+    core: "from-sky via-accent-soft to-white",
+    shard: "from-white to-sky/65",
+    pebble: "bg-accent",
   },
   rose: {
-    glow: "bg-rose/24",
-    core: "from-rose/72 via-white/20 to-accent-soft/36",
-    shard: "from-white/22 to-rose/38",
-    pebble: "from-rose/28 to-accent/30",
+    shell: "from-rose/35 to-gold/35",
+    core: "from-rose via-gold/75 to-white",
+    shard: "from-white to-rose/65",
+    pebble: "bg-rose",
   },
   gold: {
-    glow: "bg-gold/22",
-    core: "from-gold/72 via-white/24 to-accent/30",
-    shard: "from-white/22 to-gold/36",
-    pebble: "from-gold/30 to-accent/28",
+    shell: "from-gold/35 to-lavender/30",
+    core: "from-gold via-accent-soft/80 to-white",
+    shard: "from-white to-gold/60",
+    pebble: "bg-gold",
   },
 } as const;
 
@@ -54,48 +54,43 @@ export function CrystalCluster({ size = "md", tone = "aqua", className }: Crysta
 
   return (
     <div className={cn("relative isolate", scale.shell, className)} aria-hidden="true">
-      <div className={cn("absolute inset-3 rounded-full blur-3xl animate-crystal-pulse", palette.glow)} />
-
-      <div className="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2">
+      <div className={cn("absolute inset-2 rounded-[38%] border-2 border-outline/70 bg-gradient-to-br", palette.shell)} />
+      <div className="absolute inset-0 animate-float-slow">
         <div
           className={cn(
-            "absolute left-1/2 top-1/2 border border-white/18 bg-gradient-to-br shadow-crystal backdrop-blur-sm animate-float-slow",
+            "absolute left-1/2 top-[52%] -translate-x-1/2 -translate-y-1/2 rotate-45 border-2 border-white bg-gradient-to-br shadow-crystal",
             scale.core,
             palette.core,
-            "-translate-x-1/2 -translate-y-1/2 rotate-45",
           )}
-        />
+        >
+          <div className="absolute inset-0 -rotate-45">
+            <div className="absolute left-1/2 top-[34%] flex -translate-x-1/2 gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-text" />
+              <span className="h-1.5 w-1.5 rounded-full bg-text" />
+            </div>
+            <div className="absolute left-1/2 top-[52%] h-2.5 w-5 -translate-x-1/2 rounded-b-full border-b-2 border-text" />
+            <div className="absolute left-[26%] top-[48%] h-2 w-2 rounded-full bg-rose/45" />
+            <div className="absolute right-[26%] top-[48%] h-2 w-2 rounded-full bg-rose/45" />
+          </div>
+        </div>
 
         <div
           className={cn(
-            "absolute left-[20%] top-[42%] border border-white/18 bg-gradient-to-br shadow-soft backdrop-blur-sm animate-float-sway",
+            "absolute left-[18%] top-[38%] -translate-x-1/2 -translate-y-1/2 rotate-[24deg] border-2 border-white bg-gradient-to-br shadow-soft",
             scale.shard,
             palette.shard,
-            "-translate-x-1/2 -translate-y-1/2 rotate-[28deg]",
           )}
         />
-
         <div
           className={cn(
-            "absolute left-[76%] top-[38%] border border-white/18 bg-gradient-to-br shadow-soft backdrop-blur-sm animate-float-slow",
+            "absolute right-[10%] top-[32%] -translate-y-1/2 rotate-[58deg] border-2 border-white bg-gradient-to-br shadow-soft",
             scale.shard,
             palette.shard,
-            "-translate-x-1/2 -translate-y-1/2 rotate-[62deg]",
           )}
         />
-
-        <div
-          className={cn(
-            "absolute left-[68%] top-[76%] border border-white/14 bg-gradient-to-br shadow-soft backdrop-blur-sm animate-float-sway",
-            scale.pebble,
-            palette.pebble,
-            "-translate-x-1/2 -translate-y-1/2 rotate-45",
-          )}
-        />
-
-        <div className="absolute left-[18%] top-[72%] h-2.5 w-2.5 rounded-full bg-white/45 blur-[2px]" />
-        <div className="absolute left-[78%] top-[16%] h-2 w-2 rounded-full bg-accent/70 blur-[1px]" />
-        <div className="absolute left-[32%] top-[14%] h-1.5 w-1.5 rounded-full bg-rose/70 blur-[1px]" />
+        <div className={cn("absolute bottom-[16%] left-[18%] border-2 border-white shadow-soft", scale.pebble, palette.pebble)} />
+        <div className="absolute right-[14%] top-[10%] flex h-8 w-8 items-center justify-center rounded-full border-2 border-outline bg-white text-gold">★</div>
+        <div className="absolute left-[18%] top-[16%] h-4 w-4 rounded-full bg-rose/60" />
       </div>
     </div>
   );
