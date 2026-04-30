@@ -14,6 +14,7 @@ const config: Config = {
         background: "rgb(var(--color-background) / <alpha-value>)",
         surface: "rgb(var(--color-surface) / <alpha-value>)",
         "surface-strong": "rgb(var(--color-surface-strong) / <alpha-value>)",
+        "surface-soft": "rgb(var(--color-surface-soft) / <alpha-value>)",
         text: "rgb(var(--color-text) / <alpha-value>)",
         muted: "rgb(var(--color-muted) / <alpha-value>)",
         outline: "rgb(var(--color-outline) / <alpha-value>)",
@@ -21,6 +22,9 @@ const config: Config = {
         "accent-soft": "rgb(var(--color-accent-soft) / <alpha-value>)",
         rose: "rgb(var(--color-rose) / <alpha-value>)",
         gold: "rgb(var(--color-gold) / <alpha-value>)",
+        sky: "rgb(var(--color-sky) / <alpha-value>)",
+        coral: "rgb(var(--color-coral) / <alpha-value>)",
+        lavender: "rgb(var(--color-lavender) / <alpha-value>)",
         success: "rgb(var(--color-success) / <alpha-value>)",
       },
       borderRadius: {
@@ -38,7 +42,7 @@ const config: Config = {
       },
       backgroundImage: {
         aurora:
-          "radial-gradient(circle at top left, rgb(var(--color-accent-soft) / 0.5), transparent 38%), radial-gradient(circle at top right, rgb(var(--color-rose) / 0.22), transparent 34%), linear-gradient(180deg, rgb(var(--color-surface) / 0.95), rgb(var(--color-background) / 1))",
+          "radial-gradient(circle at 10% 10%, rgb(var(--color-accent-soft) / 0.75), transparent 18%), radial-gradient(circle at 88% 12%, rgb(var(--color-sky) / 0.38), transparent 18%), radial-gradient(circle at 82% 75%, rgb(var(--color-rose) / 0.28), transparent 18%), linear-gradient(180deg, rgb(255 255 255 / 0.8), rgb(var(--color-background) / 1))",
       },
     },
   },

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro, Playfair_Display } from "next/font/google";
+import { Baloo_2, Be_Vietnam_Pro } from "next/font/google";
 
 import { AppShell } from "@/components/app/app-shell";
 
@@ -11,7 +11,7 @@ const bodyFont = Be_Vietnam_Pro({
   weight: ["400", "500", "600", "700"],
 });
 
-const displayFont = Playfair_Display({
+const displayFont = Baloo_2({
   subsets: ["latin", "latin-ext", "vietnamese"],
   variable: "--font-display",
   weight: ["600", "700"],
@@ -19,7 +19,7 @@ const displayFont = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "Educrystal",
-  description: "Ứng dụng học nuôi tinh thể theo hành trình cá nhân hóa.",
+  description: "Ứng dụng học nuôi tinh thể vui tươi theo hành trình riêng.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
