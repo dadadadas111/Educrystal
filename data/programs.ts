@@ -3,6 +3,8 @@ export type Program = {
   title: string;
   summary: string;
   tagline: string;
+  coverLabel: string;
+  coverHint: string;
   difficulty: string;
   duration: string;
   goal: string;
@@ -38,6 +40,8 @@ export const programs: Program[] = [
     summary:
       "Program nhập môn dành cho người mới muốn nhìn thấy tinh thể đầu đời bằng quy trình ngắn, sáng rõ và dễ lặp lại.",
     tagline: "Nhìn tinh thể đầu tiên xuất hiện chỉ sau vài ngày chăm sóc nhẹ nhàng.",
+    coverLabel: "Mầm đầu",
+    coverHint: "Trong veo · dễ bắt đầu",
     difficulty: "Dễ bắt đầu",
     duration: "3-5 ngày",
     goal: "Tạo được một tinh thể phèn chua nhỏ, trong và có thể quan sát được bằng mắt thường.",
@@ -120,6 +124,8 @@ export const programs: Program[] = [
     summary:
       "Program trung cấp giúp người học thử tạo khung hình, nhuộm sắc và quan sát cách tinh thể bám theo cấu trúc sáng tạo.",
     tagline: "Biến dây kẽm mềm thành một khung nhỏ để tinh thể bám lên như món đồ thủ công khoa học.",
+    coverLabel: "Sắc màu",
+    coverHint: "Tạo hình · vui mắt",
     difficulty: "Tự tin hơn",
     duration: "5-7 ngày",
     goal: "Hoàn thành một cụm tinh thể có màu nhẹ bám trên khung tạo hình đơn giản.",
@@ -207,6 +213,8 @@ export const programs: Program[] = [
     summary:
       "Program nâng cao cho người đã quen quan sát tăng trưởng tinh thể và muốn thử nhiều vòng nuôi để tạo cụm rõ lớp, rõ cạnh.",
     tagline: "Kiên nhẫn hơn một chút để thấy một cụm tinh thể có cấu trúc phức tạp dần hiện ra.",
+    coverLabel: "Nâng cao",
+    coverHint: "Nhiều lớp · kiên nhẫn",
     difficulty: "Nâng cao",
     duration: "7-10 ngày",
     goal: "Tạo được một cụm tinh thể nhiều lớp với bề mặt rõ cạnh, có nhật ký quan sát theo từng mốc.",
