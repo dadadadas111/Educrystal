@@ -1,9 +1,10 @@
-import { ArrowRight, Compass, Gem, Milestone, NotebookPen, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Compass, Gem, Milestone, NotebookPen, ShieldCheck, Sparkles, Stars } from "lucide-react";
 
-import { CrystalCluster } from "@/components/app/crystal-cluster";
+import { CrystalGuide } from "@/components/app/crystal-guide";
 import { ProgramCard } from "@/components/catalog/program-card";
 import { SectionHeading } from "@/components/app/section-heading";
 import { ValuePillarCard } from "@/components/home/value-pillar-card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { appCopy } from "@/data/copy";
 import { programs } from "@/data/programs";
@@ -11,27 +12,31 @@ import { programs } from "@/data/programs";
 const highlights = [
   {
     icon: Compass,
-    label: "Luôn thấy bước tiếp theo",
+    label: "Luôn biết bước tiếp theo",
+    tone: "bg-accent-soft/70 text-text",
   },
   {
     icon: ShieldCheck,
-    label: "An toàn nằm ngay trong flow",
+    label: "An toàn nằm ngay trong luồng học",
+    tone: "bg-gold/35 text-text",
   },
   {
     icon: Gem,
     label: "Tinh thể là nhân vật chính",
+    tone: "bg-rose/35 text-text",
   },
-];
+] as const;
 
 const processIcons = [Compass, Milestone, NotebookPen] as const;
-const pillarIcons = [Sparkles, Gem, NotebookPen] as const;
+const pillarIcons = [Sparkles, Stars, NotebookPen] as const;
+const starterProgram = programs[0];
 
 export default function HomePage() {
   return (
     <div className="space-y-8 pb-6 lg:space-y-10 lg:pb-0">
-      <section className="section-glow overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-accent-soft/30 via-surface/88 to-surface-strong/96 px-5 py-6 shadow-soft lg:px-6 lg:py-6 xl:px-7 xl:py-7">
-        <div className="grid gap-6 rounded-[1.75rem] border border-white/10 bg-surface/72 p-5 backdrop-blur-sm lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)] lg:gap-6 lg:p-6">
-          <div className="space-y-6">
+      <section className="panel-soft section-glow overflow-hidden p-4 sm:p-5 lg:p-6">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1.06fr)_minmax(19rem,0.94fr)] lg:items-center">
+          <div className="space-y-5">
             <SectionHeading
               eyebrow={appCopy.home.eyebrow}
               title={appCopy.home.title}
@@ -40,11 +45,34 @@ export default function HomePage() {
 
             <div className="flex flex-wrap gap-2">
               {appCopy.home.heroBadges.map((badge) => (
-                <span key={badge} className="glass-pill text-xs font-semibold text-text/84">
-                  <span className="h-2 w-2 rounded-full bg-accent" />
+                <Badge key={badge} className="bg-white text-text">
                   {badge}
-                </span>
+                </Badge>
               ))}
+            </div>
+
+            <div className="reward-strip space-y-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className="bg-gold/35 text-text">Màn chạm đầu tiên</Badge>
+                <Badge className="bg-white/90 tracking-[0.12em]">{starterProgram.duration}</Badge>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-coral">Bắt đầu dễ nhất hôm nay</p>
+                <h2 className="font-display text-[2.05rem] leading-[0.96] text-text md:text-[2.45rem]">
+                  Chơi ngay với {starterProgram.title.toLowerCase()}.
+                </h2>
+                <p className="max-w-2xl text-sm leading-6 text-muted">{starterProgram.tagline}</p>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button href={`/catalog/${starterProgram.slug}`} className="w-full justify-center sm:w-auto sm:px-7">
+                  Chơi ngay với mầm này
+                </Button>
+                <Button href="/catalog" variant="secondary" className="w-full justify-center sm:w-auto">
+                  Xem đủ {programs.length} program
+                </Button>
+              </div>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3">
@@ -52,91 +80,70 @@ export default function HomePage() {
                 const Icon = item.icon;
 
                 return (
-                  <div key={item.label} className="crystal-card p-4">
-                    <div className="icon-shell h-10 w-10 rounded-2xl bg-accent-soft/72 text-white">
+                  <div key={item.label} className="glass-pill min-h-[4.25rem] justify-start rounded-[1.45rem] px-4 py-3 text-left shadow-soft">
+                    <div className={`icon-shell h-11 w-11 shrink-0 rounded-[1.2rem] ${item.tone}`}>
                       <Icon className="h-4 w-4" strokeWidth={2.2} />
                     </div>
-                    <p className="mt-3 text-sm leading-6 text-text/82">{item.label}</p>
+                    <p className="text-sm font-semibold leading-6 text-text">{item.label}</p>
                   </div>
                 );
               })}
             </div>
+          </div>
 
-            <div className="flex flex-wrap gap-3">
-              <Button href="/catalog">{appCopy.home.primaryCta}</Button>
-              <Button href="#cach-hoat-dong" variant="secondary">
-                {appCopy.home.secondaryCta}
+          <CrystalGuide
+            eyebrow="Mầm Tí Xíu đang chờ"
+            title="Chạm cụm sáng nhất để cuộc chơi bật lên ngay."
+            body="Tinh thể ở đây không chỉ để ngắm. Nó nhắc bước tiếp theo, báo mốc vui và kéo mình muốn quay lại thật nhanh."
+            cheer="Tớ sẽ chỉ mốc vui đầu tiên và nhắc lúc nên quay lại ngắm tiếp."
+            clusterSize="lg"
+            tone="aqua"
+            actions={
+              <Button href="/journey" variant="secondary" className="w-full justify-center sm:w-auto">
+                Xem hành trình mẫu đang sáng
               </Button>
-            </div>
-          </div>
-
-          <div className="grid gap-3 lg:content-start">
-            <div className="crystal-card overflow-hidden p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent/82">Trạm nuôi tinh thể</p>
-                  <h2 className="mt-2 font-display text-3xl text-white">Một góc học tập biết phát sáng</h2>
+            }
+            aside={
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="metric-tile px-3 py-3">
+                  <p className="font-display text-2xl text-text">{programs.length}</p>
+                  <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-muted">Program</p>
                 </div>
-                <CrystalCluster size="lg" />
-              </div>
-
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                <div className="metric-tile px-4 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-accent/80">Program</p>
-                  <p className="mt-2 font-display text-3xl text-white">{programs.length}</p>
+                <div className="metric-tile px-3 py-3">
+                  <p className="font-display text-2xl text-text">5p</p>
+                  <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-muted">Mỗi lượt</p>
                 </div>
-                <div className="metric-tile px-4 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-accent/80">Nhịp xem</p>
-                  <p className="mt-2 font-display text-3xl text-white">5p</p>
-                </div>
-                <div className="metric-tile px-4 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-accent/80">Không gian</p>
-                  <p className="mt-2 font-display text-3xl text-white">Riêng</p>
+                <div className="metric-tile px-3 py-3">
+                  <p className="font-display text-2xl text-text">Riêng</p>
+                  <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-muted">Nhật ký</p>
                 </div>
               </div>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="crystal-card p-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-accent/80">Bắt đầu</p>
-                <p className="mt-2 text-sm leading-6 text-text/78">Chọn một program hợp sức và thấy ngay mục tiêu đầu tiên.</p>
-              </div>
-              <div className="crystal-card p-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-accent/80">Lớn dần</p>
-                <p className="mt-2 text-sm leading-6 text-text/78">Theo từng mốc sáng lên thay vì đọc một khối hướng dẫn dài.</p>
-              </div>
-              <div className="crystal-card p-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-accent/80">Ghi lại</p>
-                <p className="mt-2 text-sm leading-6 text-text/78">Lưu cảm giác và quan sát ngay khi tinh thể vừa đổi khác.</p>
-              </div>
-            </div>
-          </div>
+            }
+          />
         </div>
       </section>
 
       <section id="cach-hoat-dong" className="space-y-4">
-        <div className="panel-soft space-y-4">
-          <SectionHeading title="Từ mầm nhỏ đến cụm tinh thể" description="Ba nhịp ngắn để mọi màn hình trông giống một hành trình đang lớn dần." />
-          <div className="grid gap-3 lg:grid-cols-3">
-            {appCopy.home.processSteps.map((step, index) => {
-              const Icon = processIcons[index];
+        <SectionHeading title="Ba bước để cuộc phiêu lưu bắt đầu" description="Ngắn, sáng rõ và luôn biết mình cần làm gì tiếp theo." />
+        <div className="grid gap-4 lg:grid-cols-3">
+          {appCopy.home.processSteps.map((step, index) => {
+            const Icon = processIcons[index];
 
-              return (
-                <div key={step.title} className="crystal-card p-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="icon-shell h-11 w-11 rounded-2xl bg-accent-soft/72 text-white">
-                      <Icon className="h-4 w-4" strokeWidth={2.2} />
-                    </div>
-                    <span className="rounded-full border border-white/10 bg-white/8 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-accent/82">
-                      0{index + 1}
-                    </span>
+            return (
+              <div key={step.title} className="panel-soft section-glow h-full p-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="icon-shell h-12 w-12 rounded-[1.25rem] bg-sky/30 text-coral">
+                    <Icon className="h-5 w-5" strokeWidth={2.2} />
                   </div>
-                  <h3 className="mt-4 font-display text-xl text-white">{step.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-text/74">{step.body}</p>
+                  <span className="rounded-full bg-accent-soft px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-text">
+                    0{index + 1}
+                  </span>
                 </div>
-              );
-            })}
-          </div>
+                <h3 className="mt-4 font-display text-2xl text-text">{step.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-muted">{step.body}</p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -147,8 +154,8 @@ export default function HomePage() {
           className="max-w-3xl"
         />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {programs.map((program) => (
-            <ProgramCard key={program.slug} program={program} />
+          {programs.map((program, index) => (
+            <ProgramCard key={program.slug} program={program} className={index === 0 ? "md:col-span-2 xl:col-span-2" : undefined} />
           ))}
         </div>
         <Button href="/catalog" variant="ghost" className="gap-2 px-0 text-sm">
@@ -158,7 +165,7 @@ export default function HomePage() {
       </section>
 
       <section className="space-y-4">
-        <SectionHeading title="Ba lớp giá trị cốt lõi" />
+        <SectionHeading title="Ba điều làm Educrystal đáng yêu hơn" />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {appCopy.home.pillars.map((pillar, index) => (
             <ValuePillarCard
