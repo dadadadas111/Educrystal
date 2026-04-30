@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-background: 9 16 36;
+  --color-surface: 16 26 51;
+  --color-surface-strong: 13 21 43;
+  --color-text: 232 239 255;
+  --color-muted: 173 186 220;
+  --color-outline: 117 137 187;
+  --color-accent: 126 240 255;
+  --color-accent-soft: 91 121 232;
+  --color-rose: 246 173 214;
+  --color-gold: 247 207 132;
+  --color-success: 126 226 179;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  --shadow-crystal: 0 18px 44px rgba(83, 160, 255, 0.28);
+  --shadow-soft: 0 14px 32px rgba(4, 8, 19, 0.28);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-text));
+}
+
+@layer base {
+  * {
+    @apply border-outline/40;
+  }
+
+  a {
+    @apply no-underline;
+  }
+}
+
+@layer components {
+  .panel-soft {
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 1.75rem;
+    background-color: rgb(var(--color-surface) / 0.72);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(14px);
+  }
+
+  .list-card {
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 1.5rem;
+    background-color: rgb(255 255 255 / 0.05);
+    padding: 1rem;
+  }
+
+  .field-shell {
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 1.5rem;
+    background-color: rgb(var(--color-surface-strong) / 0.72);
+    padding: 0.95rem 1rem;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  }
+
+  .field-input {
+    width: 100%;
+    background: transparent;
+    color: rgb(var(--color-text));
+    font-size: 0.95rem;
+    line-height: 1.55rem;
+    outline: none;
+  }
+
+  .field-input::placeholder {
+    color: rgb(var(--color-muted) / 0.68);
+  }
+
+  .field-textarea {
+    min-height: 7.5rem;
+    resize: none;
+  }
+}
