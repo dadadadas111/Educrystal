@@ -152,7 +152,11 @@ export async function listAdminCourses() {
     return [];
   }
 
-  await ensureCourseCatalogSeeded(supabase);
+  try {
+    await ensureCourseCatalogSeeded(supabase);
+  } catch (error) {
+    console.error("[listAdminCourses] seed failed", error);
+  }
 
   const [coursesResult, stepsResult] = await Promise.all([
     supabase.from("courses").select("id, slug, title, summary, what_you_make, age_band, level, duration, cover_image, youtube_url, accent, tools, ingredients, published").order("created_at", { ascending: true }),

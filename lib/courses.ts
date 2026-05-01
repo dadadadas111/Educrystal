@@ -88,14 +88,27 @@ export async function getCourses(): Promise<Course[]> {
     return [];
   }
 
-  await ensureCourseCatalogSeeded(supabase);
+  try {
+    await ensureCourseCatalogSeeded(supabase);
+  } catch (error) {
+    console.error("[getCourses] seed failed", error);
+  }
 
-  const [coursesResult, stepsResult] = await Promise.all([
-    supabase.from("courses").select("id, slug, title, summary, what_you_make, level, duration, age_band, cover_image, youtube_url, accent, tools, ingredients, published"),
-    supabase.from("course_steps").select("course_id, order_index, title, body, kind, notes, pass_criteria, wait_days, wait_hint, media_src, media_alt"),
-  ]);
+  let coursesResult;
+  let stepsResult;
+
+  try {
+    [coursesResult, stepsResult] = await Promise.all([
+      supabase.from("courses").select("id, slug, title, summary, what_you_make, level, duration, age_band, cover_image, youtube_url, accent, tools, ingredients, published"),
+      supabase.from("course_steps").select("course_id, order_index, title, body, kind, notes, pass_criteria, wait_days, wait_hint, media_src, media_alt"),
+    ]);
+  } catch (error) {
+    console.error("[getCourses] query failed", error);
+    return [];
+  }
 
   if (coursesResult.error || stepsResult.error || !coursesResult.data || !stepsResult.data) {
+    console.error("[getCourses] query returned error", coursesResult.error ?? stepsResult.error);
     return [];
   }
 
