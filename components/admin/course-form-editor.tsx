@@ -432,10 +432,10 @@ export function CourseFormEditor({ mode, initialCourse, sourceSlug }: CourseForm
           <div className="flex items-end justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Dụng cụ</p>
-              <h2 className="mt-2 font-display text-3xl text-slate-900">Danh sách tools</h2>
+              <h2 className="mt-2 font-display text-3xl text-slate-900">Danh sách dụng cụ</h2>
             </div>
             <button type="button" onClick={() => setCourse((current) => ({ ...current, preparation: { ...current.preparation, tools: [...tools, createEmptyTool()] } }))} className="inline-flex rounded-full border-2 border-outline bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-soft">
-              Thêm tool
+              Thêm dụng cụ
             </button>
           </div>
 
