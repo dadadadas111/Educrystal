@@ -65,12 +65,6 @@ export function EmptyStatePanel({
           </span>
           <h2 className="mt-4 font-display text-3xl leading-[0.95] text-slate-900">{title}</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
-          {action ? <div className="mt-4">{action}</div> : null}
-        </div>
-
-        <div className="flex shrink-0 items-start gap-3 lg:flex-col lg:items-end">
-          <div className="icon-shell h-14 w-14 text-slate-900">{icon ?? <Sparkles className="h-6 w-6" />}</div>
-          <p className={cn("max-w-[13rem] text-right text-xs font-semibold leading-5 text-slate-500", styles.text)}>{eyebrow ?? "Educrystal"}</p>
         </div>
       </div>
     </div>

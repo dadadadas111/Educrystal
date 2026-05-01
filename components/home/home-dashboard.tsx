@@ -48,8 +48,8 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
 
         <EmptyStatePanel
           eyebrow="Trang chủ"
-          title="Chưa có khóa học nào để bắt đầu"
-          description="Khi admin xuất bản khóa đầu tiên, trang chủ sẽ tự hiện tiến độ và bước tiếp theo."
+          title="Chưa có khóa nào"
+          description=""
           action={
             <Link href="/catalog" className="inline-flex rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft">
               Mở catalog
@@ -82,8 +82,8 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
                 {isDiscoverMode ? "Bắt đầu" : "Tiếp tục"}
               </Link>
             </div>
-          ) : (
-            <p className="mt-3 text-sm text-slate-600">Chưa có khóa nào đang làm.</p>
+            ) : (
+            <p className="mt-3 text-sm text-slate-600">Chưa có khóa đang theo</p>
           )}
         </div>
 
@@ -136,8 +136,8 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
           {startedCourses.length === 0 && discoverCourses.length === 0 ? (
             <EmptyStatePanel
               eyebrow="Đang làm"
-              title="Chưa có khóa nào đang mở"
-              description="Mở catalog để bắt đầu hành trình đầu tiên."
+              title="Chưa có khóa đang theo"
+              description=""
               tone="sky"
             />
           ) : null}
@@ -160,7 +160,7 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
             <EmptyStatePanel
               eyebrow="Hoàn thành"
               title="Chưa có khóa nào hoàn thành"
-              description="Khi xong một khóa, thành quả sẽ hiện ở đây."
+              description=""
               tone="gold"
             />
           ) : null}

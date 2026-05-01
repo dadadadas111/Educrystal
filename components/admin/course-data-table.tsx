@@ -27,8 +27,8 @@ export function CourseDataTable({ courses }: CourseDataTableProps) {
     return (
       <EmptyStatePanel
         eyebrow="Khóa học"
-        title="Chưa có khóa nào trong khu quản trị"
-        description="Tạo khóa đầu tiên để catalog có nội dung thật."
+        title="Chưa có khóa nào"
+        description=""
         action={
           <Link
             href="/admin/courses/new"

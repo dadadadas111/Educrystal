@@ -69,8 +69,13 @@ export function SiteShell({ children, userEmail, isAdmin = false }: SiteShellPro
         <main className="mx-auto w-full max-w-6xl px-0 pb-28 pt-5 sm:pb-8 lg:pt-8">{children}</main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 px-4 pb-4 lg:hidden">
-        <div className={cn("mx-auto grid w-full max-w-6xl rounded-[2rem] border-2 border-outline bg-white/95 px-3 py-2 shadow-soft backdrop-blur", isAdmin ? "grid-cols-5" : "grid-cols-4")}>
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-outline bg-white/96 shadow-[0_-14px_30px_rgba(62,79,117,0.12)] backdrop-blur lg:hidden">
+        <div
+          className={cn(
+            "grid w-full grid-cols-4 px-2 pt-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]",
+            isAdmin ? "grid-cols-5" : "grid-cols-4",
+          )}
+        >
           {navItems.map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             const Icon = item.icon;
@@ -81,8 +86,8 @@ export function SiteShell({ children, userEmail, isAdmin = false }: SiteShellPro
                 href={item.href}
                 aria-label={item.ariaLabel}
                 className={cn(
-                  "flex items-center justify-center rounded-2xl px-3 py-2 text-[11px] font-semibold transition-colors",
-                  active ? "bg-accent-soft text-slate-900" : "text-slate-500",
+                  "flex items-center justify-center rounded-[1.15rem] px-3 py-3 text-[11px] font-semibold transition-colors",
+                  active ? "bg-accent-soft text-slate-900 shadow-soft" : "text-slate-500",
                 )}
               >
                 <Icon className="h-5 w-5" />

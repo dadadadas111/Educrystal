@@ -13,8 +13,7 @@ export function UserCourseTable({ rows }: UserCourseTableProps) {
     return (
       <EmptyStatePanel
         eyebrow="Tiến độ học"
-        title="Chưa có ai bắt đầu khóa học"
-        description="Khi có tiến độ, bảng này sẽ tự hiện dữ liệu."
+        title="Chưa có khóa đang theo"
         tone="rose"
       />
     );

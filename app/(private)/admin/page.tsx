@@ -66,7 +66,7 @@ export default async function AdminPage() {
             <span className="rounded-full border-2 border-outline bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-soft">Chỉnh sửa</span>
           </Link>
         ) : (
-          <div className="text-sm text-slate-500">Chưa có course nào. Tạo khóa đầu tiên để bắt đầu.</div>
+          <div className="text-sm text-slate-500">Chưa có khóa nào</div>
         )}
       </section>
     </div>

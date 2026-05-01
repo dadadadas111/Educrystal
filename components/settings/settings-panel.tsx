@@ -34,14 +34,13 @@ export function SettingsPanel({ courses, initialState }: SettingsPanelProps) {
         <div className="list-card">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Tiến độ</p>
           <h2 className="mt-2 font-display text-3xl text-slate-900">Khóa đang theo</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">{courses.length > 0 ? `${courses.length} khóa đã có trong catalog. Mỗi khóa có thể chạy song song.` : "Hiện chưa có khóa nào được hiển thị trong catalog."}</p>
+          <p className="mt-2 text-sm leading-6 text-slate-600">{courses.length > 0 ? `${courses.length} khóa` : "Chưa có khóa nào"}</p>
         </div>
       </section>
 
       {courses.length === 0 ? (
         <StatusBanner
-          title="Catalog chưa có khóa học"
-          description="Khi có khóa xuất bản, phần cài đặt sẽ có dữ liệu để bám theo."
+          title="Chưa có khóa nào"
           tone="sky"
         />
       ) : null}
@@ -51,8 +50,7 @@ export function SettingsPanel({ courses, initialState }: SettingsPanelProps) {
         {reminders.length === 0 ? (
           <EmptyStatePanel
             eyebrow="Nhắc lịch"
-            title="Chưa có nhắc nào được lưu"
-            description="Bước chờ nào cần quay lại sẽ hiện ở đây."
+            title="Chưa có nhắc nào"
             tone="gold"
           />
         ) : null}

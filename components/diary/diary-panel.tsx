@@ -60,8 +60,8 @@ export function DiaryPanel({ courses, initialState }: DiaryPanelProps) {
       {courses.length === 0 ? (
         <EmptyStatePanel
           eyebrow="Nhật ký"
-          title="Chưa có khóa học để gắn nhật ký"
-          description="Mở catalog để có khóa học rồi quay lại ghi chú."
+          title="Chưa có khóa"
+          description=""
           tone="sky"
           action={
             <Link href="/catalog" className="inline-flex rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft">
@@ -100,7 +100,7 @@ export function DiaryPanel({ courses, initialState }: DiaryPanelProps) {
           <EmptyStatePanel
             eyebrow="Ghi chú"
             title="Chưa có nhật ký nào"
-            description="Ghi một dòng ngắn sau khi quan sát xong."
+            description=""
             tone="gold"
           />
         ) : null}

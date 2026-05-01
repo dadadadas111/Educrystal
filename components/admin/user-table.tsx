@@ -13,8 +13,7 @@ export function UserTable({ users }: UserTableProps) {
     return (
       <EmptyStatePanel
         eyebrow="Người dùng"
-        title="Chưa có hồ sơ người dùng"
-        description="Khi có người đăng nhập, hồ sơ sẽ hiện ở đây."
+        title="Chưa có người dùng"
         tone="sky"
       />
     );

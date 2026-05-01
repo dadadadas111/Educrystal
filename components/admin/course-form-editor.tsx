@@ -420,8 +420,7 @@ export function CourseFormEditor({ mode, initialCourse, sourceSlug }: CourseForm
           ) : (
             <EmptyStatePanel
               eyebrow="Ảnh bìa"
-              title="Chưa có ảnh đại diện"
-              description="Tải ảnh bìa để khóa học hiện đúng."
+              title="Chưa có ảnh"
               tone="sky"
             />
           )}

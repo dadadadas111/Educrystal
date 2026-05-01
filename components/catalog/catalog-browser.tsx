@@ -55,8 +55,8 @@ export function CatalogBrowser({ courses, initialState }: CatalogBrowserProps) {
 
         <EmptyStatePanel
           eyebrow="Catalog"
-          title="Catalog đang trống"
-          description="Khi có khóa xuất bản, thẻ sẽ hiện ở đây."
+          title="Chưa có khóa nào"
+          description=""
         />
       </div>
     );
@@ -102,7 +102,12 @@ export function CatalogBrowser({ courses, initialState }: CatalogBrowserProps) {
           </Link>
         ))}
         {visible.length === 0 ? (
-          <EmptyStatePanel eyebrow={activeTab === "active" ? "Đang làm" : activeTab === "discover" ? "Khám phá" : "Đã xong"} title={activeTab === "active" ? "Chưa có khóa đang theo" : activeTab === "discover" ? "Chưa có khóa mới" : "Chưa có khóa hoàn thành"} description="Thử tab khác hoặc quay lại sau khi có tiến độ mới." tone={activeTab === "done" ? "gold" : "sky"} />
+          <EmptyStatePanel
+            eyebrow={activeTab === "active" ? "Đang làm" : activeTab === "discover" ? "Khám phá" : "Đã xong"}
+            title={activeTab === "active" ? "Chưa có khóa đang theo" : activeTab === "discover" ? "Chưa có khóa nào" : "Chưa có khóa nào hoàn thành"}
+            description=""
+            tone={activeTab === "done" ? "gold" : "sky"}
+          />
           ) : null}
         </section>
     </div>
