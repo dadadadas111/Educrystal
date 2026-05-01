@@ -73,8 +73,11 @@ async function seedCourseCatalogIfEmpty(supabase: any) {
     throw new Error(courseError?.message ?? "Unable to seed courses");
   }
 
-  const courseIdBySlug = new Map(seededCourses.map((course: { id: string; slug: string }) => [course.slug, course.id]));
-  const stepRows = seedCourses.flatMap((course) => {
+  const courseIdBySlug = new Map<string, string>(
+    seededCourses.map((course: { id: string; slug: string }) => [course.slug, course.id] as [string, string])
+  );
+
+  const stepRows = seedCourses.flatMap((course: Course) => {
     const courseId = courseIdBySlug.get(course.slug);
 
     if (!courseId) {

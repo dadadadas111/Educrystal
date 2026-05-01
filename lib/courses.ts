@@ -60,7 +60,6 @@ function combineCourseData(courseRows: CourseRow[], stepRows: CourseStepRow[]): 
         }));
 
       return {
-        ...seed,
         id: course.id,
         slug: course.slug,
         title: course.title,

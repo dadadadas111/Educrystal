@@ -35,7 +35,7 @@ const toneStyles: Record<Tone, { panel: string; badge: string; orb: string; text
 type EmptyStatePanelProps = {
   eyebrow?: string;
   title: string;
-  description: string;
+  description?: string;
   tone?: Tone;
   action?: ReactNode;
   highlights?: string[];
@@ -73,7 +73,7 @@ export function EmptyStatePanel({
 
 type StatusBannerProps = {
   title: string;
-  description: string;
+  description?: string;
   tone?: Tone;
 };
 
