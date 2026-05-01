@@ -1,4 +1,17 @@
-insert into public.courses (slug, title, summary, what_you_make, level, duration, age_band, cover_image, accent, materials, published)
+insert into public.courses (
+  slug,
+  title,
+  summary,
+  what_you_make,
+  level,
+  duration,
+  age_band,
+  cover_image,
+  accent,
+  tools,
+  ingredients,
+  published
+)
 values
   (
     'mam-tinh-the-trong',
@@ -10,7 +23,8 @@ values
     '6+',
     '/covers/crystal-bloom.svg',
     'sky',
-    array['Phèn chua', 'Nước ấm', 'Ly thủy tinh', 'Que treo'],
+    '[{"name":"Găng tay nitrile","spec":"1 đôi, vừa tay"},{"name":"Ly thủy tinh có vạch","spec":"500 ml"},{"name":"Cân tiểu ly","spec":"Sai số <= 0.1 g"}]'::jsonb,
+    '[{"name":"Phèn chua","amount":120,"unit":"g","note":"Loại tinh khiết"},{"name":"Nước lọc","amount":300,"unit":"ml","note":"70-80°C"}]'::jsonb,
     true
   ),
   (
@@ -23,7 +37,8 @@ values
     '8+',
     '/covers/rainbow-frame.svg',
     'rose',
-    array['Borax', 'Dây kẽm mềm', 'Màu thực phẩm', 'Lọ cao'],
+    '[{"name":"Găng tay nitrile","spec":"1 đôi"},{"name":"Kìm mũi nhọn","spec":"Đầu nhỏ"},{"name":"Cân tiểu ly","spec":"Sai số <= 0.1 g"}]'::jsonb,
+    '[{"name":"Borax","amount":140,"unit":"g"},{"name":"Nước nóng","amount":400,"unit":"ml"},{"name":"Màu thực phẩm","amount":2,"unit":"ml","note":"2-3 giọt"}]'::jsonb,
     true
   ),
   (
@@ -36,7 +51,8 @@ values
     '10+',
     '/covers/cluster-lab.svg',
     'gold',
-    array['Phèn chua tinh khiết', 'Hai lọ', 'Nhíp', 'Sổ ghi chép'],
+    '[{"name":"Găng tay nitrile","spec":"1 đôi"},{"name":"Ly thủy tinh có vạch","spec":"2 ly, mỗi ly 700 ml"},{"name":"Nhíp đầu mảnh","spec":"1 chiếc"}]'::jsonb,
+    '[{"name":"Phèn chua tinh khiết","amount":220,"unit":"g"},{"name":"Nước lọc","amount":600,"unit":"ml"}]'::jsonb,
     true
   )
 on conflict (slug) do update
@@ -49,39 +65,59 @@ set
   age_band = excluded.age_band,
   cover_image = excluded.cover_image,
   accent = excluded.accent,
-  materials = excluded.materials,
+  tools = excluded.tools,
+  ingredients = excluded.ingredients,
   published = excluded.published;
 
 with course_ids as (
-  select id, slug from public.courses where slug in (
-    'mam-tinh-the-trong',
-    'khung-tinh-the-sac-mau',
-    'cum-tinh-the-lon'
-  )
+  select id, slug from public.courses where slug in ('mam-tinh-the-trong', 'khung-tinh-the-sac-mau', 'cum-tinh-the-lon')
 )
-insert into public.course_steps (course_id, order_index, title, body)
-select course_ids.id, step.order_index, step.title, step.body
+insert into public.course_steps (
+  course_id,
+  order_index,
+  title,
+  body,
+  kind,
+  notes,
+  pass_criteria,
+  wait_days,
+  wait_hint,
+  media_src,
+  media_alt
+)
+select
+  course_ids.id,
+  step.order_index,
+  step.title,
+  step.body,
+  step.kind,
+  step.notes,
+  step.pass_criteria,
+  step.wait_days,
+  step.wait_hint,
+  step.media_src,
+  step.media_alt
 from course_ids
-join (values
-  ('mam-tinh-the-trong', 1, 'Pha nước', 'Cho bột vào nước ấm và khuấy nhẹ cho tan.', 'instant', null, null, '/covers/crystal-bloom.svg', 'Ly tinh thể đang được pha'),
-  ('mam-tinh-the-trong', 2, 'Để yên', 'Đổ vào ly, đặt chỗ yên tĩnh, chờ tinh thể xuất hiện.', 'wait', 2, 'Để yên 2 ngày rồi xem tiếp.', '/covers/crystal-bloom.svg', 'Ly tinh thể đang chờ mọc'),
-  ('mam-tinh-the-trong', 3, 'Chọn mầm', 'Lấy một hạt đẹp nhất để nuôi tiếp.', 'instant', null, null, '/covers/crystal-bloom.svg', 'Hạt mầm tinh thể'),
-  ('mam-tinh-the-trong', 4, 'Treo mầm', 'Treo ở giữa ly để tinh thể lớn đều hơn.', 'wait', 1, 'Ngày mai xem lại nhé.', '/covers/crystal-bloom.svg', 'Mầm tinh thể treo giữa ly'),
-  ('khung-tinh-the-sac-mau', 1, 'Uốn khung', 'Tạo hình ngôi sao hoặc trái tim bằng dây kẽm.', 'instant', null, null, '/covers/rainbow-frame.svg', 'Khung tinh thể đang uốn'),
-  ('khung-tinh-the-sac-mau', 2, 'Pha màu', 'Thêm một ít màu để tinh thể có sắc nhẹ.', 'instant', null, null, '/covers/rainbow-frame.svg', 'Dung dịch có màu nhẹ'),
-  ('khung-tinh-the-sac-mau', 3, 'Treo khung', 'Giữ khung ở giữa lọ, không chạm thành lọ.', 'wait', 2, 'Chờ 2 ngày để lớp tinh thể bám đều.', '/covers/rainbow-frame.svg', 'Khung được treo trong lọ'),
-  ('khung-tinh-the-sac-mau', 4, 'Chờ lớn', 'Để yên vài ngày cho tinh thể bám đều quanh khung.', 'wait', 3, 'Xem lại vào cuối tuần.', '/covers/rainbow-frame.svg', 'Khung tinh thể sau vài ngày'),
-  ('cum-tinh-the-lon', 1, 'Tạo mầm', 'Làm ra nhiều hạt nhỏ để chọn hạt đẹp nhất.', 'instant', null, null, '/covers/cluster-lab.svg', 'Nhóm mầm tinh thể'),
-  ('cum-tinh-the-lon', 2, 'Chọn hạt đẹp', 'Chuyển hạt tốt nhất sang lọ mới.', 'instant', null, null, '/covers/cluster-lab.svg', 'Chọn mầm tinh thể'),
-  ('cum-tinh-the-lon', 3, 'Nuôi tiếp', 'Thay dung dịch khi thấy nước đục hoặc cặn.', 'wait', 2, 'Theo dõi 2 ngày rồi đổi dung dịch nếu cần.', '/covers/cluster-lab.svg', 'Cụm tinh thể đang lớn'),
-  ('cum-tinh-the-lon', 4, 'Hoàn thiện', 'Để khô tự nhiên và ghi lại kết quả.', 'wait', 3, 'Chờ khô hẳn trước khi chạm vào.', '/covers/cluster-lab.svg', 'Cụm tinh thể hoàn thiện')
-) as step(slug, order_index, title, body, kind, wait_days, wait_hint, media_src, media_alt)
+join (
+  values
+    ('mam-tinh-the-trong', 1, 'Chuẩn bị dụng cụ và nguyên liệu', 'Đeo găng tay, cân đúng định lượng và kiểm tra dụng cụ.', 'prepare', array['Không dùng cốc nhựa mỏng', 'Bắt buộc cân phèn chua'], 'Checklist hoàn tất và định lượng đủ.', null, null, '/covers/crystal-bloom.svg', 'Chuẩn bị dụng cụ'),
+    ('mam-tinh-the-trong', 2, 'Pha dung dịch bão hòa', 'Cho phèn chua vào nước ấm theo 3 lần.', 'instant', array['Không khuấy quá mạnh'], 'Dung dịch trong, không còn hạt lớn.', null, null, '/covers/crystal-bloom.svg', 'Pha dung dịch'),
+    ('mam-tinh-the-trong', 3, 'Để yên tạo mầm', 'Đặt ly ở nơi phẳng và tránh rung.', 'wait', array['Không di chuyển ly 12 giờ đầu'], 'Có mầm nhỏ xuất hiện.', 2, 'Sau 48 giờ kiểm tra mầm.', '/covers/crystal-bloom.svg', 'Để yên tạo mầm'),
+    ('khung-tinh-the-sac-mau', 1, 'Chuẩn bị dụng cụ và nguyên liệu', 'Đặt kìm, găng tay, cân và cân đủ borax.', 'prepare', array['Chuẩn bị khăn giấy dự phòng'], 'Checklist hoàn tất và định lượng đủ.', null, null, '/covers/rainbow-frame.svg', 'Chuẩn bị khung màu'),
+    ('khung-tinh-the-sac-mau', 2, 'Uốn khung ổn định', 'Uốn dây kẽm thành khung kín.', 'instant', array['Mối nối xoắn ít nhất 2 vòng'], 'Khung đứng thẳng khi treo thử.', null, null, '/covers/rainbow-frame.svg', 'Uốn khung'),
+    ('khung-tinh-the-sac-mau', 3, 'Treo khung và chờ bám', 'Treo khung giữa lọ và giữ khoảng cách đều.', 'wait', array['Nếu chạm thành sẽ bám lệch'], 'Tinh thể phủ tối thiểu 60% khung.', 2, 'Sau 2 ngày kiểm tra độ phủ.', '/covers/rainbow-frame.svg', 'Treo khung'),
+    ('cum-tinh-the-lon', 1, 'Chuẩn bị dụng cụ và nguyên liệu', 'Thiết lập 2 ly riêng cho từng giai đoạn.', 'prepare', array['Đánh dấu ly A/B'], 'Bàn thí nghiệm hoàn chỉnh.', null, null, '/covers/cluster-lab.svg', 'Chuẩn bị cụm nâng cao'),
+    ('cum-tinh-the-lon', 2, 'Tạo mẻ mầm ban đầu', 'Pha mẻ dung dịch đầu và để tạo mầm.', 'wait', array['Không khuấy lại trong khi chờ'], 'Có ít nhất 5 mầm để chọn.', 1, 'Ngày mai chọn mầm.', '/covers/cluster-lab.svg', 'Tạo mầm ban đầu')
+) as step(slug, order_index, title, body, kind, notes, pass_criteria, wait_days, wait_hint, media_src, media_alt)
 on step.slug = course_ids.slug
 on conflict (course_id, order_index) do update
-set title = excluded.title,
-    body = excluded.body,
-    kind = excluded.kind,
-    wait_days = excluded.wait_days,
-    wait_hint = excluded.wait_hint,
-    media_src = excluded.media_src,
-    media_alt = excluded.media_alt;
+set
+  title = excluded.title,
+  body = excluded.body,
+  kind = excluded.kind,
+  notes = excluded.notes,
+  pass_criteria = excluded.pass_criteria,
+  wait_days = excluded.wait_days,
+  wait_hint = excluded.wait_hint,
+  media_src = excluded.media_src,
+  media_alt = excluded.media_alt;

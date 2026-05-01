@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start"
   },
   "dependencies": {
@@ -12,6 +12,7 @@
     "clsx": "latest",
     "lucide-react": "latest",
     "next": "latest",
+    "next-pwa": "^5.6.0",
     "react": "latest",
     "react-dom": "latest",
     "tailwind-merge": "latest"

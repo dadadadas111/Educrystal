@@ -8,10 +8,10 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "Nhà", icon: House },
-  { href: "/catalog", label: "Khóa học", icon: BookOpen },
-  { href: "/diary", label: "Nhật ký", icon: NotebookPen },
-  { href: "/settings", label: "Cài đặt", icon: Settings },
+  { href: "/", ariaLabel: "Nhà", icon: House },
+  { href: "/catalog", ariaLabel: "Khóa học", icon: BookOpen },
+  { href: "/diary", ariaLabel: "Nhật ký", icon: NotebookPen },
+  { href: "/settings", ariaLabel: "Cài đặt", icon: Settings },
 ] as const;
 
 type SiteShellProps = {
@@ -69,13 +69,14 @@ export function SiteShell({ children }: SiteShellProps) {
               <Link
                 key={item.href}
                 href={item.href}
+                aria-label={item.ariaLabel}
                 className={cn(
-                  "flex flex-col items-center gap-1 rounded-2xl px-3 py-2 text-[11px] font-semibold transition-colors",
+                  "flex items-center justify-center rounded-2xl px-3 py-2 text-[11px] font-semibold transition-colors",
                   active ? "bg-accent-soft text-slate-900" : "text-slate-500",
                 )}
               >
                 <Icon className="h-5 w-5" />
-                <span>{item.label}</span>
+                <span className="sr-only">{item.ariaLabel}</span>
               </Link>
             );
           })}

@@ -126,6 +126,53 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
           <p className="mt-2 text-base leading-7 text-slate-700">{step.body}</p>
         </div>
 
+        {step.kind === "prepare" ? (
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div className="quest-card space-y-3">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Dụng cụ</p>
+              <div className="space-y-2">
+                {course.preparation.tools.map((tool) => (
+                  <div key={`${tool.name}-${tool.spec}`} className="rounded-xl border border-outline/70 bg-white/70 px-3 py-2 text-sm">
+                    <p className="font-semibold text-slate-800">{tool.name}</p>
+                    <p className="text-slate-600">{tool.spec}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="quest-card space-y-3">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Nguyên liệu định lượng</p>
+              <div className="space-y-2">
+                {course.preparation.ingredients.map((ingredient) => (
+                  <div key={`${ingredient.name}-${ingredient.amount}-${ingredient.unit}`} className="rounded-xl border border-outline/70 bg-white/70 px-3 py-2 text-sm">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-semibold text-slate-800">{ingredient.name}</p>
+                      <p className="text-slate-700">{ingredient.amount} {ingredient.unit}</p>
+                    </div>
+                    {ingredient.note ? <p className="text-xs text-slate-500">{ingredient.note}</p> : null}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {step.notes && step.notes.length > 0 ? (
+          <div className="quest-card text-sm leading-6 text-amber-900">
+            <p className="font-black">Lưu ý để tránh lỗi</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-900">
+              {step.notes.map((note) => (
+                <li key={note}>{note}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        <div className="quest-card text-sm leading-6 text-emerald-800">
+          <p className="font-black">Pass criteria</p>
+          <p className="mt-1">{step.passCriteria}</p>
+        </div>
+
         {requiresWait ? (
           <div className="quest-card text-sm leading-6 text-amber-900">
             <p className="font-black">Bước này cần chờ thêm vài ngày.</p>

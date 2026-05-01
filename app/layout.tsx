@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Baloo_2, Be_Vietnam_Pro } from "next/font/google";
 
 import { SiteShell } from "@/components/site-shell";
@@ -20,6 +20,16 @@ const displayFont = Baloo_2({
 export const metadata: Metadata = {
   title: "Educrystal",
   description: "Học nuôi tinh thể bằng giao diện mobile-first thân thiện với trẻ em.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Educrystal",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#fff6d8",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

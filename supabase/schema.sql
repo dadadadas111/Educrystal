@@ -11,7 +11,8 @@ create table if not exists public.courses (
   duration text not null,
   cover_image text not null,
   accent text not null check (accent in ('sky', 'rose', 'gold')),
-  materials text[] not null default '{}',
+  tools jsonb not null default '[]'::jsonb,
+  ingredients jsonb not null default '[]'::jsonb,
   published boolean not null default true,
   created_at timestamptz not null default now()
 );
@@ -22,7 +23,9 @@ create table if not exists public.course_steps (
   order_index integer not null,
   title text not null,
   body text not null,
-  kind text not null default 'instant' check (kind in ('instant', 'wait')),
+  kind text not null default 'instant' check (kind in ('prepare', 'instant', 'wait')),
+  notes text[] not null default '{}',
+  pass_criteria text not null default '',
   wait_days integer,
   wait_hint text,
   media_src text,

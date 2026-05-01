@@ -1,5 +1,6 @@
 import { getSeedCourseBySlug, seedCourses, type Course } from "@/data/courses";
-import { createSupabaseBrowserClient, hasSupabaseConfig } from "@/lib/supabase";
+import { readLocalCourses } from "@/lib/course-store";
+import { createSupabaseServerClient, hasSupabaseConfig } from "@/lib/supabase";
 
 type CourseRow = {
   id: string;
@@ -12,7 +13,8 @@ type CourseRow = {
   age_band: string;
   cover_image: string;
   accent: Course["accent"];
-  materials: string[];
+  tools: Course["preparation"]["tools"];
+  ingredients: Course["preparation"]["ingredients"];
   published: boolean;
 };
 
@@ -21,6 +23,13 @@ type CourseStepRow = {
   order_index: number;
   title: string;
   body: string;
+  kind: Course["steps"][number]["kind"];
+  notes: string[];
+  pass_criteria: string;
+  wait_days: number | null;
+  wait_hint: string | null;
+  media_src: string | null;
+  media_alt: string | null;
 };
 
 function combineCourseData(courseRows: CourseRow[], stepRows: CourseStepRow[]): Course[] {
@@ -31,7 +40,23 @@ function combineCourseData(courseRows: CourseRow[], stepRows: CourseStepRow[]): 
       const mappedSteps = stepRows
         .filter((step) => step.course_id === course.id)
         .sort((left, right) => left.order_index - right.order_index)
-        .map((step) => ({ order: step.order_index, title: step.title, body: step.body }));
+        .map((step) => ({
+          order: step.order_index,
+          title: step.title,
+          body: step.body,
+          kind: step.kind,
+          notes: step.notes ?? [],
+          passCriteria: step.pass_criteria,
+          waitDays: step.wait_days ?? undefined,
+          waitHint: step.wait_hint ?? undefined,
+          media: step.media_src
+            ? {
+                kind: "image" as const,
+                src: step.media_src,
+                alt: step.media_alt ?? step.title,
+              }
+            : undefined,
+        }));
 
       return {
         ...seed,
@@ -44,35 +69,40 @@ function combineCourseData(courseRows: CourseRow[], stepRows: CourseStepRow[]): 
         ageBand: course.age_band,
         coverImage: course.cover_image,
         accent: course.accent,
-        materials: course.materials?.length ? course.materials : seed?.materials ?? [],
+        preparation: {
+          tools: course.tools?.length ? course.tools : seed?.preparation.tools ?? [],
+          ingredients: course.ingredients?.length ? course.ingredients : seed?.preparation.ingredients ?? [],
+        },
         steps: mappedSteps.length > 0 ? mappedSteps : seed?.steps ?? [],
       };
     });
 }
 
 export async function getCourses(): Promise<Course[]> {
+  const localCourses = await readLocalCourses();
+
   if (!hasSupabaseConfig()) {
-    return seedCourses;
+    return localCourses;
   }
 
-  const supabase = createSupabaseBrowserClient();
+  const supabase = createSupabaseServerClient();
 
   if (!supabase) {
-    return seedCourses;
+    return localCourses;
   }
 
   const [coursesResult, stepsResult] = await Promise.all([
-    supabase.from("courses").select("id, slug, title, summary, what_you_make, level, duration, age_band, cover_image, accent, materials, published"),
-    supabase.from("course_steps").select("course_id, order_index, title, body"),
+    supabase.from("courses").select("id, slug, title, summary, what_you_make, level, duration, age_band, cover_image, accent, tools, ingredients, published"),
+    supabase.from("course_steps").select("course_id, order_index, title, body, kind, notes, pass_criteria, wait_days, wait_hint, media_src, media_alt"),
   ]);
 
   if (coursesResult.error || stepsResult.error || !coursesResult.data || !stepsResult.data) {
-    return seedCourses;
+    return localCourses;
   }
 
   const combined = combineCourseData(coursesResult.data as CourseRow[], stepsResult.data as CourseStepRow[]);
 
-  return combined.length > 0 ? combined : seedCourses;
+  return combined.length > 0 ? combined : localCourses;
 }
 
 export async function getCourseBySlug(slug: string): Promise<Course | undefined> {

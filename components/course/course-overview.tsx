@@ -71,19 +71,48 @@ export function CourseOverview({ course }: CourseOverviewProps) {
         </div>
       </section>
 
-      <section id="steps" className="space-y-4 panel-soft section-glow">
-        <h2 className="font-display text-3xl text-slate-900">Đồ cần và các bước</h2>
-        <div className="flex flex-wrap gap-2">
-          {course.materials.map((material) => (
-            <span key={material} className="glass-pill text-sm font-semibold text-slate-700">{material}</span>
-          ))}
+      <section id="steps" className="space-y-5 panel-soft section-glow">
+        <h2 className="font-display text-3xl text-slate-900">Chuẩn bị và các bước</h2>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="quest-card space-y-3">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Dụng cụ cần có</p>
+            <div className="space-y-2">
+              {course.preparation.tools.map((tool) => (
+                <div key={`${tool.name}-${tool.spec}`} className="flex items-start justify-between gap-3 rounded-xl border border-outline/70 bg-white/70 px-3 py-2 text-sm">
+                  <span className="font-semibold text-slate-800">{tool.name}</span>
+                  <span className="text-slate-600">{tool.spec}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="quest-card space-y-3">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Nguyên liệu định lượng</p>
+            <div className="space-y-2">
+              {course.preparation.ingredients.map((ingredient) => (
+                <div key={`${ingredient.name}-${ingredient.amount}-${ingredient.unit}`} className="rounded-xl border border-outline/70 bg-white/70 px-3 py-2 text-sm">
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="font-semibold text-slate-800">{ingredient.name}</span>
+                    <span className="text-slate-700">{ingredient.amount} {ingredient.unit}</span>
+                  </div>
+                  {ingredient.note ? <p className="mt-1 text-xs text-slate-500">{ingredient.note}</p> : null}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+
         <div className="grid gap-3">
           {course.steps.map((step) => (
             <Link key={step.order} href={`/catalog/${course.slug}/step/${step.order - 1}`} className="crystal-card transition-transform hover:-translate-y-0.5">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Bước {step.order}</p>
               <h3 className="mt-1 text-base font-black text-slate-900">{step.title}</h3>
               <p className="mt-1 text-sm leading-6 text-slate-600">{step.body}</p>
+              <p className="mt-2 text-xs font-semibold text-emerald-700">Đạt khi: {step.passCriteria}</p>
+              {step.notes && step.notes.length > 0 ? (
+                <p className="mt-1 text-xs text-amber-800">Lưu ý: {step.notes[0]}</p>
+              ) : null}
             </Link>
           ))}
         </div>

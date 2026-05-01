@@ -14,3 +14,15 @@ export function createSupabaseBrowserClient() {
 
   return createClient(supabaseUrl as string, supabaseAnonKey as string);
 }
+
+export function createSupabaseServerClient() {
+  if (!hasSupabaseConfig()) {
+    return null;
+  }
+
+  return createClient(supabaseUrl as string, supabaseAnonKey as string, {
+    auth: {
+      persistSession: false,
+    },
+  });
+}
