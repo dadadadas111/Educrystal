@@ -57,42 +57,20 @@ export function EmptyStatePanel({
 
   return (
     <div className={cn("panel-soft section-glow overflow-hidden", styles.panel, className)}>
-      <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-        <div>
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="max-w-2xl">
           <span className={cn("glass-pill w-fit text-[11px] font-bold", styles.badge)}>
             <Sparkles className="h-4 w-4" />
             {eyebrow ?? "Educrystal"}
           </span>
           <h2 className="mt-4 font-display text-3xl leading-[0.95] text-slate-900">{title}</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{description}</p>
-          {highlights && highlights.length > 0 ? (
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              {highlights.map((item) => (
-                <div key={item} className="rounded-[1.35rem] border border-outline/70 bg-white/70 px-3 py-3 text-sm text-slate-600 shadow-soft">
-                  {item}
-                </div>
-              ))}
-            </div>
-          ) : null}
+          <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
           {action ? <div className="mt-4">{action}</div> : null}
         </div>
 
-        <div className="relative min-h-[180px] overflow-hidden rounded-[1.9rem] border-2 border-outline bg-white/75 p-5 shadow-soft">
-          <div className={cn("absolute -right-8 -top-8 h-28 w-28 rounded-[2rem] bg-gradient-to-br opacity-85 blur-[2px]", styles.orb)} />
-          <div className={cn("absolute -bottom-8 left-3 h-24 w-24 rounded-[2rem] bg-gradient-to-br opacity-65 blur-[2px]", styles.orb)} />
-          <div className="relative flex h-full flex-col justify-between gap-5">
-            <div className="icon-shell h-14 w-14 text-slate-900">{icon ?? <Sparkles className="h-6 w-6" />}</div>
-            <div className="space-y-2">
-              <p className={cn("text-sm font-black", styles.text)}>{eyebrow ?? "Educrystal"}</p>
-              <div className="space-y-2">
-                {["Nội dung rõ ràng", "Không để khoảng trống khó hiểu", "Luôn có hướng đi tiếp"].map((item) => (
-                  <div key={item} className="rounded-full border border-outline/70 bg-white/85 px-3 py-2 text-xs font-semibold text-slate-600 shadow-soft">
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+        <div className="flex shrink-0 items-start gap-3 lg:flex-col lg:items-end">
+          <div className="icon-shell h-14 w-14 text-slate-900">{icon ?? <Sparkles className="h-6 w-6" />}</div>
+          <p className={cn("max-w-[13rem] text-right text-xs font-semibold leading-5 text-slate-500", styles.text)}>{eyebrow ?? "Educrystal"}</p>
         </div>
       </div>
     </div>

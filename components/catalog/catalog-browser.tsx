@@ -56,8 +56,7 @@ export function CatalogBrowser({ courses, initialState }: CatalogBrowserProps) {
         <EmptyStatePanel
           eyebrow="Catalog"
           title="Catalog đang trống"
-          description="Khi admin xuất bản khóa học, các thẻ khóa sẽ xuất hiện ở đây cùng ảnh bìa, độ khó và trạng thái tiến độ thay vì một khoảng trống khó hiểu."
-          highlights={["Chỉ khóa đã xuất bản mới hiện trong catalog", "Mỗi thẻ sẽ mang theo ảnh bìa, độ khó và thời lượng"]}
+          description="Khi có khóa xuất bản, thẻ sẽ hiện ở đây."
         />
       </div>
     );
@@ -103,13 +102,7 @@ export function CatalogBrowser({ courses, initialState }: CatalogBrowserProps) {
           </Link>
         ))}
         {visible.length === 0 ? (
-            <EmptyStatePanel
-              eyebrow={activeTab === "active" ? "Đang làm" : activeTab === "discover" ? "Khám phá" : "Đã xong"}
-              title={activeTab === "active" ? "Chưa có khóa nào đang theo" : activeTab === "discover" ? "Bạn đã mở hết các khóa hiện có" : "Chưa có khóa nào hoàn thành"}
-              description={activeTab === "active" ? "Hãy bắt đầu một khóa mới hoặc quay lại danh mục khám phá để chọn hành trình tiếp theo." : activeTab === "discover" ? "Khi có khóa mới hoặc khi một khóa chưa bắt đầu, thẻ đó sẽ xuất hiện ở đây." : "Sau khi hoàn thành một hành trình, khóa học sẽ chuyển sang khu vực này để cả nhà nhìn lại thành quả."}
-              tone={activeTab === "done" ? "gold" : "sky"}
-              highlights={activeTab === "active" ? ["Tiến độ thật sẽ kéo khóa sang tab này", "Nút tiếp tục sẽ luôn dẫn tới bước gần nhất"] : activeTab === "discover" ? ["Tab này dành cho những khóa chưa bắt đầu", "Admin xuất bản thêm khóa mới thì chúng sẽ xuất hiện tại đây"] : ["Khóa hoàn thành sẽ được gom riêng", "Phụ huynh có thể nhìn lại thành quả của bé theo từng hành trình"]}
-            />
+          <EmptyStatePanel eyebrow={activeTab === "active" ? "Đang làm" : activeTab === "discover" ? "Khám phá" : "Đã xong"} title={activeTab === "active" ? "Chưa có khóa đang theo" : activeTab === "discover" ? "Chưa có khóa mới" : "Chưa có khóa hoàn thành"} description="Thử tab khác hoặc quay lại sau khi có tiến độ mới." tone={activeTab === "done" ? "gold" : "sky"} />
           ) : null}
         </section>
     </div>

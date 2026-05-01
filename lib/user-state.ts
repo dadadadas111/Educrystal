@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 
 import type { AppState, DiaryEntry, ReminderState } from "@/lib/progress";
 import { createEmptyAppState } from "@/lib/progress";
+import { getCurrentUser } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 type CourseLookupRow = {
@@ -40,17 +41,9 @@ function isUuid(value: string) {
 }
 
 async function getAuthenticatedContext() {
-  const supabase = await createSupabaseServerClient();
+  const [supabase, user] = await Promise.all([createSupabaseServerClient(), getCurrentUser()]);
 
-  if (!supabase) {
-    return null;
-  }
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
+  if (!supabase || !user) {
     return null;
   }
 

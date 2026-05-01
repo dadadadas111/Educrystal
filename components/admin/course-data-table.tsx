@@ -28,8 +28,7 @@ export function CourseDataTable({ courses }: CourseDataTableProps) {
       <EmptyStatePanel
         eyebrow="Khóa học"
         title="Chưa có khóa nào trong khu quản trị"
-        description="Tạo khóa đầu tiên để giáo viên và phụ huynh thấy catalog có nội dung thật ngay khi đăng nhập."
-        highlights={["Tạo metadata, ảnh bìa và video ở cùng một form", "Sắp xếp step, tools và ingredients ngay trong route admin hiện có"]}
+        description="Tạo khóa đầu tiên để catalog có nội dung thật."
         action={
           <Link
             href="/admin/courses/new"
@@ -48,7 +47,7 @@ export function CourseDataTable({ courses }: CourseDataTableProps) {
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Khóa học</p>
           <h2 className="mt-2 font-display text-3xl text-slate-900">Bảng quản lý khóa học</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Theo dõi trạng thái xuất bản, video, ảnh bìa và độ dài từng hành trình từ một nơi duy nhất.</p>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Xem và sửa khóa học từ một nơi.</p>
         </div>
         <Link href="/admin/courses/new" className="inline-flex items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft">
           Tạo khóa mới

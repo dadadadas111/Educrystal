@@ -1,8 +1,9 @@
 import type { User } from "@supabase/supabase-js";
+import { cache } from "react";
 
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
-export async function getCurrentUser(): Promise<User | null> {
+export const getCurrentUser = cache(async function getCurrentUser(): Promise<User | null> {
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
@@ -14,9 +15,9 @@ export async function getCurrentUser(): Promise<User | null> {
   } = await supabase.auth.getUser();
 
   return user;
-}
+});
 
-export async function isCurrentUserAdmin(userId: string) {
+export const isCurrentUserAdmin = cache(async function isCurrentUserAdmin(userId: string) {
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
@@ -34,7 +35,7 @@ export async function isCurrentUserAdmin(userId: string) {
   }
 
   return Boolean(data?.is_admin);
-}
+});
 
 export async function requireCurrentAdmin() {
   const user = await getCurrentUser();

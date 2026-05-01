@@ -31,9 +31,11 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
     });
   }, [courses, state]);
 
-  const activeCourses = courseCards.filter((item) => item.completed < item.total);
+  const startedCourses = courseCards.filter((item) => item.completed > 0 && item.completed < item.total);
+  const discoverCourses = courseCards.filter((item) => item.completed === 0);
   const finishedCourses = courseCards.filter((item) => item.completed >= item.total);
-  const nextUp = activeCourses[0] ?? courseCards[0];
+  const nextUp = startedCourses[0] ?? discoverCourses[0] ?? courseCards[0];
+  const isDiscoverMode = startedCourses.length === 0;
   const recentDiary = state.diaryEntries[0];
 
   if (courseCards.length === 0) {
@@ -47,8 +49,7 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
         <EmptyStatePanel
           eyebrow="Trang chủ"
           title="Chưa có khóa học nào để bắt đầu"
-          description="Khi catalog có khóa được xuất bản, trang chủ sẽ hiện tiến độ, khóa đang làm và bước tiếp theo thay vì để màn hình trống."
-          highlights={["Trang chủ sẽ ưu tiên đúng bước tiếp theo để quay lại", "Tiến độ và nhật ký gần nhất sẽ tự xuất hiện khi có dữ liệu"]}
+          description="Khi admin xuất bản khóa đầu tiên, trang chủ sẽ tự hiện tiến độ và bước tiếp theo."
           action={
             <Link href="/catalog" className="inline-flex rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft">
               Mở catalog
@@ -68,17 +69,17 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
 
       <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="playful-stage text-slate-900">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Tiếp tục ngay</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{isDiscoverMode ? "Khám phá ngay" : "Tiếp tục ngay"}</p>
           {nextUp ? (
             <div className="mt-3 space-y-3">
-              <h2 className="font-display text-[2.15rem] leading-[0.95]">{nextUp.course.title}</h2>
-              <p className="text-sm leading-6 text-slate-600">Bước {nextUp.completed + 1}: {nextUp.currentStep?.title}</p>
+              <h2 className="font-display text-[2.15rem] leading-[0.95]">{isDiscoverMode ? `Khám phá ${nextUp.course.title}` : nextUp.course.title}</h2>
+              <p className="text-sm leading-6 text-slate-600">{isDiscoverMode ? nextUp.course.summary : `Bước ${nextUp.completed + 1}: ${nextUp.currentStep?.title}`}</p>
               <div className="h-3 overflow-hidden rounded-full bg-white/70">
                 <div className="h-3 rounded-full bg-gradient-to-r from-gold via-accent to-sky" style={{ width: `${nextUp.percent}%` }} />
               </div>
               <p className="text-sm text-slate-600">{nextUp.completed}/{nextUp.total} bước · {nextUp.percent}%</p>
-              <Link href={`/catalog/${nextUp.course.slug}/step/${Math.min(nextUp.progress.activeStepIndex, nextUp.total - 1)}`} className="inline-flex rounded-full border-2 border-outline bg-white px-4 py-3 text-sm font-bold text-slate-900 shadow-soft">
-                Tiếp tục
+              <Link href={isDiscoverMode ? `/catalog/${nextUp.course.slug}` : `/catalog/${nextUp.course.slug}/step/${Math.min(nextUp.progress.activeStepIndex, nextUp.total - 1)}`} className="inline-flex rounded-full border-2 border-outline bg-white px-4 py-3 text-sm font-bold text-slate-900 shadow-soft">
+                {isDiscoverMode ? "Bắt đầu" : "Tiếp tục"}
               </Link>
             </div>
           ) : (
@@ -101,7 +102,7 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Tổng quan</p>
             <div className="mt-3 flex items-center justify-between text-sm text-slate-600">
               <span>Đang làm</span>
-              <span className="font-bold text-slate-900">{activeCourses.length}</span>
+              <span className="font-bold text-slate-900">{startedCourses.length}</span>
             </div>
             <div className="mt-2 flex items-center justify-between text-sm text-slate-600">
               <span>Hoàn thành</span>
@@ -116,11 +117,11 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-2xl text-slate-900">Khóa đang làm</h2>
+          <h2 className="font-display text-2xl text-slate-900">{isDiscoverMode ? "Khám phá khóa học" : "Khóa đang làm"}</h2>
           <Link href="/catalog" className="text-sm font-semibold text-slate-500">Xem tất cả</Link>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {activeCourses.map((item) => (
+          {(startedCourses.length > 0 ? startedCourses : discoverCourses).map((item) => (
             <Link key={item.course.slug} href={`/catalog/${item.course.slug}`} className="list-card transition-transform hover:-translate-y-0.5">
               <div className="overflow-hidden rounded-[1.5rem] bg-slate-50">
                 <img src={item.course.coverImage} alt={item.course.whatYouMake} className="aspect-[4/3] w-full object-cover" />
@@ -132,13 +133,12 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
               </div>
             </Link>
           ))}
-          {activeCourses.length === 0 ? (
+          {startedCourses.length === 0 && discoverCourses.length === 0 ? (
             <EmptyStatePanel
               eyebrow="Đang làm"
               title="Chưa có khóa nào đang mở"
-              description="Bắt đầu một khóa trong catalog để trang chủ luôn có bước tiếp theo rõ ràng cho lần quay lại sau."
+              description="Mở catalog để bắt đầu hành trình đầu tiên."
               tone="sky"
-              highlights={["Một khóa vừa bắt đầu sẽ hiện ngay ở đây", "Tiến độ bước và nút tiếp tục sẽ thay cho trạng thái rỗng này"]}
             />
           ) : null}
         </div>
@@ -160,9 +160,8 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
             <EmptyStatePanel
               eyebrow="Hoàn thành"
               title="Chưa có khóa nào hoàn thành"
-              description="Khi một hành trình kết thúc, thành quả của bé sẽ được gom lại ở đây để nhìn lại và tiếp tục thử khóa mới."
+              description="Khi xong một khóa, thành quả sẽ hiện ở đây."
               tone="gold"
-              highlights={["Khóa đã xong sẽ được tách riêng để dễ nhìn lại", "Đây cũng là nơi phụ huynh thấy tiến trình dài hạn của bé"]}
             />
           ) : null}
         </div>

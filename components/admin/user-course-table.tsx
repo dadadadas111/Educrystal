@@ -14,9 +14,8 @@ export function UserCourseTable({ rows }: UserCourseTableProps) {
       <EmptyStatePanel
         eyebrow="Tiến độ học"
         title="Chưa có ai bắt đầu khóa học"
-        description="Ngay khi có phụ huynh hoặc trẻ mở khóa học, tiến độ từng người theo từng khóa sẽ xuất hiện tại đây."
+        description="Khi có tiến độ, bảng này sẽ tự hiện dữ liệu."
         tone="rose"
-        highlights={["Bảng này phản ánh active step và số bước đã hoàn thành", "Phù hợp để kiểm tra nhanh học viên đang dừng ở đâu"]}
       />
     );
   }

@@ -41,7 +41,7 @@ export function SettingsPanel({ courses, initialState }: SettingsPanelProps) {
       {courses.length === 0 ? (
         <StatusBanner
           title="Catalog chưa có khóa học"
-          description="Khi admin xuất bản khóa đầu tiên, phần cài đặt sẽ phản ánh số khóa đang theo và các nhắc liên quan rõ ràng hơn."
+          description="Khi có khóa xuất bản, phần cài đặt sẽ có dữ liệu để bám theo."
           tone="sky"
         />
       ) : null}
@@ -52,9 +52,8 @@ export function SettingsPanel({ courses, initialState }: SettingsPanelProps) {
           <EmptyStatePanel
             eyebrow="Nhắc lịch"
             title="Chưa có nhắc nào được lưu"
-            description="Khi một bước chờ cần quay lại sau vài ngày, lời nhắc sẽ hiện ở đây để phụ huynh không bỏ lỡ thời điểm quan sát đẹp nhất."
+            description="Bước chờ nào cần quay lại sẽ hiện ở đây."
             tone="gold"
-            highlights={["Nhắc được tạo từ các step loại wait", "Ngày giờ và ghi chú sẽ hiện tập trung tại một nơi"]}
           />
         ) : null}
         <div className="space-y-3">

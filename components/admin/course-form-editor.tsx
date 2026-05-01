@@ -421,9 +421,8 @@ export function CourseFormEditor({ mode, initialCourse, sourceSlug }: CourseForm
             <EmptyStatePanel
               eyebrow="Ảnh bìa"
               title="Chưa có ảnh đại diện"
-              description="Tải ảnh bìa để danh sách khóa học, landing page và catalog không bị rỗng hình ảnh."
+              description="Tải ảnh bìa để khóa học hiện đúng."
               tone="sky"
-              highlights={["Ảnh bìa giúp bảng course có thumbnail rõ ràng", "Landing page và catalog sẽ dùng lại đúng asset này"]}
             />
           )}
         </div>

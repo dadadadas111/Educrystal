@@ -61,9 +61,8 @@ export function DiaryPanel({ courses, initialState }: DiaryPanelProps) {
         <EmptyStatePanel
           eyebrow="Nhật ký"
           title="Chưa có khóa học để gắn nhật ký"
-          description="Nhật ký sẽ rõ nghĩa hơn khi đi kèm một khóa học cụ thể. Khi catalog có nội dung, bạn có thể ghi từng ngày quan sát ngay tại đây."
+          description="Mở catalog để có khóa học rồi quay lại ghi chú."
           tone="sky"
-          highlights={["Mỗi ghi chú có thể gắn vào đúng khóa học", "Nhật ký gần nhất sẽ quay lại trang chủ sau khi lưu"]}
           action={
             <Link href="/catalog" className="inline-flex rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft">
               Xem catalog
@@ -101,9 +100,8 @@ export function DiaryPanel({ courses, initialState }: DiaryPanelProps) {
           <EmptyStatePanel
             eyebrow="Ghi chú"
             title="Chưa có nhật ký nào"
-            description="Sau mỗi lần quan sát, hãy ghi lại một dòng ngắn để lần quay lại sau cả nhà nhớ được tinh thể đã thay đổi ra sao."
+            description="Ghi một dòng ngắn sau khi quan sát xong."
             tone="gold"
-            highlights={["Mỗi ghi chú sẽ lưu thời gian tạo rõ ràng", "Khóa học liên quan cũng hiện cùng thẻ để dễ xem lại"]}
           />
         ) : null}
         {entries.map((note) => (

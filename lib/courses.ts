@@ -1,7 +1,7 @@
-import { getSeedCourseBySlug, seedCourses, type Course } from "@/data/courses";
-import { readLocalCourses } from "@/lib/course-store";
-import { hasSupabaseConfig, normalizeCourseAssetPath } from "@/lib/supabase";
+import type { Course } from "@/data/courses";
+import { normalizeCourseAssetPath } from "@/lib/supabase";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { ensureCourseCatalogSeeded } from "@/lib/course-seed";
 
 type CourseRow = {
   id: string;
@@ -38,7 +38,6 @@ function combineCourseData(courseRows: CourseRow[], stepRows: CourseStepRow[]): 
   return courseRows
     .filter((course) => course.published)
     .map((course) => {
-      const seed = getSeedCourseBySlug(course.slug);
       const mappedSteps = stepRows
         .filter((step) => step.course_id === course.id)
         .sort((left, right) => left.order_index - right.order_index)
@@ -71,30 +70,26 @@ function combineCourseData(courseRows: CourseRow[], stepRows: CourseStepRow[]): 
         duration: course.duration,
         ageBand: course.age_band,
         coverImage: normalizeCourseAssetPath(course.cover_image),
-        youtubeUrl: course.youtube_url ?? seed?.youtubeUrl,
+        youtubeUrl: course.youtube_url ?? undefined,
         accent: course.accent,
         published: course.published,
         preparation: {
-          tools: course.tools?.length ? course.tools : seed?.preparation.tools ?? [],
-          ingredients: course.ingredients?.length ? course.ingredients : seed?.preparation.ingredients ?? [],
+          tools: course.tools ?? [],
+          ingredients: course.ingredients ?? [],
         },
-        steps: mappedSteps.length > 0 ? mappedSteps : seed?.steps ?? [],
+        steps: mappedSteps,
       };
     });
 }
 
 export async function getCourses(): Promise<Course[]> {
-  const localCourses = await readLocalCourses();
-
-  if (!hasSupabaseConfig()) {
-    return localCourses;
-  }
-
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
-    return localCourses;
+    return [];
   }
+
+  await ensureCourseCatalogSeeded(supabase);
 
   const [coursesResult, stepsResult] = await Promise.all([
     supabase.from("courses").select("id, slug, title, summary, what_you_make, level, duration, age_band, cover_image, youtube_url, accent, tools, ingredients, published"),
@@ -102,15 +97,13 @@ export async function getCourses(): Promise<Course[]> {
   ]);
 
   if (coursesResult.error || stepsResult.error || !coursesResult.data || !stepsResult.data) {
-    return localCourses;
+    return [];
   }
 
-  const combined = combineCourseData(coursesResult.data as CourseRow[], stepsResult.data as CourseStepRow[]);
-
-  return combined.length > 0 ? combined : localCourses;
+  return combineCourseData(coursesResult.data as CourseRow[], stepsResult.data as CourseStepRow[]);
 }
 
 export async function getCourseBySlug(slug: string): Promise<Course | undefined> {
   const courses = await getCourses();
-  return courses.find((course) => course.slug === slug) ?? getSeedCourseBySlug(slug);
+  return courses.find((course) => course.slug === slug);
 }

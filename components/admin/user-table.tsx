@@ -14,9 +14,8 @@ export function UserTable({ users }: UserTableProps) {
       <EmptyStatePanel
         eyebrow="Người dùng"
         title="Chưa có hồ sơ người dùng"
-        description="Khi phụ huynh đăng nhập, hồ sơ sẽ hiện ở đây để bạn theo dõi nhóm tuổi và quyền quản trị."
+        description="Khi có người đăng nhập, hồ sơ sẽ hiện ở đây."
         tone="sky"
-        highlights={["Email và quyền admin được gom về cùng một bảng", "Nhóm tuổi giúp bạn nhìn nhanh tập người dùng hiện có"]}
       />
     );
   }

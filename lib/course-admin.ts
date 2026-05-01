@@ -1,8 +1,8 @@
 import "server-only";
 
 import type { Course } from "@/data/courses";
-import { getSeedCourseBySlug } from "@/data/courses";
 import { requireCurrentAdmin } from "@/lib/auth";
+import { ensureCourseCatalogSeeded } from "@/lib/course-seed";
 import { denormalizeCourseAssetPath, normalizeCourseAssetPath } from "@/lib/supabase";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
@@ -58,10 +58,7 @@ export type AdminUserCourseRow = {
 
 function mapCourses(courseRows: CourseRow[], stepRows: CourseStepRow[]): Course[] {
   return courseRows.map((course) => {
-    const seed = getSeedCourseBySlug(course.slug);
-
     return {
-      ...seed,
       id: course.id,
       slug: course.slug,
       title: course.title,
@@ -71,12 +68,12 @@ function mapCourses(courseRows: CourseRow[], stepRows: CourseStepRow[]): Course[
       level: course.level,
       duration: course.duration,
       coverImage: normalizeCourseAssetPath(course.cover_image),
-      youtubeUrl: course.youtube_url ?? seed?.youtubeUrl,
+      youtubeUrl: course.youtube_url ?? undefined,
       accent: course.accent,
       published: course.published,
       preparation: {
-        tools: course.tools?.length ? course.tools : seed?.preparation.tools ?? [],
-        ingredients: course.ingredients?.length ? course.ingredients : seed?.preparation.ingredients ?? [],
+        tools: course.tools ?? [],
+        ingredients: course.ingredients ?? [],
       },
       steps: stepRows
         .filter((step) => step.course_id === course.id)
@@ -154,6 +151,8 @@ export async function listAdminCourses() {
   if (!supabase) {
     return [];
   }
+
+  await ensureCourseCatalogSeeded(supabase);
 
   const [coursesResult, stepsResult] = await Promise.all([
     supabase.from("courses").select("id, slug, title, summary, what_you_make, age_band, level, duration, cover_image, youtube_url, accent, tools, ingredients, published").order("created_at", { ascending: true }),

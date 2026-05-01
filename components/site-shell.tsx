@@ -8,13 +8,6 @@ import type { ReactNode } from "react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { cn } from "@/lib/utils";
 
-const navItems = [
-  { href: "/home", ariaLabel: "Nhà", icon: House },
-  { href: "/catalog", ariaLabel: "Khóa học", icon: BookOpen },
-  { href: "/diary", ariaLabel: "Nhật ký", icon: NotebookPen },
-  { href: "/settings", ariaLabel: "Cài đặt", icon: Settings },
-] as const;
-
 type SiteShellProps = {
   children: ReactNode;
   userEmail?: string | null;
@@ -23,6 +16,13 @@ type SiteShellProps = {
 
 export function SiteShell({ children, userEmail, isAdmin = false }: SiteShellProps) {
   const pathname = usePathname();
+  const navItems = [
+    { href: "/home", ariaLabel: "Nhà", icon: House },
+    { href: "/catalog", ariaLabel: "Khóa học", icon: BookOpen },
+    { href: "/diary", ariaLabel: "Nhật ký", icon: NotebookPen },
+    { href: "/settings", ariaLabel: "Cài đặt", icon: Settings },
+    ...(isAdmin ? [{ href: "/admin", ariaLabel: "Quản trị", icon: Shield }] : []),
+  ] as const;
 
   return (
     <div className="relative min-h-screen overflow-hidden text-slate-900">
@@ -70,7 +70,7 @@ export function SiteShell({ children, userEmail, isAdmin = false }: SiteShellPro
       </div>
 
       <nav className="fixed inset-x-0 bottom-0 z-40 px-4 pb-4 lg:hidden">
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-4 rounded-[2rem] border-2 border-outline bg-white/95 px-3 py-2 shadow-soft backdrop-blur">
+        <div className={cn("mx-auto grid w-full max-w-6xl rounded-[2rem] border-2 border-outline bg-white/95 px-3 py-2 shadow-soft backdrop-blur", isAdmin ? "grid-cols-5" : "grid-cols-4")}>
           {navItems.map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             const Icon = item.icon;
