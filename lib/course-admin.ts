@@ -3,7 +3,7 @@ import "server-only";
 import type { Course } from "@/data/courses";
 import { ensureCourseCatalogSeeded } from "@/lib/course-seed";
 import { denormalizeCourseAssetPath, normalizeCourseAssetPath } from "@/lib/supabase";
-import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { createSupabaseAdminServerClient } from "@/lib/supabase-admin-server";
 
 type CourseRow = {
   id: string;
@@ -54,6 +54,20 @@ export type AdminUserCourseRow = {
   completedStepsCount: number;
   updatedAt: string;
 };
+
+function isMissingTableErrorMessage(message?: string) {
+  if (!message) {
+    return false;
+  }
+
+  const normalized = message.toLowerCase();
+
+  return (
+    normalized.includes("could not find the table")
+    || normalized.includes("schema cache")
+    || (normalized.includes("relation") && normalized.includes("does not exist"))
+  );
+}
 
 function mapCourses(courseRows: CourseRow[], stepRows: CourseStepRow[]): Course[] {
   return courseRows.map((course) => {
@@ -143,7 +157,7 @@ function toStepRows(courseId: string, course: Course) {
 }
 
 export async function listAdminCourses() {
-  const supabase = await createSupabaseServerClient();
+  const supabase = await createSupabaseAdminServerClient();
 
   if (!supabase) {
     return [];
@@ -161,7 +175,14 @@ export async function listAdminCourses() {
   ]);
 
   if (coursesResult.error || stepsResult.error || !coursesResult.data || !stepsResult.data) {
-    throw new Error(coursesResult.error?.message ?? stepsResult.error?.message ?? "Unable to load admin courses");
+    const errorMessage = coursesResult.error?.message ?? stepsResult.error?.message ?? "Unable to load admin courses";
+
+    if (isMissingTableErrorMessage(errorMessage)) {
+      console.error("[listAdminCourses] missing tables", errorMessage);
+      return [];
+    }
+
+    throw new Error(errorMessage);
   }
 
   return mapCourses(coursesResult.data as CourseRow[], stepsResult.data as CourseStepRow[]);
@@ -175,7 +196,7 @@ export async function getAdminCourseBySlug(slug: string) {
 export async function createAdminCourse(course: Course) {
   validateCoursePayload(course);
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = await createSupabaseAdminServerClient();
 
   if (!supabase) {
     throw new Error("Supabase is not configured");
@@ -207,7 +228,7 @@ export async function createAdminCourse(course: Course) {
 export async function updateAdminCourse(slug: string, course: Course) {
   validateCoursePayload(course);
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = await createSupabaseAdminServerClient();
 
   if (!supabase) {
     throw new Error("Supabase is not configured");
@@ -257,7 +278,7 @@ export async function updateAdminCourse(slug: string, course: Course) {
 }
 
 export async function deleteAdminCourse(slug: string) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = await createSupabaseAdminServerClient();
 
   if (!supabase) {
     throw new Error("Supabase is not configured");
@@ -271,7 +292,7 @@ export async function deleteAdminCourse(slug: string) {
 }
 
 export async function listAdminUsers(): Promise<AdminUserRow[]> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = await createSupabaseAdminServerClient();
 
   if (!supabase) {
     return [];
@@ -283,6 +304,11 @@ export async function listAdminUsers(): Promise<AdminUserRow[]> {
     .order("created_at", { ascending: false });
 
   if (error || !data) {
+    if (isMissingTableErrorMessage(error?.message)) {
+      console.error("[listAdminUsers] missing tables", error?.message);
+      return [];
+    }
+
     throw new Error(error?.message ?? "Unable to load users");
   }
 
@@ -297,7 +323,7 @@ export async function listAdminUsers(): Promise<AdminUserRow[]> {
 }
 
 export async function listAdminUserCourses(): Promise<AdminUserCourseRow[]> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = await createSupabaseAdminServerClient();
 
   if (!supabase) {
     return [];
@@ -313,7 +339,14 @@ export async function listAdminUserCourses(): Promise<AdminUserCourseRow[]> {
   ]);
 
   if (progressResult.error || profileResult.error || courseResult.error || !progressResult.data || !profileResult.data || !courseResult.data) {
-    throw new Error(progressResult.error?.message ?? profileResult.error?.message ?? courseResult.error?.message ?? "Unable to load user course state");
+    const errorMessage = progressResult.error?.message ?? profileResult.error?.message ?? courseResult.error?.message ?? "Unable to load user course state";
+
+    if (isMissingTableErrorMessage(errorMessage)) {
+      console.error("[listAdminUserCourses] missing tables", errorMessage);
+      return [];
+    }
+
+    throw new Error(errorMessage);
   }
 
   const profilesById = new Map(profileResult.data.map((profile) => [profile.id, profile.email]));

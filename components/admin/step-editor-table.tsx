@@ -43,16 +43,43 @@ function swap<T>(items: T[], from: number, to: number) {
   return next;
 }
 
+function createEmptyNote() {
+  return "";
+}
+
 export function StepEditorTable({ courseSlug, steps, onChangeAction }: StepEditorTableProps) {
   const updateStep = (index: number, updater: (step: CourseStep) => CourseStep) => {
     onChangeAction(normalizeSteps(steps.map((step, currentIndex) => (currentIndex === index ? updater(step) : step))));
   };
 
-  const handleNotesChange = (index: number, value: string) => {
+  const setNote = (stepIndex: number, noteIndex: number, value: string) => {
+    updateStep(stepIndex, (step) => {
+      const nextNotes = [...(step.notes ?? [])];
+      nextNotes[noteIndex] = value;
+
+      return {
+        ...step,
+        notes: nextNotes,
+      };
+    });
+  };
+
+  const addNote = (index: number) => {
     updateStep(index, (step) => ({
       ...step,
-      notes: value.split("\n").map((item) => item.trim()).filter(Boolean),
+      notes: [...(step.notes ?? []), createEmptyNote()],
     }));
+  };
+
+  const removeNote = (stepIndex: number, noteIndex: number) => {
+    updateStep(stepIndex, (step) => {
+      const nextNotes = (step.notes ?? []).filter((_, currentIndex) => currentIndex !== noteIndex);
+
+      return {
+        ...step,
+        notes: nextNotes,
+      };
+    });
   };
 
   const addStep = () => {
@@ -140,8 +167,35 @@ export function StepEditorTable({ courseSlug, steps, onChangeAction }: StepEdito
                 <textarea value={step.passCriteria} onChange={(event) => updateStep(index, (current) => ({ ...current, passCriteria: event.target.value }))} placeholder="Ví dụ: Tinh thể xuất hiện rõ ở đáy ly" className={`${inputClass} min-h-[96px]`} />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Ghi chú từng dòng</label>
-                <textarea value={(step.notes ?? []).join("\n")} onChange={(event) => handleNotesChange(index, event.target.value)} placeholder="Mỗi dòng là một lưu ý riêng" className={`${inputClass} min-h-[96px]`} />
+                <div className="flex items-end justify-between gap-3">
+                  <label className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Ghi chú từng dòng</label>
+                  <button type="button" onClick={() => addNote(index)} className="inline-flex rounded-full border-2 border-outline bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-soft">
+                    Thêm dòng
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {(step.notes && step.notes.length > 0 ? step.notes : [createEmptyNote()]).map((note, noteIndex) => (
+                    <div key={`${step.order}-note-${noteIndex}`} className="flex gap-2">
+                      <input
+                        value={note}
+                        onChange={(event) => setNote(index, noteIndex, event.target.value)}
+                        placeholder={noteIndex === 0 ? "Ví dụ: Không dùng cốc nhựa mỏng" : "Thêm lưu ý khác"}
+                        className={inputClass}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeNote(index, noteIndex)}
+                        disabled={(step.notes?.length ?? 0) === 0 && noteIndex === 0}
+                        className="inline-flex shrink-0 items-center justify-center rounded-full border-2 border-outline bg-rose/20 px-4 py-3 text-sm font-bold text-rose-900 shadow-soft disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        Xóa
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <p className="text-sm leading-6 text-slate-500">Mỗi dòng là một ghi chú riêng. Có thể thêm từng dòng như phần dụng cụ để sửa cho nhanh hơn.</p>
               </div>
             </div>
 
