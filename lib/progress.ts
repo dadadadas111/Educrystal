@@ -1,5 +1,3 @@
-"use client";
-
 export type CourseProgressState = {
   activeStepIndex: number;
   completedSteps: number[];
@@ -16,15 +14,17 @@ export type DiaryEntry = {
   createdAt: string;
 };
 
+export type ReminderState = {
+  courseSlug: string;
+  stepIndex: number;
+  reminderAt: string;
+  note: string;
+};
+
 export type AppState = {
   courses: Record<string, CourseProgressState>;
   diaryEntries: DiaryEntry[];
-  reminders: Array<{
-    courseSlug: string;
-    stepIndex: number;
-    reminderAt: string;
-    note: string;
-  }>;
+  reminders: ReminderState[];
 };
 
 const STORAGE_KEY = "educrystal:app-state";
@@ -85,7 +85,7 @@ export function upsertCourseProgress(state: AppState, courseSlug: string, nextSt
 
 export function addReminder(
   state: AppState,
-  reminder: { courseSlug: string; stepIndex: number; reminderAt: string; note: string },
+  reminder: ReminderState,
 ): AppState {
   return {
     ...state,

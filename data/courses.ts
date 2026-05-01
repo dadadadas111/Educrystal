@@ -32,6 +32,7 @@ export type CourseStep = {
 };
 
 export type Course = {
+  id?: string;
   slug: string;
   title: string;
   summary: string;
@@ -40,7 +41,9 @@ export type Course = {
   level: "Dễ" | "Vừa" | "Khó";
   duration: string;
   coverImage: string;
+  youtubeUrl?: string;
   accent: "sky" | "rose" | "gold";
+  published?: boolean;
   preparation: CoursePreparation;
   steps: CourseStep[];
 };
