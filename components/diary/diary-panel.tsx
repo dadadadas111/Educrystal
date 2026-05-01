@@ -1,42 +1,47 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
+import { EmptyStatePanel } from "@/components/admin/status-empty-states";
 import type { Course } from "@/data/courses";
-import { addDiaryEntry, createEmptyAppState, loadAppState, saveAppState } from "@/lib/progress";
+import { addDiaryEntry, createEmptyAppState, type AppState } from "@/lib/progress";
 
 type DiaryPanelProps = {
   courses: Course[];
+  initialState?: AppState;
 };
 
-export function DiaryPanel({ courses }: DiaryPanelProps) {
-  const [state, setState] = useState(createEmptyAppState());
+export function DiaryPanel({ courses, initialState }: DiaryPanelProps) {
+  const [state, setState] = useState(initialState ?? createEmptyAppState());
   const [courseSlug, setCourseSlug] = useState(courses[0]?.slug ?? "");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
-  useEffect(() => {
-    setState(loadAppState());
-  }, []);
-
-  useEffect(() => {
-    saveAppState(state);
-  }, [state]);
-
   const selectedCourse = useMemo(() => courses.find((course) => course.slug === courseSlug) ?? courses[0], [courseSlug, courses]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title.trim() || !body.trim()) return;
 
-    const nextState = addDiaryEntry(state, {
-      id: crypto.randomUUID(),
-      title: title.trim(),
-      body: body.trim(),
-      courseSlug: selectedCourse?.slug,
-      courseTitle: selectedCourse?.title,
-      createdAt: new Date().toISOString(),
+    const response = await fetch("/api/user/diary", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title.trim(),
+        body: body.trim(),
+        courseSlug: selectedCourse?.slug,
+      }),
     });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const payload = (await response.json()) as { data: AppState["diaryEntries"][number] };
+
+    const nextState = addDiaryEntry(state, payload.data);
 
     setState(nextState);
     setTitle("");
@@ -52,32 +57,55 @@ export function DiaryPanel({ courses }: DiaryPanelProps) {
         <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Ghi nhanh</h1>
       </section>
 
-      <section className="playful-stage">
-        <div className="grid gap-3 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="space-y-3">
-            <label className="block text-sm font-bold text-slate-700">Gắn vào khóa học</label>
-            <select value={courseSlug} onChange={(event) => setCourseSlug(event.target.value)} className="w-full rounded-2xl border-2 border-outline bg-white px-4 py-3 text-base outline-none shadow-soft focus:border-sky-300">
-              {courses.map((course) => (
-                <option key={course.slug} value={course.slug}>
-                  {course.title}
-                </option>
-              ))}
-            </select>
-            {selectedCourse ? <Link href={`/catalog/${selectedCourse.slug}`} className="inline-flex rounded-full border-2 border-outline bg-amber-100 px-4 py-2 text-sm font-bold text-amber-900 shadow-soft">Xem khóa</Link> : null}
-          </div>
+      {courses.length === 0 ? (
+        <EmptyStatePanel
+          eyebrow="Nhật ký"
+          title="Chưa có khóa học để gắn nhật ký"
+          description="Nhật ký sẽ rõ nghĩa hơn khi đi kèm một khóa học cụ thể. Khi catalog có nội dung, bạn có thể ghi từng ngày quan sát ngay tại đây."
+          tone="sky"
+          highlights={["Mỗi ghi chú có thể gắn vào đúng khóa học", "Nhật ký gần nhất sẽ quay lại trang chủ sau khi lưu"]}
+          action={
+            <Link href="/catalog" className="inline-flex rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft">
+              Xem catalog
+            </Link>
+          }
+        />
+      ) : (
+        <section className="playful-stage">
+          <div className="grid gap-3 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="space-y-3">
+              <label className="block text-sm font-bold text-slate-700">Gắn vào khóa học</label>
+              <select value={courseSlug} onChange={(event) => setCourseSlug(event.target.value)} className="w-full rounded-2xl border-2 border-outline bg-white px-4 py-3 text-base outline-none shadow-soft focus:border-sky-300">
+                {courses.map((course) => (
+                  <option key={course.slug} value={course.slug}>
+                    {course.title}
+                  </option>
+                ))}
+              </select>
+              {selectedCourse ? <Link href={`/catalog/${selectedCourse.slug}`} className="inline-flex rounded-full border-2 border-outline bg-amber-100 px-4 py-2 text-sm font-bold text-amber-900 shadow-soft">Xem khóa</Link> : null}
+            </div>
 
-          <div className="space-y-3">
-            <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Tiêu đề ngắn" className="w-full rounded-2xl border-2 border-outline bg-white px-4 py-3 text-base outline-none shadow-soft focus:border-sky-300" />
-            <textarea value={body} onChange={(event) => setBody(event.target.value)} placeholder="Hôm nay bạn thấy gì?" rows={6} className="w-full rounded-[1.5rem] border-2 border-outline bg-white px-4 py-3 text-base outline-none shadow-soft focus:border-sky-300" />
-            <button type="button" onClick={handleSave} className="inline-flex w-full items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft">
-              Lưu ghi chú
-            </button>
+            <div className="space-y-3">
+              <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Tiêu đề ngắn" className="w-full rounded-2xl border-2 border-outline bg-white px-4 py-3 text-base outline-none shadow-soft focus:border-sky-300" />
+              <textarea value={body} onChange={(event) => setBody(event.target.value)} placeholder="Hôm nay bạn thấy gì?" rows={6} className="w-full rounded-[1.5rem] border-2 border-outline bg-white px-4 py-3 text-base outline-none shadow-soft focus:border-sky-300" />
+              <button type="button" onClick={() => void handleSave()} className="inline-flex w-full items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft">
+                Lưu ghi chú
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className="space-y-3">
-        {entries.length === 0 ? <div className="list-card text-sm text-slate-600">Chưa có nhật ký nào.</div> : null}
+        {entries.length === 0 ? (
+          <EmptyStatePanel
+            eyebrow="Ghi chú"
+            title="Chưa có nhật ký nào"
+            description="Sau mỗi lần quan sát, hãy ghi lại một dòng ngắn để lần quay lại sau cả nhà nhớ được tinh thể đã thay đổi ra sao."
+            tone="gold"
+            highlights={["Mỗi ghi chú sẽ lưu thời gian tạo rõ ràng", "Khóa học liên quan cũng hiện cùng thẻ để dễ xem lại"]}
+          />
+        ) : null}
         {entries.map((note) => (
           <article key={note.id} className="list-card">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{new Date(note.createdAt).toLocaleString("vi-VN")}</p>

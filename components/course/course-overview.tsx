@@ -1,21 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import type { Course } from "@/data/courses";
-import { createEmptyAppState, getCourseProgress, loadAppState } from "@/lib/progress";
+import { createEmptyAppState, getCourseProgress, type AppState } from "@/lib/progress";
 
 type CourseOverviewProps = {
   course: Course;
+  initialState?: AppState;
 };
 
-export function CourseOverview({ course }: CourseOverviewProps) {
-  const [state, setState] = useState(createEmptyAppState());
-
-  useEffect(() => {
-    setState(loadAppState());
-  }, []);
+export function CourseOverview({ course, initialState }: CourseOverviewProps) {
+  const [state] = useState(initialState ?? createEmptyAppState());
 
   const progress = getCourseProgress(state, course.slug);
   const total = course.steps.length;

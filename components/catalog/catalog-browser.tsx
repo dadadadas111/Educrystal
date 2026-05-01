@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
+import { EmptyStatePanel } from "@/components/admin/status-empty-states";
 import type { Course } from "@/data/courses";
-import { createEmptyAppState, getCourseProgress, loadAppState } from "@/lib/progress";
+import { createEmptyAppState, getCourseProgress, type AppState } from "@/lib/progress";
 
 type CatalogBrowserProps = {
   courses: Course[];
+  initialState?: AppState;
 };
 
 const tabs = [
@@ -16,13 +18,9 @@ const tabs = [
   { id: "done", label: "Đã xong" },
 ] as const;
 
-export function CatalogBrowser({ courses }: CatalogBrowserProps) {
+export function CatalogBrowser({ courses, initialState }: CatalogBrowserProps) {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]["id"]>("active");
-  const [state, setState] = useState(createEmptyAppState());
-
-  useEffect(() => {
-    setState(loadAppState());
-  }, []);
+  const [state] = useState(initialState ?? createEmptyAppState());
 
   const grouped = useMemo(() => {
     const items = courses.map((course) => {
@@ -46,6 +44,24 @@ export function CatalogBrowser({ courses }: CatalogBrowserProps) {
   }, [courses, state]);
 
   const visible = grouped[activeTab];
+
+  if (courses.length === 0) {
+    return (
+      <div className="space-y-6">
+        <section className="panel-soft section-glow">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Khóa học</p>
+          <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Chọn khóa học bạn thích</h1>
+        </section>
+
+        <EmptyStatePanel
+          eyebrow="Catalog"
+          title="Catalog đang trống"
+          description="Khi admin xuất bản khóa học, các thẻ khóa sẽ xuất hiện ở đây cùng ảnh bìa, độ khó và trạng thái tiến độ thay vì một khoảng trống khó hiểu."
+          highlights={["Chỉ khóa đã xuất bản mới hiện trong catalog", "Mỗi thẻ sẽ mang theo ảnh bìa, độ khó và thời lượng"]}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -86,7 +102,16 @@ export function CatalogBrowser({ courses }: CatalogBrowserProps) {
             </div>
           </Link>
         ))}
-      </section>
+        {visible.length === 0 ? (
+            <EmptyStatePanel
+              eyebrow={activeTab === "active" ? "Đang làm" : activeTab === "discover" ? "Khám phá" : "Đã xong"}
+              title={activeTab === "active" ? "Chưa có khóa nào đang theo" : activeTab === "discover" ? "Bạn đã mở hết các khóa hiện có" : "Chưa có khóa nào hoàn thành"}
+              description={activeTab === "active" ? "Hãy bắt đầu một khóa mới hoặc quay lại danh mục khám phá để chọn hành trình tiếp theo." : activeTab === "discover" ? "Khi có khóa mới hoặc khi một khóa chưa bắt đầu, thẻ đó sẽ xuất hiện ở đây." : "Sau khi hoàn thành một hành trình, khóa học sẽ chuyển sang khu vực này để cả nhà nhìn lại thành quả."}
+              tone={activeTab === "done" ? "gold" : "sky"}
+              highlights={activeTab === "active" ? ["Tiến độ thật sẽ kéo khóa sang tab này", "Nút tiếp tục sẽ luôn dẫn tới bước gần nhất"] : activeTab === "discover" ? ["Tab này dành cho những khóa chưa bắt đầu", "Admin xuất bản thêm khóa mới thì chúng sẽ xuất hiện tại đây"] : ["Khóa hoàn thành sẽ được gom riêng", "Phụ huynh có thể nhìn lại thành quả của bé theo từng hành trình"]}
+            />
+          ) : null}
+        </section>
     </div>
   );
 }

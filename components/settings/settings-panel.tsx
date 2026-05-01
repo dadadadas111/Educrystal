@@ -1,21 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useEffect } from "react";
 
+import { EmptyStatePanel, StatusBanner } from "@/components/admin/status-empty-states";
 import type { Course } from "@/data/courses";
-import { createEmptyAppState, loadAppState } from "@/lib/progress";
+import { createEmptyAppState, type AppState } from "@/lib/progress";
 
 type SettingsPanelProps = {
   courses: Course[];
+  initialState?: AppState;
 };
 
-export function SettingsPanel({ courses }: SettingsPanelProps) {
-  const [state, setState] = useState(createEmptyAppState());
-
-  useEffect(() => {
-    setState(loadAppState());
-  }, []);
+export function SettingsPanel({ courses, initialState }: SettingsPanelProps) {
+  const [state] = useState(initialState ?? createEmptyAppState());
 
   const reminders = useMemo(() => state.reminders, [state.reminders]);
 
@@ -37,13 +34,29 @@ export function SettingsPanel({ courses }: SettingsPanelProps) {
         <div className="list-card">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Tiến độ</p>
           <h2 className="mt-2 font-display text-3xl text-slate-900">Khóa đang theo</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">{courses.length} khóa đã có trong catalog. Mỗi khóa có thể chạy song song.</p>
+          <p className="mt-2 text-sm leading-6 text-slate-600">{courses.length > 0 ? `${courses.length} khóa đã có trong catalog. Mỗi khóa có thể chạy song song.` : "Hiện chưa có khóa nào được hiển thị trong catalog."}</p>
         </div>
       </section>
 
+      {courses.length === 0 ? (
+        <StatusBanner
+          title="Catalog chưa có khóa học"
+          description="Khi admin xuất bản khóa đầu tiên, phần cài đặt sẽ phản ánh số khóa đang theo và các nhắc liên quan rõ ràng hơn."
+          tone="sky"
+        />
+      ) : null}
+
       <section className="space-y-3 panel-soft section-glow">
         <h2 className="font-display text-3xl text-slate-900">Nhắc lại đã lưu</h2>
-        {reminders.length === 0 ? <p className="text-sm text-slate-600">Chưa có nhắc nào.</p> : null}
+        {reminders.length === 0 ? (
+          <EmptyStatePanel
+            eyebrow="Nhắc lịch"
+            title="Chưa có nhắc nào được lưu"
+            description="Khi một bước chờ cần quay lại sau vài ngày, lời nhắc sẽ hiện ở đây để phụ huynh không bỏ lỡ thời điểm quan sát đẹp nhất."
+            tone="gold"
+            highlights={["Nhắc được tạo từ các step loại wait", "Ngày giờ và ghi chú sẽ hiện tập trung tại một nơi"]}
+          />
+        ) : null}
         <div className="space-y-3">
           {reminders.map((reminder, index) => (
             <div key={`${reminder.courseSlug}-${index}`} className="quest-card">

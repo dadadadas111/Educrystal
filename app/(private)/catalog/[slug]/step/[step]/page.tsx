@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { CourseStepPlayer } from "@/components/course/course-step-player";
-import { getCourseBySlug, getCourses } from "@/lib/courses";
+import { getCourseBySlug } from "@/lib/courses";
+import { getUserAppState } from "@/lib/user-state";
 
 type CourseStepPageProps = {
   params: Promise<{
@@ -10,14 +11,9 @@ type CourseStepPageProps = {
   }>;
 };
 
-export async function generateStaticParams() {
-  const courses = await getCourses();
-  return courses.flatMap((course) => course.steps.map((step) => ({ slug: course.slug, step: String(step.order - 1) })));
-}
-
 export default async function CourseStepPage({ params }: CourseStepPageProps) {
   const { slug, step } = await params;
-  const course = await getCourseBySlug(slug);
+  const [course, initialState] = await Promise.all([getCourseBySlug(slug), getUserAppState()]);
 
   if (!course) {
     notFound();
@@ -30,5 +26,5 @@ export default async function CourseStepPage({ params }: CourseStepPageProps) {
     notFound();
   }
 
-  return <CourseStepPlayer course={course} stepIndex={stepIndex} />;
+  return <CourseStepPlayer course={course} stepIndex={stepIndex} initialState={initialState} />;
 }

@@ -1,29 +1,25 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
 import type { Course } from "@/data/courses";
-import { addReminder, createEmptyAppState, getCourseProgress, loadAppState, saveAppState, upsertCourseProgress } from "@/lib/progress";
+import { addReminder, createEmptyAppState, getCourseProgress, type AppState, upsertCourseProgress } from "@/lib/progress";
 
 type CourseStepPlayerProps = {
   course: Course;
   stepIndex: number;
+  initialState?: AppState;
 };
 
 function addDays(base: Date, days: number) {
   return new Date(base.getTime() + days * 24 * 60 * 60 * 1000);
 }
 
-export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
+export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStepPlayerProps) {
   const router = useRouter();
-  const [state, setState] = useState(createEmptyAppState());
+  const [state, setState] = useState(initialState ?? createEmptyAppState());
   const [showConfirm, setShowConfirm] = useState(false);
-
-  useEffect(() => {
-    setState(loadAppState());
-  }, []);
 
   const progress = getCourseProgress(state, course.slug);
   const step = course.steps[stepIndex] ?? course.steps[0];
@@ -39,35 +35,46 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
 
   const persist = (nextState: typeof state) => {
     setState(nextState);
-    saveAppState(nextState);
   };
 
-  const syncProgress = (nextIndex: number, completedStepIndex?: number) => {
+  const syncProgress = async (nextIndex: number, completedStepIndex?: number) => {
     const nextCompleted = completedStepIndex === undefined || progress.completedSteps.includes(completedStepIndex)
       ? progress.completedSteps
       : [...progress.completedSteps, completedStepIndex];
 
-    persist(
-      upsertCourseProgress(state, course.slug, {
-        activeStepIndex: Math.max(0, Math.min(nextIndex, course.steps.length - 1)),
-        completedSteps: nextCompleted,
-        updatedAt: new Date().toISOString(),
+    const nextProgress = {
+      activeStepIndex: Math.max(0, Math.min(nextIndex, course.steps.length - 1)),
+      completedSteps: nextCompleted,
+      updatedAt: new Date().toISOString(),
+    };
+
+    persist(upsertCourseProgress(state, course.slug, nextProgress));
+
+    await fetch("/api/user/progress", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        courseSlug: course.slug,
+        activeStepIndex: nextProgress.activeStepIndex,
+        completedSteps: nextProgress.completedSteps,
       }),
-    );
+    });
   };
 
-  const goToStep = (nextIndex: number) => {
-    syncProgress(nextIndex);
+  const goToStep = async (nextIndex: number) => {
+    await syncProgress(nextIndex);
     router.push(`/catalog/${course.slug}/step/${nextIndex}`);
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     if (requiresWait) {
       setShowConfirm(true);
       return;
     }
 
-    syncProgress(Math.min(stepIndex + 1, course.steps.length - 1), stepIndex);
+    await syncProgress(Math.min(stepIndex + 1, course.steps.length - 1), stepIndex);
     if (canGoNext) {
       router.push(`/catalog/${course.slug}/step/${stepIndex + 1}`);
     } else {
@@ -75,8 +82,8 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
     }
   };
 
-  const handleConfirmComplete = () => {
-    syncProgress(Math.min(stepIndex + 1, course.steps.length - 1), stepIndex);
+  const handleConfirmComplete = async () => {
+    await syncProgress(Math.min(stepIndex + 1, course.steps.length - 1), stepIndex);
     setShowConfirm(false);
     if (canGoNext) {
       router.push(`/catalog/${course.slug}/step/${stepIndex + 1}`);
@@ -85,7 +92,7 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
     }
   };
 
-  const handleReminder = () => {
+  const handleReminder = async () => {
     if (!reminderAt) return;
 
     const nextState = addReminder(
@@ -104,6 +111,26 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
     );
 
     persist(nextState);
+
+    const courseReminders = nextState.reminders
+      .filter((reminder) => reminder.courseSlug === course.slug)
+      .map((reminder) => ({
+        stepIndex: reminder.stepIndex,
+        reminderAt: reminder.reminderAt,
+        note: reminder.note,
+      }));
+
+    await fetch("/api/user/reminders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        courseSlug: course.slug,
+        reminders: courseReminders,
+      }),
+    });
+
     setShowConfirm(false);
     router.push(`/catalog/${course.slug}`);
   };
@@ -181,19 +208,19 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
         ) : null}
 
         <div className="flex gap-3">
-          <button
-            type="button"
-            onClick={() => (canGoBack ? goToStep(stepIndex - 1) : router.push(`/catalog/${course.slug}`))}
-            className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 shadow-soft"
-          >
-            Quay lại
-          </button>
-          <button
-            type="button"
-            onClick={handleComplete}
-            className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft"
-          >
-            {requiresWait ? "Xong giai đoạn" : "Xong bước"}
+            <button
+              type="button"
+              onClick={() => void (canGoBack ? goToStep(stepIndex - 1) : router.push(`/catalog/${course.slug}`))}
+              className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 shadow-soft"
+            >
+              Quay lại
+            </button>
+            <button
+              type="button"
+              onClick={() => void handleComplete()}
+              className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft"
+            >
+              {requiresWait ? "Xong giai đoạn" : "Xong bước"}
           </button>
         </div>
       </section>
@@ -211,10 +238,10 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
             </div>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <button type="button" onClick={handleConfirmComplete} className="rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft">
+              <button type="button" onClick={() => void handleConfirmComplete()} className="rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft">
                 Mình đã làm xong
               </button>
-              <button type="button" onClick={handleReminder} className="rounded-full border-2 border-outline bg-amber-100 px-4 py-3 text-sm font-bold text-amber-900 shadow-soft">
+              <button type="button" onClick={() => void handleReminder()} className="rounded-full border-2 border-outline bg-amber-100 px-4 py-3 text-sm font-bold text-amber-900 shadow-soft">
                 Nhắc lại khi tới ngày
               </button>
             </div>

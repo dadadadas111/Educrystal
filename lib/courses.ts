@@ -1,6 +1,7 @@
 import { getSeedCourseBySlug, seedCourses, type Course } from "@/data/courses";
 import { readLocalCourses } from "@/lib/course-store";
-import { createSupabaseServerClient, hasSupabaseConfig } from "@/lib/supabase";
+import { hasSupabaseConfig, normalizeCourseAssetPath } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 type CourseRow = {
   id: string;
@@ -12,6 +13,7 @@ type CourseRow = {
   duration: string;
   age_band: string;
   cover_image: string;
+  youtube_url: string | null;
   accent: Course["accent"];
   tools: Course["preparation"]["tools"];
   ingredients: Course["preparation"]["ingredients"];
@@ -52,7 +54,7 @@ function combineCourseData(courseRows: CourseRow[], stepRows: CourseStepRow[]): 
           media: step.media_src
             ? {
                 kind: "image" as const,
-                src: step.media_src,
+                src: normalizeCourseAssetPath(step.media_src),
                 alt: step.media_alt ?? step.title,
               }
             : undefined,
@@ -60,6 +62,7 @@ function combineCourseData(courseRows: CourseRow[], stepRows: CourseStepRow[]): 
 
       return {
         ...seed,
+        id: course.id,
         slug: course.slug,
         title: course.title,
         summary: course.summary,
@@ -67,8 +70,10 @@ function combineCourseData(courseRows: CourseRow[], stepRows: CourseStepRow[]): 
         level: course.level,
         duration: course.duration,
         ageBand: course.age_band,
-        coverImage: course.cover_image,
+        coverImage: normalizeCourseAssetPath(course.cover_image),
+        youtubeUrl: course.youtube_url ?? seed?.youtubeUrl,
         accent: course.accent,
+        published: course.published,
         preparation: {
           tools: course.tools?.length ? course.tools : seed?.preparation.tools ?? [],
           ingredients: course.ingredients?.length ? course.ingredients : seed?.preparation.ingredients ?? [],
@@ -85,14 +90,14 @@ export async function getCourses(): Promise<Course[]> {
     return localCourses;
   }
 
-  const supabase = createSupabaseServerClient();
+  const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
     return localCourses;
   }
 
   const [coursesResult, stepsResult] = await Promise.all([
-    supabase.from("courses").select("id, slug, title, summary, what_you_make, level, duration, age_band, cover_image, accent, tools, ingredients, published"),
+    supabase.from("courses").select("id, slug, title, summary, what_you_make, level, duration, age_band, cover_image, youtube_url, accent, tools, ingredients, published"),
     supabase.from("course_steps").select("course_id, order_index, title, body, kind, notes, pass_criteria, wait_days, wait_hint, media_src, media_alt"),
   ]);
 

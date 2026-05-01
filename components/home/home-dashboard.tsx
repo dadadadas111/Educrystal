@@ -1,25 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
+import { EmptyStatePanel } from "@/components/admin/status-empty-states";
 import type { Course } from "@/data/courses";
-import { createEmptyAppState, getCourseProgress, loadAppState, saveAppState } from "@/lib/progress";
+import { createEmptyAppState, getCourseProgress, type AppState } from "@/lib/progress";
 
 type HomeDashboardProps = {
   courses: Course[];
+  initialState?: AppState;
 };
 
-export function HomeDashboard({ courses }: HomeDashboardProps) {
-  const [state, setState] = useState(createEmptyAppState());
-
-  useEffect(() => {
-    setState(loadAppState());
-  }, []);
-
-  useEffect(() => {
-    saveAppState(state);
-  }, [state]);
+export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
+  const [state] = useState(initialState ?? createEmptyAppState());
 
   const courseCards = useMemo(() => {
     return courses.map((course) => {
@@ -41,6 +35,29 @@ export function HomeDashboard({ courses }: HomeDashboardProps) {
   const finishedCourses = courseCards.filter((item) => item.completed >= item.total);
   const nextUp = activeCourses[0] ?? courseCards[0];
   const recentDiary = state.diaryEntries[0];
+
+  if (courseCards.length === 0) {
+    return (
+      <div className="space-y-6">
+        <section className="panel-soft section-glow">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Trang chủ</p>
+          <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Hôm nay mình làm gì?</h1>
+        </section>
+
+        <EmptyStatePanel
+          eyebrow="Trang chủ"
+          title="Chưa có khóa học nào để bắt đầu"
+          description="Khi catalog có khóa được xuất bản, trang chủ sẽ hiện tiến độ, khóa đang làm và bước tiếp theo thay vì để màn hình trống."
+          highlights={["Trang chủ sẽ ưu tiên đúng bước tiếp theo để quay lại", "Tiến độ và nhật ký gần nhất sẽ tự xuất hiện khi có dữ liệu"]}
+          action={
+            <Link href="/catalog" className="inline-flex rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft">
+              Mở catalog
+            </Link>
+          }
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -116,7 +133,13 @@ export function HomeDashboard({ courses }: HomeDashboardProps) {
             </Link>
           ))}
           {activeCourses.length === 0 ? (
-            <div className="rounded-[2rem] bg-white p-5 text-sm text-slate-600 shadow-[0_14px_32px_rgba(15,23,42,0.08)]">Chưa có khóa nào đang mở.</div>
+            <EmptyStatePanel
+              eyebrow="Đang làm"
+              title="Chưa có khóa nào đang mở"
+              description="Bắt đầu một khóa trong catalog để trang chủ luôn có bước tiếp theo rõ ràng cho lần quay lại sau."
+              tone="sky"
+              highlights={["Một khóa vừa bắt đầu sẽ hiện ngay ở đây", "Tiến độ bước và nút tiếp tục sẽ thay cho trạng thái rỗng này"]}
+            />
           ) : null}
         </div>
       </section>
@@ -133,6 +156,15 @@ export function HomeDashboard({ courses }: HomeDashboardProps) {
               </div>
             </Link>
           ))}
+          {finishedCourses.length === 0 ? (
+            <EmptyStatePanel
+              eyebrow="Hoàn thành"
+              title="Chưa có khóa nào hoàn thành"
+              description="Khi một hành trình kết thúc, thành quả của bé sẽ được gom lại ở đây để nhìn lại và tiếp tục thử khóa mới."
+              tone="gold"
+              highlights={["Khóa đã xong sẽ được tách riêng để dễ nhìn lại", "Đây cũng là nơi phụ huynh thấy tiến trình dài hạn của bé"]}
+            />
+          ) : null}
         </div>
       </section>
     </div>

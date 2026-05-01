@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { CourseOverview } from "@/components/course/course-overview";
-import { getCourseBySlug, getCourses } from "@/lib/courses";
+import { getCourseBySlug } from "@/lib/courses";
+import { getUserAppState } from "@/lib/user-state";
 
 type ProgramDetailPageProps = {
   params: Promise<{
@@ -9,18 +10,13 @@ type ProgramDetailPageProps = {
   }>;
 };
 
-export async function generateStaticParams() {
-  const courses = await getCourses();
-  return courses.map((course) => ({ slug: course.slug }));
-}
-
 export default async function ProgramDetailPage({ params }: ProgramDetailPageProps) {
   const { slug } = await params;
-  const course = await getCourseBySlug(slug);
+  const [course, initialState] = await Promise.all([getCourseBySlug(slug), getUserAppState()]);
 
   if (!course) {
     notFound();
   }
 
-  return <CourseOverview course={course} />;
+  return <CourseOverview course={course} initialState={initialState} />;
 }

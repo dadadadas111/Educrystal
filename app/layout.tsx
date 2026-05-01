@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Baloo_2, Be_Vietnam_Pro } from "next/font/google";
 
-import { SiteShell } from "@/components/site-shell";
-
 import "./globals.css";
 
 const bodyFont = Be_Vietnam_Pro({
@@ -35,9 +33,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="vi">
-      <body className={`${bodyFont.variable} ${displayFont.variable} font-body antialiased`}>
-        <SiteShell>{children}</SiteShell>
-      </body>
+      <body className={`${bodyFont.variable} ${displayFont.variable} font-body antialiased`}>{children}</body>
     </html>
   );
 }
