@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { createSupabaseAdminServerClient } from "@/lib/supabase-admin-server";
 
 function sanitizeSegment(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "") || "course";
@@ -8,10 +8,10 @@ function sanitizeSegment(value: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createSupabaseServerClient();
+    const supabase = await createSupabaseAdminServerClient();
 
     if (!supabase) {
-      throw new Error("Supabase is not configured");
+      throw new Error("Supabase service role is not configured");
     }
 
     const formData = await request.formData();
