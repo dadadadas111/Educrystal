@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { requireCurrentAdmin } from "@/lib/auth";
+import { requireCurrentUser } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 function sanitizeSegment(value: string) {
@@ -9,7 +9,7 @@ function sanitizeSegment(value: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    await requireCurrentAdmin();
+    await requireCurrentUser();
 
     const supabase = await createSupabaseServerClient();
 

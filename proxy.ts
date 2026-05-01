@@ -9,7 +9,7 @@ function isProtectedPath(pathname: string) {
 }
 
 function isAdminPath(pathname: string) {
-  return pathname === "/admin" || pathname.startsWith("/admin/");
+  return pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/api/admin/");
 }
 
 function decodeBasicAuthHeader(authHeader: string) {
@@ -85,5 +85,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/home/:path*", "/catalog/:path*", "/diary/:path*", "/settings/:path*", "/admin/:path*"],
+  matcher: ["/", "/home/:path*", "/catalog/:path*", "/diary/:path*", "/settings/:path*", "/admin/:path*", "/api/admin/:path*"],
 };

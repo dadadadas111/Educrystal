@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { Course } from "@/data/courses";
-import { requireCurrentAdmin } from "@/lib/auth";
+import { requireCurrentUser } from "@/lib/auth";
 import { ensureCourseCatalogSeeded } from "@/lib/course-seed";
 import { denormalizeCourseAssetPath, normalizeCourseAssetPath } from "@/lib/supabase";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
@@ -144,7 +144,7 @@ function toStepRows(courseId: string, course: Course) {
 }
 
 export async function listAdminCourses() {
-  await requireCurrentAdmin();
+  await requireCurrentUser();
 
   const supabase = await createSupabaseServerClient();
 
@@ -176,7 +176,7 @@ export async function getAdminCourseBySlug(slug: string) {
 }
 
 export async function createAdminCourse(course: Course) {
-  await requireCurrentAdmin();
+  await requireCurrentUser();
   validateCoursePayload(course);
 
   const supabase = await createSupabaseServerClient();
@@ -209,7 +209,7 @@ export async function createAdminCourse(course: Course) {
 }
 
 export async function updateAdminCourse(slug: string, course: Course) {
-  await requireCurrentAdmin();
+  await requireCurrentUser();
   validateCoursePayload(course);
 
   const supabase = await createSupabaseServerClient();
@@ -262,7 +262,7 @@ export async function updateAdminCourse(slug: string, course: Course) {
 }
 
 export async function deleteAdminCourse(slug: string) {
-  await requireCurrentAdmin();
+  await requireCurrentUser();
 
   const supabase = await createSupabaseServerClient();
 
@@ -278,7 +278,7 @@ export async function deleteAdminCourse(slug: string) {
 }
 
 export async function listAdminUsers(): Promise<AdminUserRow[]> {
-  await requireCurrentAdmin();
+  await requireCurrentUser();
 
   const supabase = await createSupabaseServerClient();
 
@@ -306,7 +306,7 @@ export async function listAdminUsers(): Promise<AdminUserRow[]> {
 }
 
 export async function listAdminUserCourses(): Promise<AdminUserCourseRow[]> {
-  await requireCurrentAdmin();
+  await requireCurrentUser();
 
   const supabase = await createSupabaseServerClient();
 

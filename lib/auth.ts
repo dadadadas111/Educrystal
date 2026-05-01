@@ -52,3 +52,13 @@ export async function requireCurrentAdmin() {
 
   return user;
 }
+
+export async function requireCurrentUser() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  return user;
+}
