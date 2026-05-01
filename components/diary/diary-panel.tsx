@@ -50,7 +50,6 @@ export function DiaryPanel({ courses }: DiaryPanelProps) {
       <section className="panel-soft section-glow">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Nhật ký</p>
         <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Ghi nhanh</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Không cần viết dài. Chỉ cần ghi cảm giác, hình ảnh, hoặc một điều thú vị của hôm nay.</p>
       </section>
 
       <section className="playful-stage">

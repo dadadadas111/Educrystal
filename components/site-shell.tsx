@@ -50,9 +50,9 @@ export function SiteShell({ children }: SiteShellProps) {
               </span>
             </div>
 
-            <div className="hidden items-center gap-2 lg:flex">
+            {/* <div className="hidden items-center gap-2 lg:flex">
               <span className="glass-pill text-xs font-bold text-slate-700">{pathname.startsWith("/catalog") ? "Đang xem khóa" : "Hôm nay"}</span>
-            </div>
+            </div> */}
           </div>
         </header>
 

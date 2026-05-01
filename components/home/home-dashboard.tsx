@@ -45,9 +45,8 @@ export function HomeDashboard({ courses }: HomeDashboardProps) {
   return (
     <div className="space-y-6">
       <section className="panel-soft section-glow">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Home</p>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Trang chủ</p>
         <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Hôm nay mình làm gì?</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Xem nhanh khóa đang làm dở, nhật ký, và việc tiếp theo chỉ với một chạm.</p>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">

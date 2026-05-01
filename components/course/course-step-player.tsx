@@ -113,7 +113,7 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
       <section className="panel-soft section-glow">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Bước {step.order}</p>
         <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">{step.title}</h1>
-        <p className="mt-2 text-sm text-slate-600">{percent}% của khóa đã xong</p>
+        <p className="mt-2 text-sm text-slate-600">{percent}%</p>
       </section>
 
       <section className="playful-stage space-y-4">
@@ -159,7 +159,7 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
 
         {step.notes && step.notes.length > 0 ? (
           <div className="quest-card text-sm leading-6 text-amber-900">
-            <p className="font-black">Lưu ý để tránh lỗi</p>
+            <p className="font-black">Lưu ý</p>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-900">
               {step.notes.map((note) => (
                 <li key={note}>{note}</li>
@@ -169,7 +169,7 @@ export function CourseStepPlayer({ course, stepIndex }: CourseStepPlayerProps) {
         ) : null}
 
         <div className="quest-card text-sm leading-6 text-emerald-800">
-          <p className="font-black">Pass criteria</p>
+          <p className="font-black">Điều kiện hoàn thành</p>
           <p className="mt-1">{step.passCriteria}</p>
         </div>
 

@@ -51,8 +51,7 @@ export function CatalogBrowser({ courses }: CatalogBrowserProps) {
     <div className="space-y-6">
       <section className="panel-soft section-glow">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Khóa học</p>
-        <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Chọn khóa bằng ảnh bìa</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Chia rõ đang làm, khám phá, và đã hoàn thành. Trẻ chỉ cần nhìn ảnh để chọn.</p>
+        <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Chọn khóa học bạn thích</h1>
       </section>
 
       <section className="flex gap-2 overflow-auto pb-1">
