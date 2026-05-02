@@ -12,16 +12,16 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "vi",
     icons: [
       {
-        src: "/covers/crystal-bloom.svg",
-        sizes: "512x512",
-        type: "image/svg+xml",
+        src: "/icon-192.png",
+        sizes: "192x192",
+        type: "image/png",
         purpose: "any",
       },
       {
-        src: "/covers/rainbow-frame.svg",
+        src: "/icon-512.png",
         sizes: "512x512",
-        type: "image/svg+xml",
-        purpose: "any",
+        type: "image/png",
+        purpose: "maskable",
       },
     ],
   };
