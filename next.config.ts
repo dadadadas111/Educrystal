@@ -10,6 +10,14 @@ const withPWA = withPWAInit({
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "down-vn.img.susercontent.com",
+      },
+    ],
+  },
 };
 
 export default withPWA(nextConfig);

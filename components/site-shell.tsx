@@ -6,6 +6,7 @@ import { BookOpen, House, NotebookPen, Settings, Shield } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { LogoMark } from "@/components/brand/logo-mark";
 import { cn } from "@/lib/utils";
 
 type SiteShellProps = {
@@ -38,9 +39,7 @@ export function SiteShell({ children, userEmail, isAdmin = false }: SiteShellPro
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center justify-between gap-4">
               <Link href="/home" className="flex min-w-0 items-center gap-3 rounded-[1.5rem] transition-colors duration-200 hover:text-coral">
-                <div className="flex h-14 w-14 items-center justify-center rounded-[1.6rem] border-2 border-outline bg-gradient-to-br from-accent-soft via-sky/60 to-rose/55 text-xl font-black text-slate-900 shadow-[0_18px_0_rgba(255,199,84,0.18)]">
-                  ✦
-                </div>
+                <LogoMark className="h-14 w-14" imageClassName="p-[12%]" />
                 <div className="min-w-0">
                   <p className="truncate font-display text-[2rem] leading-none text-slate-900 lg:text-[2.3rem]">Educrystal</p>
                   <p className="mt-1 truncate text-xs text-slate-500 lg:text-sm">Nuôi tinh thể cho trẻ</p>
@@ -53,12 +52,12 @@ export function SiteShell({ children, userEmail, isAdmin = false }: SiteShellPro
             </div>
 
             <div className="hidden items-center gap-2 lg:flex">
-              {isAdmin ? (
+              {/* {isAdmin ? (
                 <Link href="/admin/courses" className="glass-pill text-xs font-bold text-slate-700">
                   <Shield className="h-4 w-4" />
                   Quản trị
                 </Link>
-              ) : null}
+              ) : null} */}
               {userEmail ? <span className="glass-pill max-w-[220px] truncate text-xs font-bold text-slate-700">{userEmail}</span> : null}
               <SignOutButton className="rounded-full border-2 border-outline bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-soft" />
             </div>
@@ -72,7 +71,7 @@ export function SiteShell({ children, userEmail, isAdmin = false }: SiteShellPro
         <div
           className={cn(
             "grid w-full grid-cols-4 px-2 pt-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]",
-            isAdmin ? "grid-cols-5" : "grid-cols-4",
+            "grid-cols-4",
           )}
         >
           {navItems.map((item) => {
