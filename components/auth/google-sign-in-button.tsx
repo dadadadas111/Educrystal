@@ -28,6 +28,8 @@ export function GoogleSignInButton({ nextPath = "/home", className }: GoogleSign
       provider: "google",
       options: {
         redirectTo: redirectTo.toString(),
+        // request Calendar events scope so we can create events
+        scopes: "https://www.googleapis.com/auth/calendar.events",
       },
     });
 

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import type { Course } from "@/data/courses";
 import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 import { CourseCover } from "@/components/course-cover";
@@ -30,15 +32,20 @@ export function LandingPage({ courses, canSignIn }: LandingPageProps) {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            {canSignIn ? (
-              <GoogleSignInButton
-                className="inline-flex items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft"
-              />
-            ) : (
-              <div className="rounded-[1.5rem] border-2 border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-soft">
-                Chưa cấu hình Supabase nên nút đăng nhập đang tạm khóa.
-              </div>
-            )}
+            <div className="space-y-2">
+              {canSignIn ? (
+                <GoogleSignInButton
+                  className="inline-flex items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft"
+                />
+              ) : (
+                <div className="rounded-[1.5rem] border-2 border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-soft">
+                  Chưa cấu hình Supabase nên nút đăng nhập đang tạm khóa.
+                </div>
+              )}
+              <p className="max-w-md text-xs leading-5 text-slate-500">
+                Bằng cách đăng nhập, bạn đồng ý với <Link href="/terms" className="font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4">Terms of Service</Link> và <Link href="/privacy-policy" className="font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4">Privacy Policy</Link> của Educrystal.
+              </p>
+            </div>
             <a
               href="#featured-courses"
               className="inline-flex items-center justify-center rounded-full border-2 border-outline bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-soft"

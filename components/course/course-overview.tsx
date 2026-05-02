@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import SyncGoogleCalendarButton from "@/components/course/sync-google-calendar-button";
 
 import type { Course } from "@/data/courses";
 import { createEmptyAppState, getCourseProgress, type AppState } from "@/lib/progress";
@@ -62,6 +63,10 @@ export function CourseOverview({ course, initialState }: CourseOverviewProps) {
             <Link href="#steps" className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-sky-100 px-4 py-3 text-sm font-bold text-sky-900 shadow-soft">
               Xem bước
             </Link>
+          </div>
+
+          <div className="mt-3">
+            <SyncGoogleCalendarButton courseSlug={course.slug} courseTitle={course.title} />
           </div>
 
           {isComplete ? <p className="text-sm font-semibold text-emerald-700">Khóa này đã hoàn thành.</p> : null}
