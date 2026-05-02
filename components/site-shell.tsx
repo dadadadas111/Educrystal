@@ -20,8 +20,7 @@ export function SiteShell({ children, userEmail, isAdmin = false }: SiteShellPro
     { href: "/home", ariaLabel: "Nhà", icon: House },
     { href: "/catalog", ariaLabel: "Khóa học", icon: BookOpen },
     { href: "/diary", ariaLabel: "Nhật ký", icon: NotebookPen },
-    { href: "/settings", ariaLabel: "Cài đặt", icon: Settings },
-    ...(isAdmin ? [{ href: "/admin", ariaLabel: "Quản trị", icon: Shield }] : []),
+    { href: "/settings", ariaLabel: "Cài đặt", icon: Settings }
   ] as const;
 
   return (
