@@ -38,7 +38,7 @@ export default async function ExploringPage({
           </div>
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Khám phá</p>
-            <h1 className="font-display text-3xl leading-[0.95] text-slate-900">Bài viết & Chia sẻ</h1>
+            <h1 className="font-display text-3xl leading-[0.95] text-slate-900">Bài viết</h1>
           </div>
         </div>
       </section>
