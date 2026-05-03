@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, House, NotebookPen, Settings, Shield } from "lucide-react";
+import { BookOpen, Compass, House, NotebookPen, Settings, Shield } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { SignOutButton } from "@/components/auth/sign-out-button";
@@ -21,6 +21,7 @@ export function SiteShell({ children, userEmail, isAdmin = false }: SiteShellPro
     { href: "/home", ariaLabel: "Nhà", icon: House },
     { href: "/catalog", ariaLabel: "Khóa học", icon: BookOpen },
     { href: "/diary", ariaLabel: "Nhật ký", icon: NotebookPen },
+    { href: "/exploring", ariaLabel: "Khám phá", icon: Compass },
     { href: "/settings", ariaLabel: "Cài đặt", icon: Settings }
   ] as const;
 
@@ -70,8 +71,8 @@ export function SiteShell({ children, userEmail, isAdmin = false }: SiteShellPro
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-outline bg-white/96 shadow-[0_-14px_30px_rgba(62,79,117,0.12)] backdrop-blur lg:hidden">
         <div
           className={cn(
-            "grid w-full grid-cols-4 px-2 pt-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]",
-            "grid-cols-4",
+            "grid w-full grid-cols-5 px-2 pt-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]",
+            "grid-cols-5",
           )}
         >
           {navItems.map((item) => {

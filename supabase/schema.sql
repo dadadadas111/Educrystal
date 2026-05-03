@@ -92,9 +92,31 @@ create table if not exists public.course_reminders (
   unique (user_id, course_id, step_index)
 );
 
-create index if not exists idx_course_progress_user_id on public.course_progress (user_id);
-create index if not exists idx_course_reminders_user_id on public.course_reminders (user_id);
-create index if not exists idx_journal_entries_user_id on public.journal_entries (user_id);
+create table if not exists public.exploring_blogs (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  title text not null,
+  body text not null,
+  cover_image text,
+  source_url text,
+  source_name text,
+  published boolean not null default true,
+  view_count integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.blog_votes (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  blog_id uuid not null references public.exploring_blogs (id) on delete cascade,
+  vote integer not null check (vote in (1, -1)),
+  created_at timestamptz not null default now(),
+  unique (user_id, blog_id)
+);
+
+create index if not exists idx_blog_votes_blog_id on public.blog_votes (blog_id);
+create index if not exists idx_blog_votes_user_id on public.blog_votes (user_id);
 
 drop trigger if exists set_profiles_updated_at on public.profiles;
 create trigger set_profiles_updated_at
@@ -175,7 +197,30 @@ as $$
   );
 $$;
 
-alter table public.profiles enable row level security;
+create or replace function public.increment_blog_view(blog_id uuid)
+returns void
+language sql
+security definer
+as $$
+  update public.exploring_blogs
+  set view_count = view_count + 1
+  where id = blog_id;
+$$;
+
+drop trigger if exists set_exploring_blogs_updated_at on public.exploring_blogs;
+create trigger set_exploring_blogs_updated_at
+before update on public.exploring_blogs
+for each row
+execute function public.set_row_updated_at();
+
+drop trigger if exists set_blog_votes_updated_at on public.blog_votes;
+create trigger set_blog_votes_updated_at
+before update on public.blog_votes
+for each row
+execute function public.set_row_updated_at();
+
+alter table public.exploring_blogs enable row level security;
+alter table public.blog_votes enable row level security;
 alter table public.courses enable row level security;
 alter table public.course_steps enable row level security;
 alter table public.journal_entries enable row level security;
@@ -244,6 +289,28 @@ with check (auth.uid() = user_id);
 drop policy if exists "course_reminders_own_rows" on public.course_reminders;
 create policy "course_reminders_own_rows"
 on public.course_reminders
+for all
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+-- Exploring blogs: public read when published, admin full
+drop policy if exists "exploring_blogs_public_read" on public.exploring_blogs;
+create policy "exploring_blogs_public_read"
+on public.exploring_blogs
+for select
+using (published = true or public.is_admin(auth.uid()));
+
+drop policy if exists "exploring_blogs_admin_write" on public.exploring_blogs;
+create policy "exploring_blogs_admin_write"
+on public.exploring_blogs
+for all
+using (public.is_admin(auth.uid()))
+with check (public.is_admin(auth.uid()));
+
+-- Blog votes: own rows only
+drop policy if exists "blog_votes_own_rows" on public.blog_votes;
+create policy "blog_votes_own_rows"
+on public.blog_votes
 for all
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
