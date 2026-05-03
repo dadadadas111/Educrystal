@@ -9,11 +9,12 @@ interface BlogVotingProps {
     upvotes: number;
     downvotes: number;
   };
+  initialUserVote?: number;
 }
 
-export function BlogVoting({ blogId, initialVotes }: BlogVotingProps) {
+export function BlogVoting({ blogId, initialVotes, initialUserVote = 0 }: BlogVotingProps) {
   const [votes, setVotes] = useState(initialVotes);
-  const [userVote, setUserVote] = useState(0);
+  const [userVote, setUserVote] = useState(initialUserVote);
   const [isVoting, setIsVoting] = useState(false);
 
   const handleVote = async (vote: number) => {

@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Compass, ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { getBlogBySlug, getBlogVotes, incrementBlogViewCount } from "@/lib/blogs";
+import { getBlogBySlug, getBlogVotes, getUserVoteForBlog, incrementBlogViewCount } from "@/lib/blogs";
+import { getCurrentUser } from "@/lib/auth";
 import { BlogVoting } from "@/components/exploring/blog-voting";
 
 export const dynamic = "force-dynamic";
@@ -20,7 +21,10 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   }
 
   await incrementBlogViewCount(blog.id);
+  
+  const user = await getCurrentUser();
   const votes = await getBlogVotes(blog.id);
+  const userVote = user ? await getUserVoteForBlog(blog.id, user.id) : 0;
 
   return (
     <div className="space-y-6">
@@ -68,7 +72,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         )}
       </article>
 
-      <BlogVoting blogId={blog.id} initialVotes={votes} />
+      <BlogVoting blogId={blog.id} initialVotes={votes} initialUserVote={userVote} />
     </div>
   );
 }
