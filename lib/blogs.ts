@@ -169,15 +169,20 @@ export async function setUserVote(blogId: string, userId: string, vote: number):
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
+    console.error("[setUserVote] No supabase client");
     return;
   }
 
-  await supabase
+  const { error } = await supabase
     .from("blog_votes")
     .upsert(
       { user_id: userId, blog_id: blogId, vote },
       { onConflict: "user_id,blog_id" }
     );
+
+  if (error) {
+    console.error("[setUserVote] Error:", error.message);
+  }
 }
 
 export async function removeUserVote(blogId: string, userId: string): Promise<void> {

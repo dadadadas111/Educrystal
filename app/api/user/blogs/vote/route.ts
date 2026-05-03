@@ -9,10 +9,15 @@ export async function POST(request: NextRequest) {
   const user = await getCurrentUser();
 
   if (!user) {
+    console.log("[vote] No user, returning 401");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  console.log("[vote] User:", user.id);
+
   const { blogId, vote } = (await request.json()) as { blogId: string; vote: number | null };
+
+  console.log("[vote] BlogId:", blogId, "Vote:", vote);
 
   try {
     if (vote === null) {
@@ -20,8 +25,10 @@ export async function POST(request: NextRequest) {
     } else {
       await setUserVote(blogId, user.id, vote);
     }
+    console.log("[vote] Success");
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.log("[vote] Error:", error);
     return NextResponse.json({ error: (error as Error).message }, { status: 400 });
   }
 }
