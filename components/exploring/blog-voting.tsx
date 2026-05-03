@@ -22,14 +22,18 @@ export function BlogVoting({ blogId, initialVotes, initialUserVote = 0 }: BlogVo
 
     const previousVotes = { ...votes };
     const previousUserVote = userVote;
+    
     const newUserVote = userVote === vote ? 0 : vote;
-    const voteChange = newUserVote - userVote;
-
+    
     setUserVote(newUserVote);
-    setVotes((prev) => ({
-      upvotes: prev.upvotes + (vote === 1 ? voteChange : vote === 1 && userVote === -1 ? voteChange * 2 : 0),
-      downvotes: prev.downvotes + (vote === -1 ? voteChange : vote === -1 && userVote === 1 ? voteChange * 2 : 0),
-    }));
+    
+    const upvoteDelta = (newUserVote === 1 ? 1 : 0) - (previousUserVote === 1 ? 1 : 0);
+    const downvoteDelta = (newUserVote === -1 ? 1 : 0) - (previousUserVote === -1 ? 1 : 0);
+    
+    setVotes({
+      upvotes: votes.upvotes + upvoteDelta,
+      downvotes: votes.downvotes + downvoteDelta,
+    });
 
     setIsVoting(true);
 
