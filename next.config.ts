@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "down-vn.img.susercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "https://ludlohsqcbuaukxqmxci.supabase.co",
+      }
     ],
   },
 };
