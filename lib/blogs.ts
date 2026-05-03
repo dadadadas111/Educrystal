@@ -173,10 +173,14 @@ export async function setUserVote(blogId: string, userId: string, vote: number):
     return;
   }
 
+  console.log("[setUserVote] Input vote type:", typeof vote, "value:", vote);
+
+  const voteValue = vote === 1 ? 1 : -1;
+
   const { error } = await supabase
     .from("blog_votes")
     .upsert(
-      { user_id: userId, blog_id: blogId, vote },
+      { user_id: userId, blog_id: blogId, vote: voteValue },
       { onConflict: "user_id,blog_id" }
     );
 
