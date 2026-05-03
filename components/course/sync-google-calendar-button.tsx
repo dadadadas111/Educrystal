@@ -50,7 +50,7 @@ export default function SyncGoogleCalendarButton({ courseSlug, courseTitle }: Pr
       disabled={isLoading}
       className="inline-flex items-center justify-center rounded-full border-2 border-outline bg-white px-4 py-3 text-sm font-bold text-slate-900 shadow-soft"
     >
-      {isLoading ? "Đang đồng bộ…" : "Sync to Google Calendar"}
+      {isLoading ? "Đang đồng bộ…" : "Đồng bộ Google Calendar"}
     </button>
   );
 }

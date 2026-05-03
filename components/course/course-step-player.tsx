@@ -20,6 +20,8 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
   const router = useRouter();
   const [state, setState] = useState(initialState ?? createEmptyAppState());
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const progress = getCourseProgress(state, course.slug);
   const step = course.steps[stepIndex] ?? course.steps[0];
@@ -33,34 +35,44 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
     return addDays(new Date(), step.waitDays).toISOString();
   }, [step.waitDays]);
 
+  // Reset image loaded state when step changes
+  useMemo(() => {
+    setImageLoaded(false);
+  }, [stepIndex]);
+
   const persist = (nextState: typeof state) => {
     setState(nextState);
   };
 
   const syncProgress = async (nextIndex: number, completedStepIndex?: number) => {
-    const nextCompleted = completedStepIndex === undefined || progress.completedSteps.includes(completedStepIndex)
-      ? progress.completedSteps
-      : [...progress.completedSteps, completedStepIndex];
+    try {
+      setIsLoading(true);
+      const nextCompleted = completedStepIndex === undefined || progress.completedSteps.includes(completedStepIndex)
+        ? progress.completedSteps
+        : [...progress.completedSteps, completedStepIndex];
 
-    const nextProgress = {
-      activeStepIndex: Math.max(0, Math.min(nextIndex, course.steps.length - 1)),
-      completedSteps: nextCompleted,
-      updatedAt: new Date().toISOString(),
-    };
+      const nextProgress = {
+        activeStepIndex: Math.max(0, Math.min(nextIndex, course.steps.length - 1)),
+        completedSteps: nextCompleted,
+        updatedAt: new Date().toISOString(),
+      };
 
-    persist(upsertCourseProgress(state, course.slug, nextProgress));
+      persist(upsertCourseProgress(state, course.slug, nextProgress));
 
-    await fetch("/api/user/progress", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        courseSlug: course.slug,
-        activeStepIndex: nextProgress.activeStepIndex,
-        completedSteps: nextProgress.completedSteps,
-      }),
-    });
+      await fetch("/api/user/progress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          courseSlug: course.slug,
+          activeStepIndex: nextProgress.activeStepIndex,
+          completedSteps: nextProgress.completedSteps,
+        }),
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const goToStep = async (nextIndex: number) => {
@@ -95,44 +107,49 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
   const handleReminder = async () => {
     if (!reminderAt) return;
 
-    const nextState = addReminder(
-      upsertCourseProgress(state, course.slug, {
-        activeStepIndex: stepIndex,
-        completedSteps: progress.completedSteps,
-        reminderAt,
-        updatedAt: new Date().toISOString(),
-      }),
-      {
-        courseSlug: course.slug,
-        stepIndex,
-        reminderAt,
-        note: step.waitHint ?? "Nhắc quay lại bước này",
-      },
-    );
+    try {
+      setIsLoading(true);
+      const nextState = addReminder(
+        upsertCourseProgress(state, course.slug, {
+          activeStepIndex: stepIndex,
+          completedSteps: progress.completedSteps,
+          reminderAt,
+          updatedAt: new Date().toISOString(),
+        }),
+        {
+          courseSlug: course.slug,
+          stepIndex,
+          reminderAt,
+          note: step.waitHint ?? "Nhắc quay lại bước này",
+        },
+      );
 
-    persist(nextState);
+      persist(nextState);
 
-    const courseReminders = nextState.reminders
-      .filter((reminder) => reminder.courseSlug === course.slug)
-      .map((reminder) => ({
-        stepIndex: reminder.stepIndex,
-        reminderAt: reminder.reminderAt,
-        note: reminder.note,
-      }));
+      const courseReminders = nextState.reminders
+        .filter((reminder) => reminder.courseSlug === course.slug)
+        .map((reminder) => ({
+          stepIndex: reminder.stepIndex,
+          reminderAt: reminder.reminderAt,
+          note: reminder.note,
+        }));
 
-    await fetch("/api/user/reminders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        courseSlug: course.slug,
-        reminders: courseReminders,
-      }),
-    });
+      await fetch("/api/user/reminders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          courseSlug: course.slug,
+          reminders: courseReminders,
+        }),
+      });
 
-    setShowConfirm(false);
-    router.push(`/catalog/${course.slug}`);
+      setShowConfirm(false);
+      router.push(`/catalog/${course.slug}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -145,7 +162,12 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
 
       <section className="playful-stage space-y-4">
         <div className="overflow-hidden rounded-[1.75rem] border-2 border-outline bg-slate-50 shadow-soft">
-          <img src={step.media?.src ?? course.coverImage} alt={step.media?.alt ?? course.whatYouMake} className="aspect-[4/3] w-full object-cover" />
+          <img 
+            src={step.media?.src ?? course.coverImage} 
+            alt={step.media?.alt ?? course.whatYouMake} 
+            className={`aspect-[4/3] w-full object-cover transition-all duration-500 ${imageLoaded ? '' : 'blur-lg'}`}
+            onLoad={() => setImageLoaded(true)}
+          />
         </div>
 
         <div>
@@ -211,16 +233,18 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
             <button
               type="button"
               onClick={() => void (canGoBack ? goToStep(stepIndex - 1) : router.push(`/catalog/${course.slug}`))}
-              className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 shadow-soft"
+              disabled={isLoading}
+              className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 shadow-soft disabled:opacity-60 disabled:cursor-not-allowed"
             >
               Quay lại
             </button>
             <button
               type="button"
               onClick={() => void handleComplete()}
-              className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft"
+              disabled={isLoading}
+              className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {requiresWait ? "Xong giai đoạn" : "Xong bước"}
+              {isLoading ? "Đang xử lý..." : (requiresWait ? "Xong giai đoạn" : "Xong bước")}
           </button>
         </div>
       </section>
@@ -238,15 +262,15 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
             </div>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <button type="button" onClick={() => void handleConfirmComplete()} className="rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft">
-                Mình đã làm xong
+              <button type="button" onClick={() => void handleConfirmComplete()} disabled={isLoading} className="rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft disabled:opacity-60 disabled:cursor-not-allowed">
+                {isLoading ? "Đang xử lý..." : "Mình đã làm xong"}
               </button>
-              <button type="button" onClick={() => void handleReminder()} className="rounded-full border-2 border-outline bg-amber-100 px-4 py-3 text-sm font-bold text-amber-900 shadow-soft">
-                Nhắc lại khi tới ngày
+              <button type="button" onClick={() => void handleReminder()} disabled={isLoading} className="rounded-full border-2 border-outline bg-amber-100 px-4 py-3 text-sm font-bold text-amber-900 shadow-soft disabled:opacity-60 disabled:cursor-not-allowed">
+                {isLoading ? "Đang xử lý..." : "Nhắc lại khi tới ngày"}
               </button>
             </div>
 
-            <button type="button" onClick={() => setShowConfirm(false)} className="mt-3 w-full rounded-full border-2 border-outline bg-slate-100 px-4 py-3 text-sm font-bold text-slate-600 shadow-soft">
+            <button type="button" onClick={() => setShowConfirm(false)} disabled={isLoading} className="mt-3 w-full rounded-full border-2 border-outline bg-slate-100 px-4 py-3 text-sm font-bold text-slate-600 shadow-soft disabled:opacity-60 disabled:cursor-not-allowed">
               Đóng
             </button>
           </div>
