@@ -112,6 +112,7 @@ create table if not exists public.blog_votes (
   blog_id uuid not null references public.exploring_blogs (id) on delete cascade,
   vote integer not null check (vote in (1, -1)),
   created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
   unique (user_id, blog_id)
 );
 
