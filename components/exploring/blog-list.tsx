@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Search } from "lucide-react";
+import Link from "next/link";
 
 interface BlogWithVotes {
   id: string;
@@ -89,9 +90,10 @@ export function BlogList({ blogs }: BlogListProps) {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {blogs.map((blog) => (
-            <article
+            <Link
               key={blog.id}
-              className="group relative overflow-hidden rounded-2xl border-2 border-outline bg-white p-4 shadow-soft transition-shadow hover:shadow-crystal"
+              href={`/exploring/${blog.slug}`}
+              className="group relative block overflow-hidden rounded-2xl border-2 border-outline bg-white p-4 shadow-soft transition-shadow hover:shadow-crystal"
             >
               {blog.coverImage && (
                 <div className="mb-3 aspect-video overflow-hidden rounded-xl">
@@ -99,7 +101,7 @@ export function BlogList({ blogs }: BlogListProps) {
                 </div>
               )}
 
-              <h2 className="font-display text-lg leading-tight text-slate-900">{blog.title}</h2>
+              <h2 className="font-display text-lg leading-tight text-slate-900 group-hover:text-coral">{blog.title}</h2>
               <p className="mt-2 line-clamp-3 text-sm text-slate-600">{blog.body}</p>
 
               <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
@@ -109,7 +111,7 @@ export function BlogList({ blogs }: BlogListProps) {
                   <span className="text-sky">↓{blog.downvotes}</span>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       )}
