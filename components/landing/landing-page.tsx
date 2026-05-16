@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, CalendarClock, CheckCircle2, Clock3, Sparkles, Star, Users } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowRight, Bell, CheckCircle2, Clock3, Sparkles } from "lucide-react";
 
-import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
+import { InstallAppCta } from "@/components/landing/install-app-cta";
+import { RevealSection } from "@/components/landing/reveal-section";
 import type { Course } from "@/data/courses";
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 import { cn } from "@/lib/utils";
 
 type LandingPageProps = {
@@ -14,50 +16,7 @@ type LandingPageProps = {
   canSignIn: boolean;
 };
 
-function useReveal() {
-  const ref = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -8% 0px" },
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  return { ref, visible };
-}
-
-function RevealSection({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const { ref, visible } = useReveal();
-
-  return (
-    <section
-      ref={ref}
-      style={{ transitionDelay: `${delay}ms` }}
-      className={cn(
-        "transition-all duration-700 ease-out will-change-transform",
-        visible ? "translate-y-0 opacity-100 blur-0" : "translate-y-8 opacity-0 blur-[1px]",
-        className,
-      )}
-    >
-      {children}
-    </section>
-  );
-}
-
-function GoogleSignInAction({ canSignIn }: { canSignIn: boolean }) {
+function GoogleSignInAction({ canSignIn, className }: { canSignIn: boolean; className?: string }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {
@@ -83,7 +42,7 @@ function GoogleSignInAction({ canSignIn }: { canSignIn: boolean }) {
 
   if (!canSignIn) {
     return (
-      <div className="inline-flex items-center justify-center rounded-full border-2 border-amber-200 bg-amber-50 px-5 py-3 text-sm font-bold text-amber-900 shadow-soft">
+      <div className={cn("inline-flex items-center justify-center rounded-full border-2 border-outline bg-amber-100 px-5 py-3 text-sm font-bold text-amber-900 shadow-soft", className)}>
         Đăng nhập tạm khóa
       </div>
     );
@@ -94,7 +53,10 @@ function GoogleSignInAction({ canSignIn }: { canSignIn: boolean }) {
       type="button"
       onClick={handleClick}
       disabled={isLoading}
-      className="inline-flex items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft transition-transform hover:-translate-y-0.5 disabled:opacity-70"
+      className={cn(
+        "inline-flex items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70",
+        className,
+      )}
     >
       {isLoading ? "Đang mở Google…" : "Đăng nhập với Google"}
     </button>
@@ -113,155 +75,124 @@ export function LandingPage({ courses, canSignIn }: LandingPageProps) {
     () => [
       {
         icon: CheckCircle2,
-        title: "Dễ cho bé tự khám phá",
-        body: "Bé có thể nhìn ảnh, đọc bước ngắn và biết ngay mình đang ở đâu trong hành trình nuôi tinh thể.",
+        title: "Từng bước rõ ràng",
+        body: "Bài học ngắn, ảnh lớn, tiến độ dễ hiểu cho trẻ và phụ huynh.",
       },
       {
         icon: Clock3,
-        title: "Mỗi lần chờ đều có lý do",
-        body: "Các khoảng thời gian chờ được trình bày rõ ràng để bé háo hức dõi theo tinh thể lớn lên từng ngày.",
+        title: "An toàn và đúng nhịp",
+        body: "Lưu ý an toàn, phần chuẩn bị và các mốc chờ đều được tách rõ để dễ theo dõi.",
       },
       {
-        icon: CalendarClock,
-        title: "Nhớ đúng lúc quay lại",
-        body: "Khi đăng nhập Google, bạn có thể biến một bước học thành lời nhắc trên Calendar để không bỏ lỡ nhịp nuôi.",
+        icon: Bell,
+        title: "Nhật ký riêng, chia sẻ chọn lọc",
+        body: "Gia đình có thể ghi lại tiến trình riêng tư và chỉ đưa thành quả lên showcase khi muốn.",
       },
     ],
     [],
   );
 
   const process = [
-    {
-      step: "01",
-      title: "Chọn hành trình bé thích",
-      body: "Xem ảnh, mục tiêu và kết quả cuối để chọn ngay khóa học hợp với bé.",
-    },
-    {
-      step: "02",
-      title: "Làm theo từng chặng nhỏ",
-      body: "Mỗi bước đều ngắn, rõ và dễ theo nên bé làm xong là thấy mình tiến gần hơn tới tinh thể hoàn chỉnh.",
-    },
-    {
-      step: "03",
-      title: "Ngắm thành quả lớn dần",
-      body: "Nhật ký và nhắc hẹn giúp bé quay lại đúng chỗ đã dừng, rồi tiếp tục nhìn tinh thể lớn lên từng ngày.",
-    },
+    { step: "01", title: "Chọn hành trình", body: "Xem sản phẩm cuối, độ khó và thời gian." },
+    { step: "02", title: "Làm từng bước", body: "Chuẩn bị, thao tác, lưu ý an toàn và thời gian chờ đều nằm trong một luồng." },
+    { step: "03", title: "Lưu tiến độ", body: "Quay lại đúng nơi đã dừng và tiếp tục theo dõi tinh thể." },
   ];
 
   return (
-    <main id="top" className="relative overflow-hidden">
+    <main id="top" className="relative overflow-hidden pb-44 text-slate-900 sm:pb-40 lg:pb-32">
+      <div className="pointer-events-none absolute inset-0 bg-aurora" />
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-16 top-14 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(196,244,146,0.42),transparent_68%)] blur-3xl" />
-        <div className="absolute right-0 top-0 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(115,205,255,0.28),transparent_70%)] blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(255,147,186,0.18),transparent_72%)] blur-3xl" />
+        <div className="absolute left-4 top-10 h-16 w-24 rounded-full bg-white/75 blur-[0.5px]" />
+        <div className="absolute left-14 top-12 h-16 w-16 rounded-full bg-white/75 blur-[0.5px]" />
+        <div className="absolute right-8 top-20 h-14 w-24 rounded-full bg-white/70 blur-[0.5px]" />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-16 px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
-        <header className="sticky top-3 z-40 rounded-[2rem] border-2 border-outline bg-white/90 px-4 py-4 shadow-soft backdrop-blur">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <Link href="/" className="flex items-center gap-3 self-start">
-              <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-[1.1rem] border-2 border-outline bg-white shadow-soft sm:h-14 sm:w-14">
+      <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-12 px-4 py-4 sm:px-6 lg:px-8 lg:gap-16 lg:py-6">
+        <header className="sticky top-3 z-40 rounded-[2rem] border-2 border-outline bg-white/95 px-4 py-4 shadow-soft backdrop-blur">
+          <div className="flex items-center justify-between gap-4">
+            <Link href="/" className="flex min-w-0 items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[1.1rem] border-2 border-outline bg-white shadow-soft sm:h-14 sm:w-14">
                 <Image src="/logo.png" alt="Educrystal" width={3000} height={3000} className="h-full w-full object-contain p-[12%]" priority={false} />
               </div>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-400">Educrystal</p>
-                <p className="text-sm text-slate-500">Nuôi tinh thể cho trẻ</p>
+              <div className="min-w-0">
+                <p className="font-display text-2xl leading-none text-slate-900 sm:text-3xl">Educrystal</p>
+                <p className="truncate text-xs text-slate-500 sm:text-sm">Nuôi tinh thể cho trẻ</p>
               </div>
             </Link>
 
-            <nav className="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-600">
-              <a href="#features" className="rounded-full border-2 border-outline bg-white px-4 py-2 shadow-soft transition-transform hover:-translate-y-0.5">Tính năng</a>
-              <a href="#how" className="rounded-full border-2 border-outline bg-white px-4 py-2 shadow-soft transition-transform hover:-translate-y-0.5">Cách dùng</a>
-              <a href="#courses" className="rounded-full border-2 border-outline bg-white px-4 py-2 shadow-soft transition-transform hover:-translate-y-0.5">Khóa học</a>
-              <GoogleSignInAction canSignIn={canSignIn} />
+            <nav className="hidden items-center gap-2 text-sm font-semibold text-slate-600 md:flex">
+              <a href="#features" className="glass-pill text-xs font-bold text-slate-700">Tính năng</a>
+              <a href="#courses" className="glass-pill text-xs font-bold text-slate-700">Hành trình</a>
+              <GoogleSignInAction canSignIn={canSignIn} className="px-4 py-2.5 text-xs" />
             </nav>
           </div>
         </header>
 
         <RevealSection>
-          <section className="grid gap-6">
+          <section className="playful-stage grid gap-7 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
             <div className="space-y-6">
-              <div className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-outline bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-500 shadow-soft">
+              <div className="glass-pill w-fit text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
                 <Sparkles className="h-4 w-4 text-amber-500" />
-                Ứng dụng nuôi tinh thể cho trẻ em
+                Ứng dụng học trên điện thoại
               </div>
 
               <div className="space-y-4">
-                <h1 className=" font-display text-5xl leading-[0.92] text-slate-900 sm:text-6xl lg:text-7xl">
-                  Ứng dụng nuôi tinh thể vui mắt, dễ dùng, dành riêng cho trẻ em.
+                <h1 className="font-display text-5xl leading-[0.9] text-slate-900 sm:text-6xl lg:text-7xl">
+                  Nuôi tinh thể thành một hành trình dễ theo.
                 </h1>
-                <p className="max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-                  Educrystal biến việc nuôi tinh thể thành một hành trình thú vị cho bé: xem ảnh trực quan, làm từng bước ngắn, quay lại đúng lúc và nhìn tinh thể lớn lên mỗi ngày.
+                <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+                  Educrystal giúp trẻ làm thí nghiệm theo từng chặng ngắn, lưu tiến độ bằng nhật ký riêng và sẵn sàng đưa thành quả lên showcase đã kiểm duyệt.
                 </p>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
-                <GoogleSignInAction canSignIn={canSignIn} />
-                <a href="#courses" className="inline-flex items-center justify-center rounded-full border-2 border-outline bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-soft transition-transform hover:-translate-y-0.5">
-                  Xem khóa học
+                <GoogleSignInAction canSignIn={canSignIn} className="w-full sm:w-auto" />
+                <a href="#courses" className="inline-flex w-full items-center justify-center rounded-full border-2 border-outline bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-soft transition-transform hover:-translate-y-0.5 sm:w-auto">
+                  Xem hành trình
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </a>
               </div>
 
               <p className="max-w-xl text-xs leading-5 text-slate-500">
-                Bằng cách đăng nhập, bạn đồng ý với <Link href="/terms" className="font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4">Terms of Service</Link> và <Link href="/privacy-policy" className="font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4">Privacy Policy</Link> của Educrystal.
+                Đăng nhập để lưu tiến độ. Xem <Link href="/terms" className="font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4">Điều khoản dịch vụ</Link> và <Link href="/privacy-policy" className="font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4">Chính sách riêng tư</Link>.
               </p>
+            </div>
 
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-[1.5rem] border-2 border-outline bg-white p-4 shadow-soft">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Khóa học</p>
-                  <p className="mt-2 font-display text-4xl text-slate-900">{courses.length}</p>
-                  <p className="mt-1 text-sm text-slate-500">Có thể vào xem ngay</p>
+            <div className="grid gap-3">
+              {featured ? (
+                <article className="overflow-hidden rounded-[2rem] border-2 border-outline bg-white shadow-crystal">
+                  <div className="relative aspect-[4/3] bg-surface-soft">
+                    <Image src={featured.coverImage} alt={featured.whatYouMake} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 46vw" priority />
+                  </div>
+                  <div className="space-y-4 p-5">
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Hành trình nổi bật</p>
+                      <h2 className="mt-2 font-display text-3xl leading-none text-slate-900">{featured.title}</h2>
+                    </div>
+                    <div className="flex flex-wrap gap-2 text-xs font-bold text-slate-600">
+                      <span className="glass-pill py-1 text-slate-700">{featured.level}</span>
+                      <span className="glass-pill py-1 text-amber-900">{featured.duration}</span>
+                      <span className="glass-pill py-1 text-sky-800">{featured.ageBand}</span>
+                    </div>
+                  </div>
+                </article>
+              ) : null}
+
+              <div className="grid grid-cols-3 gap-3">
+                <div className="metric-tile">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Hành trình</p>
+                  <p className="mt-2 font-display text-3xl text-slate-900">{courses.length}</p>
                 </div>
-                <div className="rounded-[1.5rem] border-2 border-outline bg-white p-4 shadow-soft">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Bước học</p>
-                  <p className="mt-2 font-display text-4xl text-slate-900">{totalSteps}</p>
-                  <p className="mt-1 text-sm text-slate-500">Chia nhỏ để dễ theo dõi</p>
+                <div className="metric-tile">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Bước</p>
+                  <p className="mt-2 font-display text-3xl text-slate-900">{totalSteps}</p>
                 </div>
-                <div className="rounded-[1.5rem] border-2 border-outline bg-white p-4 shadow-soft">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Chuẩn bị</p>
-                  <p className="mt-2 font-display text-4xl text-slate-900">{totalPreparationItems}</p>
-                  <p className="mt-1 text-sm text-slate-500">Dụng cụ và nguyên liệu</p>
+                <div className="metric-tile">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Chuẩn bị</p>
+                  <p className="mt-2 font-display text-3xl text-slate-900">{totalPreparationItems}</p>
                 </div>
               </div>
             </div>
-
-            {/* <div className="relative">
-              <div className="absolute -inset-4 rounded-[2.5rem] bg-[radial-gradient(circle_at_top_right,rgba(255,199,84,0.26),transparent_30%),radial-gradient(circle_at_20%_80%,rgba(115,205,255,0.24),transparent_24%)] blur-2xl" />
-              <div className="relative overflow-hidden rounded-[2.2rem] border-2 border-outline bg-white shadow-[0_24px_0_rgba(171,157,255,0.12)]">
-                {featured ? (
-                  <div className="grid gap-0 md:grid-cols-[0.92fr_1.08fr]">
-                    <div className="relative min-h-[240px] bg-slate-100 sm:min-h-[320px]">
-                      <Image src={featured.coverImage} alt={featured.whatYouMake} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" priority={false} />
-                    </div>
-                    <div className="flex flex-col justify-between gap-5 p-5 sm:p-6">
-                      <div className="space-y-4">
-                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Khóa nổi bật</p>
-                        <h2 className="font-display text-3xl text-slate-900 sm:text-4xl">{featured.title}</h2>
-                        <p className="text-sm leading-7 text-slate-600">{featured.summary}</p>
-                      </div>
-
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        <div className="rounded-[1.4rem] border-2 border-outline bg-surface-soft p-4 shadow-soft">
-                          <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Kết quả</p>
-                          <p className="mt-2 text-sm font-black text-slate-900">{featured.whatYouMake}</p>
-                        </div>
-                        <div className="rounded-[1.4rem] border-2 border-outline bg-white p-4 shadow-soft">
-                          <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Nhịp học</p>
-                          <p className="mt-2 text-sm font-black text-slate-900">{featured.steps.length} bước rõ ràng</p>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
-                        <span className="rounded-full bg-slate-100 px-2.5 py-1">{featured.level}</span>
-                        <span className="rounded-full bg-amber-100 px-2.5 py-1 text-amber-900">{featured.duration}</span>
-                        <span className="rounded-full bg-sky-100 px-2.5 py-1 text-sky-800">{featured.ageBand}</span>
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            </div> */}
           </section>
         </RevealSection>
 
@@ -271,12 +202,12 @@ export function LandingPage({ courses, canSignIn }: LandingPageProps) {
               const Icon = item.icon;
 
               return (
-                <article key={item.title} className="rounded-[1.75rem] border-2 border-outline bg-white p-5 shadow-soft">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-[1.1rem] border-2 border-outline bg-surface-soft shadow-soft">
+                <article key={item.title} className="crystal-card transition-transform duration-300 hover:-translate-y-1">
+                  <div className="icon-shell h-12 w-12">
                     <Icon className="h-5 w-5 text-slate-900" />
                   </div>
                   <h3 className="mt-4 text-lg font-black text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-slate-600">{item.body}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{item.body}</p>
                 </article>
               );
             })}
@@ -284,20 +215,21 @@ export function LandingPage({ courses, canSignIn }: LandingPageProps) {
         </RevealSection>
 
         <RevealSection delay={160}>
-          <section id="how" className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-            <div className="space-y-4">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Cách hoạt động</p>
-              <h2 className="font-display text-4xl leading-[0.95] text-slate-900">Giao diện thân thiện với trẻ em, nhìn là muốn bắt tay vào làm</h2>
-              <p className="max-w-xl text-sm leading-7 text-slate-600">Educrystal sắp xếp nội dung theo kiểu trực quan, dễ đọc và vui mắt để bé có thể tự theo dõi hành trình nuôi tinh thể của mình.</p>
-              <p className="max-w-xl text-sm leading-7 text-slate-600">Hình ảnh lớn, chữ dễ hiểu và nút bấm rõ ràng giúp việc học trở nên nhẹ nhàng, hứng thú và tự nhiên hơn.</p>
+          <section className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+            <div className="space-y-3">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Cách dùng</p>
+              <h2 className="font-display text-4xl leading-[0.95] text-slate-900">Ít thao tác, rõ việc cần làm.</h2>
+              <p className="max-w-xl text-sm leading-7 text-slate-600">Giao diện ưu tiên màn hình nhỏ, nút lớn và nội dung vừa đủ để trẻ tự theo dõi cùng gia đình.</p>
             </div>
 
             <div className="grid gap-3">
               {process.map((item) => (
-                <article key={item.step} className="rounded-[1.6rem] border-2 border-outline bg-white p-5 shadow-soft transition-transform duration-300 hover:-translate-y-1">
-                  <span className="inline-flex rounded-full bg-slate-900 px-3 py-1 text-xs font-bold text-white">{item.step}</span>
-                  <h3 className="mt-3 text-lg font-black text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-slate-600">{item.body}</p>
+                <article key={item.step} className="list-card grid grid-cols-[auto_1fr] gap-4 transition-transform hover:-translate-y-0.5">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-bold text-white">{item.step}</span>
+                  <div>
+                    <h3 className="text-lg font-black text-slate-900">{item.title}</h3>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">{item.body}</p>
+                  </div>
                 </article>
               ))}
             </div>
@@ -306,31 +238,29 @@ export function LandingPage({ courses, canSignIn }: LandingPageProps) {
 
         <RevealSection delay={200}>
           <section id="courses" className="space-y-5">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Khóa học</p>
-                <h2 className="mt-2 font-display text-4xl text-slate-900">Những hành trình nhỏ để bé bắt đầu ngay</h2>
-              </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Hành trình</p>
+              <h2 className="mt-2 font-display text-4xl leading-none text-slate-900">Bắt đầu từ bài phù hợp.</h2>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {courses.map((course) => (
                 <article key={course.slug} className="group overflow-hidden rounded-[2rem] border-2 border-outline bg-white shadow-soft transition-transform duration-300 hover:-translate-y-1">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-surface-soft">
                     <Image src={course.coverImage} alt={course.whatYouMake} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 33vw" priority={false} />
                   </div>
                   <div className="space-y-4 p-5">
-                    <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
+                    <div className="flex flex-wrap gap-2 text-xs font-bold text-slate-600">
                       <span className="rounded-full bg-slate-100 px-2.5 py-1">{course.level}</span>
                       <span className="rounded-full bg-amber-100 px-2.5 py-1 text-amber-900">{course.duration}</span>
                       <span className="rounded-full bg-sky-100 px-2.5 py-1 text-sky-800">{course.ageBand}</span>
                     </div>
                     <div>
-                      <h3 className="text-xl font-black text-slate-900">{course.title}</h3>
-                      <p className="mt-2 text-sm leading-7 text-slate-600">Khóa học này dẫn bé qua từng bước để tạo ra sản phẩm tinh thể của riêng mình.</p>
+                      <h3 className="text-xl font-black leading-tight text-slate-900">{course.title}</h3>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">{course.summary}</p>
                     </div>
                     <Link href={`/catalog/${course.slug}`} className="inline-flex items-center gap-2 text-sm font-bold text-slate-900 underline decoration-slate-300 underline-offset-4">
-                      Bắt đầu ngay
+                      Xem bài
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
@@ -341,57 +271,15 @@ export function LandingPage({ courses, canSignIn }: LandingPageProps) {
         </RevealSection>
 
         <RevealSection delay={240}>
-          <section className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-center">
-            <div className="space-y-4 rounded-[2rem] border-2 border-outline bg-white p-6 shadow-soft">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Dành cho bé và gia đình</p>
-              <h2 className="font-display text-4xl leading-[0.95] text-slate-900">Mỗi lần mở app là một lần háo hức bắt đầu lại</h2>
-              <p className="text-sm leading-7 text-slate-600">Educrystal giúp bé nhìn thấy tiến trình của mình, còn gia đình thì dễ đồng hành mà không phải giải thích quá nhiều lần.</p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-[1.4rem] border-2 border-outline bg-surface-soft p-4 shadow-soft">
-                  <p className="text-sm font-black text-slate-900">Bé biết mình đang ở đâu</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">Mỗi bước xong là thấy ngay mình tiến gần hơn tới tinh thể hoàn chỉnh.</p>
-                </div>
-                <div className="rounded-[1.4rem] border-2 border-outline bg-white p-4 shadow-soft">
-                  <p className="text-sm font-black text-slate-900">Quay lại đúng nhịp</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">Lời nhắc giúp bé tiếp tục buổi sau mà không quên bước đang làm dở.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[2rem] border-2 border-outline bg-white p-6 shadow-soft">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Tổng quan</p>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-[1.4rem] border-2 border-outline bg-white p-4 shadow-soft">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Hành trình</p>
-                  <p className="mt-2 font-display text-3xl text-slate-900">{courses.length}</p>
-                </div>
-                <div className="rounded-[1.4rem] border-2 border-outline bg-surface-soft p-4 shadow-soft">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Bước nhỏ</p>
-                  <p className="mt-2 font-display text-3xl text-slate-900">{totalSteps}</p>
-                </div>
-                <div className="rounded-[1.4rem] border-2 border-outline bg-surface-soft p-4 shadow-soft">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Chuẩn bị</p>
-                  <p className="mt-2 font-display text-3xl text-slate-900">{totalPreparationItems}</p>
-                </div>
-                <div className="rounded-[1.4rem] border-2 border-outline bg-white p-4 shadow-soft">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Thao tác</p>
-                  <p className="mt-2 font-display text-3xl text-slate-900">Rất dễ</p>
-                </div>
-              </div>
-            </div>
-          </section>
-        </RevealSection>
-
-        <RevealSection delay={280}>
           <section className="rounded-[2rem] border-2 border-outline bg-slate-900 px-6 py-7 text-white shadow-soft sm:px-8 sm:py-8">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
               <div className="space-y-3">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300">Bắt đầu</p>
-                <h2 className="font-display text-4xl leading-[0.95] text-white">Bé chọn một hành trình, rồi cùng gia đình bắt đầu nuôi tinh thể</h2>
-                <p className="max-w-2xl text-sm leading-7 text-slate-300">Đăng nhập để lưu tiến độ, tiếp tục từ bước đang làm dở và đặt lời nhắc cho lần quay lại tiếp theo.</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300">Sẵn sàng bắt đầu</p>
+                <h2 className="font-display text-4xl leading-[0.95] text-white">Lưu tiến độ để lần sau mở app là tiếp tục ngay.</h2>
+                <p className="max-w-2xl text-sm leading-7 text-slate-300">Educrystal hoạt động tốt trên điện thoại, có nhật ký riêng tư cho gia đình và chỉ mở showcase khi bạn muốn chia sẻ.</p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <GoogleSignInAction canSignIn={canSignIn} />
                 <a href="#top" className="inline-flex items-center justify-center rounded-full border-2 border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white shadow-soft transition-transform hover:-translate-y-0.5">
                   Lên đầu trang
@@ -401,6 +289,8 @@ export function LandingPage({ courses, canSignIn }: LandingPageProps) {
           </section>
         </RevealSection>
       </div>
+
+      <InstallAppCta />
     </main>
   );
 }
