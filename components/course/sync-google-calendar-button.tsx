@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { toast } from "sonner";
-import { downloadIcs } from "@/lib/calendar";
+import { openGoogleCalendar } from "@/lib/calendar";
 
 type Props = {
   courseSlug: string;
@@ -10,35 +9,28 @@ type Props = {
 };
 
 export default function SyncGoogleCalendarButton({ courseTitle }: Props) {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleAddToCalendar = async () => {
-    setIsLoading(true);
-
+  const handleAddToCalendar = () => {
     const start = new Date();
     start.setDate(start.getDate() + 1);
     start.setHours(10, 0, 0, 0);
     const end = new Date(start.getTime() + 60 * 60 * 1000);
 
-    downloadIcs(
+    openGoogleCalendar(
       `${courseTitle} — Lịch học`,
-      "Nhắc từ Educrystal",
+      `Nhắc từ Educrystal\nKhóa học: ${courseTitle}`,
       start,
       end,
     );
-
-    toast.success("Đã tải file lịch!");
-    setIsLoading(false);
+    toast.success("Đã mở Google Calendar!");
   };
 
   return (
     <button
       type="button"
       onClick={handleAddToCalendar}
-      disabled={isLoading}
       className="inline-flex items-center justify-center rounded-full border-2 border-outline bg-white px-4 py-3 text-sm font-bold text-slate-900 shadow-soft"
     >
-      {isLoading ? "Đang tải…" : "Thêm vào lịch"}
+      Thêm vào lịch
     </button>
   );
 }

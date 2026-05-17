@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { downloadIcs } from "@/lib/calendar";
+import { openGoogleCalendar } from "@/lib/calendar";
 import type { Course } from "@/data/courses";
 import { createEmptyAppState, getCourseProgress, type AppState, upsertCourseProgress } from "@/lib/progress";
 
@@ -123,18 +123,36 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
     if (!reminderAt) start.setDate(start.getDate() + 1);
     start.setHours(10, 0, 0, 0);
     const end = new Date(start.getTime() + 60 * 60 * 1000);
-    downloadIcs(
-      `${course.title} — Buoc ${step.order}: ${step.title}`,
-      "Nhac tu Educrystal",
+
+    const details = [
+      `Khóa học: ${course.title}`,
+      `Bước ${step.order}: ${step.title}`,
+      "",
+      "Việc cần làm:",
+      step.body,
+      "",
+      `Điều kiện hoàn thành: ${step.passCriteria}`,
+    ];
+
+    if (step.notes && step.notes.length > 0) {
+      details.push("", "Lưu ý:", step.notes.join("\n"));
+    }
+
+    if (step.waitHint) {
+      details.push("", step.waitHint);
+    }
+
+    openGoogleCalendar(
+      `${course.title} — Bước ${step.order}: ${step.title}`,
+      details.join("\n"),
       start,
       end,
     );
-    toast.success("Da tai file lich!");
+    toast.success("Đã mở Google Calendar!");
   };
 
   const handleReminderAddToCalendar = () => {
     handleAddToCalendar();
-    toast("Ban co the tiep tuc o day hoac quay lai sau.");
   };
 
   return (
