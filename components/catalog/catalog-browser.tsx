@@ -15,7 +15,7 @@ type CatalogBrowserProps = {
 const tabs = [
   { id: "active", label: "Đang làm" },
   { id: "discover", label: "Khám phá" },
-  { id: "done", label: "Đã xong" },
+  { id: "done", label: "Đã hoàn thành" },
 ] as const;
 
 export function CatalogBrowser({ courses, initialState }: CatalogBrowserProps) {
@@ -50,7 +50,7 @@ export function CatalogBrowser({ courses, initialState }: CatalogBrowserProps) {
       <div className="space-y-6">
         <section className="panel-soft section-glow">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Khóa học</p>
-          <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Chọn khóa học bạn thích</h1>
+          <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Chọn khóa học</h1>
         </section>
 
         <EmptyStatePanel
@@ -66,7 +66,7 @@ export function CatalogBrowser({ courses, initialState }: CatalogBrowserProps) {
     <div className="space-y-6">
       <section className="panel-soft section-glow">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Khóa học</p>
-        <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Chọn khóa học bạn thích</h1>
+        <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Chọn khóa học</h1>
       </section>
 
       <section className="flex gap-2 overflow-auto pb-1">
@@ -103,7 +103,7 @@ export function CatalogBrowser({ courses, initialState }: CatalogBrowserProps) {
         ))}
         {visible.length === 0 ? (
           <EmptyStatePanel
-            eyebrow={activeTab === "active" ? "Đang làm" : activeTab === "discover" ? "Khám phá" : "Đã xong"}
+            eyebrow={activeTab === "active" ? "Đang làm" : activeTab === "discover" ? "Khám phá" : "Đã hoàn thành"}
             title={activeTab === "active" ? "Chưa có khóa đang theo" : activeTab === "discover" ? "Chưa có khóa nào" : "Chưa có khóa nào hoàn thành"}
             description=""
             tone={activeTab === "done" ? "gold" : "sky"}

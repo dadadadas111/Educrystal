@@ -81,7 +81,7 @@ export function BlogList({ blogs }: BlogListProps) {
         >
           <option value="newest">Mới nhất</option>
           <option value="oldest">Cũ nhất</option>
-          <option value="views">Nhiều view</option>
+          <option value="views">Xem nhiều</option>
         </select>
 
         <select
@@ -104,7 +104,7 @@ export function BlogList({ blogs }: BlogListProps) {
 
       {!isPending && blogs.length === 0 ? (
         <div className="py-12 text-center">
-          <p className="text-slate-500">Chưa có bài viết nào</p>
+          <p className="text-slate-500">Chưa có bài viết</p>
         </div>
       ) : (
         <div className={`grid gap-4 sm:grid-cols-2 lg:grid-cols-3 transition-opacity ${isPending ? 'opacity-50' : 'opacity-100'}`}>

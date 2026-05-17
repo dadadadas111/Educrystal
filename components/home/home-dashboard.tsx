@@ -43,7 +43,7 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
       <div className="space-y-6">
         <section className="panel-soft section-glow">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Trang chủ</p>
-          <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Hôm nay mình làm gì?</h1>
+          <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Hôm nay làm gì?</h1>
         </section>
 
         <EmptyStatePanel
@@ -63,13 +63,13 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
   return (
     <div className="space-y-6">
       <section className="panel-soft section-glow">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Trang chủ</p>
-        <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Hôm nay mình làm gì?</h1>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Trang chủ</p>
+        <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Hôm nay làm gì?</h1>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="playful-stage text-slate-900">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{isDiscoverMode ? "Khám phá ngay" : "Tiếp tục ngay"}</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{isDiscoverMode ? "Khám phá" : "Tiếp tục"}</p>
           {nextUp ? (
             <div className="mt-3 space-y-3">
               <h2 className="font-display text-[2.15rem] leading-[0.95]">{isDiscoverMode ? `Khám phá ${nextUp.course.title}` : nextUp.course.title}</h2>
@@ -91,7 +91,7 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
           <div className="panel-soft section-glow">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Nhật ký</p>
             <p className="mt-2 font-display text-3xl text-slate-900">{recentDiary ? "Đã ghi" : "Chưa ghi"}</p>
-            <p className="mt-1 text-sm text-slate-600">{recentDiary ? recentDiary.title : "Ghi một dòng ngắn để lưu hôm nay."}</p>
+            <p className="mt-1 text-sm text-slate-600">{recentDiary ? recentDiary.title : ""}</p>
             <div className="mt-4 flex gap-3">
               <Link href="/diary" className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-sky-100 px-4 py-3 text-sm font-bold text-sky-900 shadow-soft">Mở nhật ký</Link>
               <Link href="/diary" className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft">Ghi mới</Link>
@@ -109,7 +109,7 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
               <span className="font-bold text-slate-900">{finishedCourses.length}</span>
             </div>
             <Link href="/catalog" className="mt-4 inline-flex rounded-full border-2 border-outline bg-amber-100 px-4 py-3 text-sm font-bold text-amber-900 shadow-soft">
-              Đi đến khóa học
+              Chọn khóa
             </Link>
           </div>
         </div>
@@ -145,7 +145,7 @@ export function HomeDashboard({ courses, initialState }: HomeDashboardProps) {
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-display text-2xl text-slate-900">Khóa đã xong</h2>
+        <h2 className="font-display text-2xl text-slate-900">Hoàn thành</h2>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {finishedCourses.map((item) => (
             <Link key={item.course.slug} href={`/catalog/${item.course.slug}`} className="list-card transition-transform hover:-translate-y-0.5">

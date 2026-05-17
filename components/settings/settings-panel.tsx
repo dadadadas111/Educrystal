@@ -21,20 +21,19 @@ export function SettingsPanel({ courses, initialState }: SettingsPanelProps) {
     <div className="space-y-6">
       <section className="panel-soft section-glow">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Cài đặt</p>
-        <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Nhắc lịch và kết nối</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Nơi này chỉ chứa thứ phụ huynh và hệ thống cần, không đưa chi tiết kỹ thuật lên UI.</p>
+        <h1 className="mt-2 font-display text-4xl leading-[0.95] text-slate-900">Cài đặt</h1>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
         <div className="list-card">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Nhắc lịch</p>
-          <h2 className="mt-2 font-display text-3xl text-slate-900">Calendar sync</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">Tạm thời demo bằng nhắc nội bộ. Sau này có thể nối Google Calendar hoặc nhắc đẩy.</p>
+          <h2 className="mt-2 font-display text-3xl text-slate-900">Nhắc nhở</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">Bạn sẽ được nhắc khi có bước mới</p>
         </div>
 
         <div className="list-card">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Tiến độ</p>
-          <h2 className="mt-2 font-display text-3xl text-slate-900">Khóa đang theo</h2>
+          <h2 className="mt-2 font-display text-3xl text-slate-900">Khóa học</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">{courses.length > 0 ? `${courses.length} khóa` : "Chưa có khóa nào"}</p>
         </div>
       </section>
@@ -42,7 +41,7 @@ export function SettingsPanel({ courses, initialState }: SettingsPanelProps) {
       <section className="list-card">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Tài khoản</p>
         <h2 className="mt-2 font-display text-3xl text-slate-900">Đăng xuất</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-600">Thoát khỏi tài khoản hiện tại và quay lại trang giới thiệu Educrystal.</p>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Thoát tài khoản</p>
         <SignOutButton className="mt-4 inline-flex w-full items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto" />
       </section>
 
@@ -54,7 +53,7 @@ export function SettingsPanel({ courses, initialState }: SettingsPanelProps) {
       ) : null}
 
       <section className="space-y-3 panel-soft section-glow">
-        <h2 className="font-display text-3xl text-slate-900">Nhắc lại đã lưu</h2>
+        <h2 className="font-display text-3xl text-slate-900">Nhắc lịch</h2>
         {reminders.length === 0 ? (
           <EmptyStatePanel
             eyebrow="Nhắc lịch"
