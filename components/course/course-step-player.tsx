@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { downloadIcs } from "@/lib/calendar";
 import type { Course } from "@/data/courses";
-import { addReminder, createEmptyAppState, getCourseProgress, type AppState, upsertCourseProgress } from "@/lib/progress";
+import { createEmptyAppState, getCourseProgress, type AppState, upsertCourseProgress } from "@/lib/progress";
 
 type CourseStepPlayerProps = {
   course: Course;
@@ -119,8 +119,8 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
   };
 
   const handleAddToCalendar = () => {
-    const start = new Date();
-    start.setDate(start.getDate() + 1);
+    const start = reminderAt ? new Date(reminderAt) : new Date();
+    if (!reminderAt) start.setDate(start.getDate() + 1);
     start.setHours(10, 0, 0, 0);
     const end = new Date(start.getTime() + 60 * 60 * 1000);
     downloadIcs(
@@ -132,52 +132,9 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
     toast.success("Da tai file lich!");
   };
 
-  const handleReminder = async () => {
-    if (!reminderAt) return;
-
-    try {
-      setIsLoading(true);
-      const nextState = addReminder(
-        upsertCourseProgress(state, course.slug, {
-          activeStepIndex: stepIndex,
-          completedSteps: progress.completedSteps,
-          reminderAt,
-          updatedAt: new Date().toISOString(),
-        }),
-        {
-          courseSlug: course.slug,
-          stepIndex,
-          reminderAt,
-          note: step.waitHint ?? "Nhắc quay lại bước này",
-        },
-      );
-
-      persist(nextState);
-
-      const courseReminders = nextState.reminders
-        .filter((reminder) => reminder.courseSlug === course.slug)
-        .map((reminder) => ({
-          stepIndex: reminder.stepIndex,
-          reminderAt: reminder.reminderAt,
-          note: reminder.note,
-        }));
-
-      await fetch("/api/user/reminders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          courseSlug: course.slug,
-          reminders: courseReminders,
-        }),
-      });
-
-      setShowConfirm(false);
-      router.push(`/catalog/${course.slug}`);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleReminderAddToCalendar = () => {
+    handleAddToCalendar();
+    toast("Ban co the tiep tuc o day hoac quay lai sau.");
   };
 
   return (
@@ -257,7 +214,7 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
           </div>
         ) : null}
 
-        <div className="space-y-3">
+        {requiresWait ? (
           <div className="flex gap-3">
             <button
               type="button"
@@ -274,16 +231,35 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
             >
               Thêm vào lịch
             </button>
+            <button
+              type="button"
+              onClick={() => void handleComplete()}
+              disabled={isLoading}
+              className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Đang xử lý..." : "Xong giai đoạn"}
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => void handleComplete()}
-            disabled={isLoading}
-            className="inline-flex w-full items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {isLoading ? "Đang xử lý..." : "Đã làm xong? Tới bước tiếp theo nào!"}
-          </button>
-        </div>
+        ) : (
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => void (canGoBack ? goToStep(stepIndex - 1) : router.push(`/catalog/${course.slug}`))}
+              disabled={isLoading}
+              className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 shadow-soft disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              Quay lại
+            </button>
+            <button
+              type="button"
+              onClick={() => void handleComplete()}
+              disabled={isLoading}
+              className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Đang xử lý..." : "Tiếp theo"}
+            </button>
+          </div>
+        )}
       </section>
 
       {showConfirm ? (
@@ -302,8 +278,8 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
               <button type="button" onClick={() => void handleConfirmComplete()} disabled={isLoading} className="rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft disabled:opacity-60 disabled:cursor-not-allowed">
                 {isLoading ? "Đang xử lý..." : "Mình đã làm xong"}
               </button>
-              <button type="button" onClick={() => void handleReminder()} disabled={isLoading} className="rounded-full border-2 border-outline bg-amber-100 px-4 py-3 text-sm font-bold text-amber-900 shadow-soft disabled:opacity-60 disabled:cursor-not-allowed">
-                {isLoading ? "Đang xử lý..." : "Nhắc lại khi tới ngày"}
+              <button type="button" onClick={handleReminderAddToCalendar} className="rounded-full border-2 border-outline bg-amber-100 px-4 py-3 text-sm font-bold text-amber-900 shadow-soft">
+                Thêm vào lịch
               </button>
             </div>
 
