@@ -16,7 +16,7 @@ type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
 };
 
-type InstallPlatform = "hidden" | "ios" | "prompt" | "manual";
+type InstallPlatform = "ios" | "prompt" | "manual";
 
 type RelatedApp = {
   platform: string;
@@ -37,31 +37,17 @@ function isIosDevice() {
   return /iphone|ipad|ipod/.test(userAgent) || isTouchMac;
 }
 
-function canReceiveNativeInstallPrompt() {
-  const userAgent = window.navigator.userAgent.toLowerCase();
-
-  return !isIosDevice() && /chrome|chromium|edg|opr|samsungbrowser/.test(userAgent);
-}
-
-function isMobileLike() {
-  return window.matchMedia("(max-width: 768px)").matches || window.matchMedia("(pointer: coarse)").matches;
-}
-
 function useInstallPrompt() {
-  const [isMobileContext, setIsMobileContext] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [showIosGuide, setShowIosGuide] = useState(false);
-  const [showManualGuide, setShowManualGuide] = useState(false);
   const [promptEvent, setPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
-    setIsMobileContext(isMobileLike());
     setIsStandalone(isStandaloneDisplay());
     setShowIosGuide(isIosDevice());
-    setShowManualGuide(isMobileLike() && !isIosDevice() && !canReceiveNativeInstallPrompt());
     setIsReady(true);
 
     const navigatorWithInstalledApps = window.navigator as Navigator & {
@@ -102,12 +88,10 @@ function useInstallPrompt() {
   }, []);
 
   const platform = useMemo<InstallPlatform>(() => {
-    if (!isMobileContext) return "hidden";
     if (promptEvent) return "prompt";
     if (showIosGuide) return "ios";
-    if (showManualGuide) return "manual";
-    return "hidden";
-  }, [isMobileContext, promptEvent, showIosGuide, showManualGuide]);
+    return "manual";
+  }, [promptEvent, showIosGuide]);
 
   const install = async () => {
     if (!promptEvent) return;
@@ -128,7 +112,7 @@ export function InstallAppCta() {
   const [showGuide, setShowGuide] = useState(false);
   const [dismissed, setDismissed] = useState(false);
 
-  if (!isReady || isStandalone || dismissed || platform === "hidden") return null;
+  if (!isReady || isStandalone || dismissed) return null;
 
   const canPrompt = platform === "prompt";
   const isIos = platform === "ios";
