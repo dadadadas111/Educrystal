@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 
 import { EmptyStatePanel, StatusBanner } from "@/components/admin/status-empty-states";
+import { SignOutButton } from "@/components/auth/sign-out-button";
 import type { Course } from "@/data/courses";
 import { createEmptyAppState, type AppState } from "@/lib/progress";
 
@@ -36,6 +37,13 @@ export function SettingsPanel({ courses, initialState }: SettingsPanelProps) {
           <h2 className="mt-2 font-display text-3xl text-slate-900">Khóa đang theo</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">{courses.length > 0 ? `${courses.length} khóa` : "Chưa có khóa nào"}</p>
         </div>
+      </section>
+
+      <section className="list-card">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Tài khoản</p>
+        <h2 className="mt-2 font-display text-3xl text-slate-900">Đăng xuất</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Thoát khỏi tài khoản hiện tại và quay lại trang giới thiệu Educrystal.</p>
+        <SignOutButton className="mt-4 inline-flex w-full items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-soft disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto" />
       </section>
 
       {courses.length === 0 ? (
