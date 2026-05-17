@@ -74,27 +74,28 @@ export function LandingPage({ courses, canSignIn }: LandingPageProps) {
     () => [
       {
         icon: CheckCircle2,
-        title: "Từng bước rõ ràng",
-        body: "Bài học ngắn, ảnh lớn, tiến độ dễ hiểu cho trẻ và phụ huynh.",
+        title: "Hướng dẫn chi tiết",
+        body: "",
       },
       {
         icon: Clock3,
-        title: "An toàn và đúng nhịp",
-        body: "Lưu ý an toàn, phần chuẩn bị và các mốc chờ đều được tách rõ để dễ theo dõi.",
+        title: "Đảm bảo an toàn",
+        body: "",
       },
       {
         icon: Bell,
-        title: "Nhật ký riêng, chia sẻ chọn lọc",
-        body: "Gia đình có thể ghi lại tiến trình riêng tư và chỉ đưa thành quả lên showcase khi muốn.",
+        title: "Ghi nhật ký riêng",
+        body: "",
       },
     ],
     [],
   );
 
   const process = [
-    { step: "01", title: "Chọn hành trình", body: "Xem sản phẩm cuối, độ khó và thời gian." },
-    { step: "02", title: "Làm từng bước", body: "Chuẩn bị, thao tác, lưu ý an toàn và thời gian chờ đều nằm trong một luồng." },
-    { step: "03", title: "Lưu tiến độ", body: "Quay lại đúng nơi đã dừng và tiếp tục theo dõi tinh thể." },
+    { step: "01", title: "Đơn giản, thân thiện", body: "" },
+    { step: "02", title: "Chọn hành trình", body: "" },
+    { step: "03", title: "Làm theo chỉ dẫn", body: "" },
+    { step: "04", title: "Tận hưởng thành quả", body: "" },
   ];
 
   return (
@@ -132,15 +133,15 @@ export function LandingPage({ courses, canSignIn }: LandingPageProps) {
             <div className="space-y-6">
               <div className="glass-pill w-fit text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
                 <Sparkles className="h-4 w-4 text-amber-500" />
-                Ứng dụng học trên điện thoại
+                Nuôi tinh thể dễ dàng
               </div>
 
               <div className="space-y-4">
                 <h1 className="font-display text-5xl leading-[0.9] text-slate-900 sm:text-6xl lg:text-7xl">
-                  Nuôi tinh thể thành một hành trình dễ theo.
+                  Educrystal
                 </h1>
                 <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-                  Educrystal giúp trẻ làm thí nghiệm theo từng chặng ngắn, lưu tiến độ bằng nhật ký riêng và sẵn sàng đưa thành quả lên showcase đã kiểm duyệt.
+                  Một cách đơn giản để trẻ tìm hiểu về tinh thể — dễ hiểu, an toàn và không rối mắt.
                 </p>
               </div>
 
@@ -217,8 +218,8 @@ export function LandingPage({ courses, canSignIn }: LandingPageProps) {
           <section className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
             <div className="space-y-3">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Cách dùng</p>
-              <h2 className="font-display text-4xl leading-[0.95] text-slate-900">Ít thao tác, rõ việc cần làm.</h2>
-              <p className="max-w-xl text-sm leading-7 text-slate-600">Giao diện ưu tiên màn hình nhỏ, nút lớn và nội dung vừa đủ để trẻ tự theo dõi cùng gia đình.</p>
+              <h2 className="font-display text-4xl leading-[0.95] text-slate-900">Đơn giản, dễ theo.</h2>
+              <p className="max-w-xl text-sm leading-7 text-slate-600">Giao diện thân thiện với trẻ em, ai cũng làm được.</p>
             </div>
 
             <div className="grid gap-3">
@@ -275,7 +276,7 @@ export function LandingPage({ courses, canSignIn }: LandingPageProps) {
               <div className="space-y-3">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300">Sẵn sàng bắt đầu</p>
                 <h2 className="font-display text-4xl leading-[0.95] text-white">Lưu tiến độ để lần sau mở app là tiếp tục ngay.</h2>
-                <p className="max-w-2xl text-sm leading-7 text-slate-300">Educrystal hoạt động tốt trên điện thoại, có nhật ký riêng tư cho gia đình và chỉ mở showcase khi bạn muốn chia sẻ.</p>
+                <p className="max-w-2xl text-sm leading-7 text-slate-300">Educrystal giúp trẻ học từng bước, theo dõi tiến độ và quay lại đúng chỗ đã dừng.</p>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
