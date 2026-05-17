@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
+import { downloadIcs } from "@/lib/calendar";
 import type { Course } from "@/data/courses";
 import { addReminder, createEmptyAppState, getCourseProgress, type AppState, upsertCourseProgress } from "@/lib/progress";
 
@@ -229,7 +230,8 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
           </div>
         ) : null}
 
-        <div className="flex gap-3">
+        <div className="space-y-3">
+          <div className="flex gap-3">
             <button
               type="button"
               onClick={() => void (canGoBack ? goToStep(stepIndex - 1) : router.push(`/catalog/${course.slug}`))}
@@ -240,11 +242,30 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
             </button>
             <button
               type="button"
-              onClick={() => void handleComplete()}
-              disabled={isLoading}
-              className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft disabled:opacity-60 disabled:cursor-not-allowed"
+              onClick={() => {
+                const start = new Date();
+                start.setDate(start.getDate() + 1);
+                start.setHours(10, 0, 0, 0);
+                const end = new Date(start.getTime() + 60 * 60 * 1000);
+                downloadIcs(
+                  `${course.title} — Bước ${step.order}: ${step.title}`,
+                  "Nhắc từ Educrystal",
+                  start,
+                  end,
+                );
+              }}
+              className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-white px-4 py-3 text-sm font-bold text-slate-900 shadow-soft"
             >
-              {isLoading ? "Đang xử lý..." : (requiresWait ? "Xong giai đoạn" : "Xong bước")}
+              Thêm vào lịch
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={() => void handleComplete()}
+            disabled={isLoading}
+            className="inline-flex w-full items-center justify-center rounded-full border-2 border-outline bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-soft disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {isLoading ? "Đang xử lý..." : "Đã làm xong? Tới bước tiếp theo nào!"}
           </button>
         </div>
       </section>
