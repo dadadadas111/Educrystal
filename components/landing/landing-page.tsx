@@ -33,7 +33,6 @@ function GoogleSignInAction({ canSignIn, className }: { canSignIn: boolean; clas
       provider: "google",
       options: {
         redirectTo: redirectTo.toString(),
-        scopes: "https://www.googleapis.com/auth/calendar.events",
       },
     });
 

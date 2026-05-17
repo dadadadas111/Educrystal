@@ -7,50 +7,63 @@ type Props = {
   courseTitle: string;
 };
 
-export default function SyncGoogleCalendarButton({ courseSlug, courseTitle }: Props) {
+function downloadIcs(title: string, description: string, start: Date, end: Date) {
+  const fmt = (d: Date) => {
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  };
+
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Educrystal//EN",
+    "BEGIN:VEVENT",
+    `DTSTART:${fmt(start)}`,
+    `DTEND:${fmt(end)}`,
+    `SUMMARY:${title}`,
+    `DESCRIPTION:${description}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "lich-hoc.ics";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+export default function SyncGoogleCalendarButton({ courseTitle }: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSync = async () => {
+  const handleAddToCalendar = async () => {
     setIsLoading(true);
 
-    // Simple default event: tomorrow 10:00 local, 1 hour
     const start = new Date();
     start.setDate(start.getDate() + 1);
     start.setHours(10, 0, 0, 0);
     const end = new Date(start.getTime() + 60 * 60 * 1000);
 
-    try {
-      const res = await fetch("/api/user/calendar/event", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: `${courseTitle} — Lịch học`,
-          description: `Reminder from Educrystal for ${courseTitle}`,
-          start: start.toISOString(),
-          end: end.toISOString(),
-        }),
-      });
+    downloadIcs(
+      `${courseTitle} — Lịch học`,
+      "Nhắc từ Educrystal",
+      start,
+      end,
+    );
 
-      const json = await res.json();
-
-      if (!res.ok) throw new Error(json?.error || "failed");
-
-      alert("Synchronized to Google Calendar");
-    } catch (err: any) {
-      alert("Sync failed: " + (err?.message ?? ""));
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(false);
   };
 
   return (
     <button
       type="button"
-      onClick={handleSync}
+      onClick={handleAddToCalendar}
       disabled={isLoading}
       className="inline-flex items-center justify-center rounded-full border-2 border-outline bg-white px-4 py-3 text-sm font-bold text-slate-900 shadow-soft"
     >
-      {isLoading ? "Đang đồng bộ…" : "Đồng bộ Google Calendar"}
+      {isLoading ? "Đang tải…" : "Thêm vào lịch"}
     </button>
   );
 }
