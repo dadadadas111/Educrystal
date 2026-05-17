@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { EmptyStatePanel } from "@/components/admin/status-empty-states";
 import type { Course } from "@/data/courses";
@@ -36,6 +37,7 @@ export function DiaryPanel({ courses, initialState }: DiaryPanelProps) {
     });
 
     if (!response.ok) {
+      toast.error("Khong luu duoc, thu lai!");
       return;
     }
 
@@ -46,6 +48,7 @@ export function DiaryPanel({ courses, initialState }: DiaryPanelProps) {
     setState(nextState);
     setTitle("");
     setBody("");
+    toast.success("Da luu nhat ky!");
   };
 
   const entries = state.diaryEntries;

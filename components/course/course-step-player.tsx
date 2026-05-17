@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { downloadIcs } from "@/lib/calendar";
 import type { Course } from "@/data/courses";
@@ -81,6 +82,8 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
     router.push(`/catalog/${course.slug}/step/${nextIndex}`);
   };
 
+  const isLastStep = !canGoNext;
+
   const handleComplete = async () => {
     if (requiresWait) {
       setShowConfirm(true);
@@ -88,6 +91,11 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
     }
 
     await syncProgress(Math.min(stepIndex + 1, course.steps.length - 1), stepIndex);
+    if (isLastStep) {
+      toast.success("Chuc mung! Ban da hoan thanh toan bo khoa hoc!");
+    } else {
+      toast.success("Da hoan thanh buoc nay!");
+    }
     if (canGoNext) {
       router.push(`/catalog/${course.slug}/step/${stepIndex + 1}`);
     } else {
@@ -98,11 +106,30 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
   const handleConfirmComplete = async () => {
     await syncProgress(Math.min(stepIndex + 1, course.steps.length - 1), stepIndex);
     setShowConfirm(false);
+    if (isLastStep) {
+      toast.success("Chuc mung! Ban da hoan thanh toan bo khoa hoc!");
+    } else {
+      toast.success("Da hoan thanh buoc nay!");
+    }
     if (canGoNext) {
       router.push(`/catalog/${course.slug}/step/${stepIndex + 1}`);
     } else {
       router.push(`/catalog/${course.slug}`);
     }
+  };
+
+  const handleAddToCalendar = () => {
+    const start = new Date();
+    start.setDate(start.getDate() + 1);
+    start.setHours(10, 0, 0, 0);
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    downloadIcs(
+      `${course.title} — Buoc ${step.order}: ${step.title}`,
+      "Nhac tu Educrystal",
+      start,
+      end,
+    );
+    toast.success("Da tai file lich!");
   };
 
   const handleReminder = async () => {
@@ -242,18 +269,7 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
             </button>
             <button
               type="button"
-              onClick={() => {
-                const start = new Date();
-                start.setDate(start.getDate() + 1);
-                start.setHours(10, 0, 0, 0);
-                const end = new Date(start.getTime() + 60 * 60 * 1000);
-                downloadIcs(
-                  `${course.title} — Bước ${step.order}: ${step.title}`,
-                  "Nhắc từ Educrystal",
-                  start,
-                  end,
-                );
-              }}
+              onClick={handleAddToCalendar}
               className="inline-flex flex-1 items-center justify-center rounded-full border-2 border-outline bg-white px-4 py-3 text-sm font-bold text-slate-900 shadow-soft"
             >
               Thêm vào lịch

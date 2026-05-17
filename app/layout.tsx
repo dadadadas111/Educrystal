@@ -3,6 +3,7 @@ import { Baloo_2, Be_Vietnam_Pro } from "next/font/google";
 
 import "./globals.css";
 import AuthListener from "@/components/auth/auth-listener";
+import { ToasterProvider } from "@/components/toaster-provider";
 import { getSiteUrl } from "@/lib/supabase";
 
 const bodyFont = Be_Vietnam_Pro({
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="vi">
       <body className={`${bodyFont.variable} ${displayFont.variable} font-body antialiased`}>
         <AuthListener />
+        <ToasterProvider />
         {children}
       </body>
     </html>

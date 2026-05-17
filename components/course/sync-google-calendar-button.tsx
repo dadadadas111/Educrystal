@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { downloadIcs } from "@/lib/calendar";
 
 type Props = {
@@ -26,6 +27,7 @@ export default function SyncGoogleCalendarButton({ courseTitle }: Props) {
       end,
     );
 
+    toast.success("Đã tải file lịch!");
     setIsLoading(false);
   };
 

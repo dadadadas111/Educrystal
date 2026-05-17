@@ -50,7 +50,16 @@ async function getAuthenticatedContext() {
   return { supabase, user };
 }
 
+const courseLookupCache = new Map<string, { byId: Map<string, CourseLookupRow>; bySlug: Map<string, CourseLookupRow>; expiry: number }>();
+const COURSE_CACHE_TTL = 5 * 60 * 1000;
+
 async function getCourseLookup(supabase: NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>>) {
+  const cached = courseLookupCache.get("lookup");
+
+  if (cached && cached.expiry > Date.now()) {
+    return { byId: cached.byId, bySlug: cached.bySlug };
+  }
+
   const { data, error } = await supabase.from("courses").select("id, slug, title");
 
   if (error || !data) {
@@ -61,11 +70,14 @@ async function getCourseLookup(supabase: NonNullable<Awaited<ReturnType<typeof c
   }
 
   const rows = data as CourseLookupRow[];
-
-  return {
+  const result = {
     byId: new Map(rows.map((row) => [row.id, row])),
     bySlug: new Map(rows.map((row) => [row.slug, row])),
   };
+
+  courseLookupCache.set("lookup", { ...result, expiry: Date.now() + COURSE_CACHE_TTL });
+
+  return result;
 }
 
 export async function getUserAppState(): Promise<AppState> {
