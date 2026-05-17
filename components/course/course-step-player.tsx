@@ -92,9 +92,9 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
 
     await syncProgress(Math.min(stepIndex + 1, course.steps.length - 1), stepIndex);
     if (isLastStep) {
-      toast.success("Chuc mung! Ban da hoan thanh toan bo khoa hoc!");
+      toast.success("Chúc mừng! Bạn đã hoàn thành toàn bộ khóa học!");
     } else {
-      toast.success("Da hoan thanh buoc nay!");
+      toast.success("Đã hoàn thành bước này!");
     }
     if (canGoNext) {
       router.push(`/catalog/${course.slug}/step/${stepIndex + 1}`);
@@ -107,9 +107,9 @@ export function CourseStepPlayer({ course, stepIndex, initialState }: CourseStep
     await syncProgress(Math.min(stepIndex + 1, course.steps.length - 1), stepIndex);
     setShowConfirm(false);
     if (isLastStep) {
-      toast.success("Chuc mung! Ban da hoan thanh toan bo khoa hoc!");
+      toast.success("Chúc mừng! Bạn đã hoàn thành toàn bộ khóa học!");
     } else {
-      toast.success("Da hoan thanh buoc nay!");
+      toast.success("Đã hoàn thành bước này!");
     }
     if (canGoNext) {
       router.push(`/catalog/${course.slug}/step/${stepIndex + 1}`);

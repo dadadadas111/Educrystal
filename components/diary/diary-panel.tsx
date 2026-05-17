@@ -37,7 +37,7 @@ export function DiaryPanel({ courses, initialState }: DiaryPanelProps) {
     });
 
     if (!response.ok) {
-      toast.error("Khong luu duoc, thu lai!");
+      toast.error("Không lưu được, thử lại!");
       return;
     }
 
@@ -48,7 +48,7 @@ export function DiaryPanel({ courses, initialState }: DiaryPanelProps) {
     setState(nextState);
     setTitle("");
     setBody("");
-    toast.success("Da luu nhat ky!");
+    toast.success("Đã lưu nhật ký!");
   };
 
   const entries = state.diaryEntries;
